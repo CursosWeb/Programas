@@ -2283,43 +2283,54 @@ Para realizar este ejercicio, consultar el manual de Django, donde explica cómo
 
 \textbf{Enunciado:}
 
-Realizar un proyecto Django con la misma funcionalidad que ``Django cms\_put'', pero incluyendo un módulo de administración (lo que proporciona el ``Admin site'' de Django) y recursos para login y logout de usuarios. Además, cada página de contenidos (o cada mensaje indicando que una página no está disponible) deberá quedar anotada con la cadena ``Not logged in. Login'' (siendo ``Login'' un enlace al recurso de login) si no se está autenticado como usuario, o con la cadena ``Logged in as name. Logout'' (siendo ``name'' el nombre de usuario, y ``Logout'' un enlace al recurso de logout) si se está autenticado como usuario.
+Realizar un proyecto Django con la misma funcionalidad que ``Django cms\_put'' (ejercicio~\ref{subsec:django-cms-put} o ``Django cms\_put-post'' (ejercicio~\ref{subsec:django-cms-put-post}, pero incluyendo un módulo de administración (lo que proporciona el ``Admin site'' de Django) y recursos para login y logout de usuarios. Además, cada página de contenidos (o cada mensaje indicando que una página no está disponible) deberá quedar anotada con la cadena ``Not logged in. Login'' (siendo ``Login'' un enlace al recurso de login) si no se está autenticado como usuario, o con la cadena ``Logged in as name. Logout'' (siendo ``name'' el nombre de usuario, y ``Logout'' un enlace al recurso de logout) si se está autenticado como usuario.
 
 \textbf{Comentarios:}
 
 \begin{itemize}
   \item Cada página tendrá, por tanto, la misma funcionalidad que cms\_put, pero además una línea en la parte superior que dependerá de si el usuario que la visita está registrado o no.
 
-  \item Se puede ver cómo realizar la funcionalidad de login y de logout en las páginas de Django, en particular, en \url{https://docs.djangoproject.com/en/dev/topics/auth/default/#auth-web-requests}.
+  \item Se puede ver cómo realizar la funcionalidad de login y de logout en las páginas de Django, en particular, en ``Authentication in web requests'' \\
+    \url{https://docs.djangoproject.com/en/stable/topics/auth/default/#auth-web-requests}.
 
   \item No hace falta tener una página de registro. Si queremos registrar un usuario, lo haríamos a través del interfaz de ``admin''.
 \end{itemize}
 
-%Las aplicación Django ``Admin site'', entre otras, utiliza el middleware CSRF (protección frente a ``Cross Site Request Forgery''), que hay que tener en cuenta, especialmente en los formularios POST. En particular, es importante asegurarse de que se han referenciado los módulos de CSRF en settings.py:
+Las aplicación Django ``Admin site'', entre otras, utiliza el middleware CSRF (protección frente a ``Cross Site Request Forgery''), que hay que tener en cuenta, especialmente en los formularios POST. En particular, es importante asegurarse de que se han referenciado los módulos de CSRF en settings.py:
 
-%\begin{verbatim}
-%MIDDLEWARE_CLASSES = (
-%    ...
-%    'django.middleware.csrf.CsrfViewMiddleware',
-%    'django.middleware.csrf.CsrfResponseMiddleware',
-%    ...
-%\end{verbatim}
+\begin{verbatim}
+MIDDLEWARE_CLASSES = (
+    ...
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfResponseMiddleware',
+    ...
+\end{verbatim}
 
-%Más información sobre este tema: \\
-%\url{http://docs.djangoproject.com/en/dev/ref/contrib/csrf/}
+Más información sobre este tema: \\
 
+\begin{itemize}
+\item \url{https://docs.djangoproject.com/en/4.2/ref/csrf/}
+\item \url{https://docs.djangoproject.com/en/4.2/howto/csrf/#using-csrf}
+\end{itemize}
 
 %%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
 \subsection{Django cms\_users\_put}
 \label{subsec:django-users-put}
 
+\textbf{Repositorio plantilla (para entrega):} \\
+\url{https://gitlab.etsit.urjc.es/cursosweb/2022-2023/django-users}
+
 \textbf{Enunciado:}
 
 Realizar un proyecto Django con la misma funcionalidad que ``Django cms\_users'' (ejercicio~\ref{subsec:django-users}), tratando de que el proceso de login y logout sea lo más razonable posible e incluyendo la funcionalidad de que sólo los usuarios que estén autenticados pueden cambiar el contenido de cualquier página, mientras que los que no lo están sólo pueden ver las páginas (funcionalidad similar a la de ``Gestor de contenidos con usuarios'').
 
-Repositorio en GitLab para entregar el ejercicio: \\ 
-\url{https://gitlab.etsit.urjc.es/cursosweb/x-serv-15.8-cmsusersput}.
+%Repositorio en GitLab para entregar el ejercicio: \\ 
+%\url{https://gitlab.etsit.urjc.es/cursosweb/x-serv-15.8-cmsusersput}.
+
+\textbf{Entrega:}
+
+Incluye en el repositorio todos los ficheros con código Python del proyecto, incluido \texttt{manage.py} y los contenidos en el directorio de proyecto y en el directorio la app (\texttt{cms}), así como la base de datos en un fichero \texttt{db.sqlite3}). Comprueba también que el código en \texttt{views.py} sigue con las reglas de estilo de Python (PEP8), utilizando \texttt{pycodestyle}.
 
 
 %%----------------------------------------------------------------------------
