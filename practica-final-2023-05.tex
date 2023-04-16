@@ -50,7 +50,8 @@ img {
 
   \end{itemize}
 
-\item[Página dinámica de cada sala.] En la página dinámica de cada sala se mostrará el mismo contenido que en la página de una sala, pero usando un script JavaScript que actualizará el contenido cada poco tiempo (ver más adelante en este enunciado).
+\item[Página dinámica de cada sala.] En la página dinámica de cada sala se mostrará el mismo contenido que en la página de una sala, pero usando un script JavaScript que actualizará el contenido cada poco tiempo (ver más adelante, en la lista de preguntas frecuentes (apartado \ref{sec:practica-2023-05:preguntas}).
+  
 \item[Página de configuración.] Permitirá configurar el sitio para ese navegador. Incluirá:
   \begin{itemize}
   \item Un formulario para elegir el nombre con el que se pondrán los mensajes (nombre de charlador).
@@ -97,10 +98,10 @@ El sitio también proporcionará:
 \begin{verbatim}
 [
   {
-    author="XXX",
-    text="....",
-    isimg=false,
-    date="2023-04-16:14:04:01"
+    "author": "XXX",
+    "text": "....",
+    isimg: false,
+    date: "2023-04-16:14:04:01"
   },
   {
     ....
@@ -151,10 +152,10 @@ Autorization: Basic xx34d23
 
 Tests:
 
-\begin{itemize}
+\begin{description}
 \item[Extremo a extremo.] Para cada tipo de recurso de la práctica habrá que realizar al menos un test ``extremo a extremo''.
 \item[Unitarios.] Será conveniente (pero no obligatorio) realizar también tests unitarios para distintas partes del código. Se se hace, es conveniente mencionarlo en el fichero de entrega como una parte opcional.
-\end{itemize}
+\end{description}
 
 %%----------------------------------------------------------------------------
 \subsection{Despliegue}
@@ -317,6 +318,18 @@ A continuación, algunas preguntas relacionadas con el enunciado de esta prácti
 
 \begin{itemize}
 
+\item ¿Cómo puedo construir la ``Página dinámica de cada sala''?
+
+  Se hará apoyándose en el recurso ``Sala en formato JSON'', que ha de existir para cada sala. El recurso que sirva la página dinámica de cada sala utilizará código JavaScript para descargar periódicamente (por ejemplo cada 30 segundos) el documento en formato JSON, y actualizar con él un elemento \texttt{div}, en el que se mostrarán todos los mensajes que haya en ese documento JSON. Puede verse un ejemplo en el directorio \texttt{Ajax/messages} del repositorio de código de la asignatura. Puede probarse el contenido de ese directorio lanzando el servidor Python de una línea en él:
+
+\begin{verbatim}
+python3 -m http.server
+\end{verbatim}
+
+  y a continuación, apuntando el navegador a la URL que sirve.
+
+  En general, bastará con utilizar el mismo fichero \texttt{messages.json} que puede encontrarse en ese directorio, referenciándolo en el documento HTML que sirva el recurso de la página dinámica de cada sala. Para que funcione, ha de haber un elemento \texttt{div} en la página, que será en el que el script JavaScript incluirá los mensajes del documento JSON. La URL del documento JSON de cada página está en el propio HTML, y podrá generarse dinámicamente con la plantilla de la página en cuestión.
+  
 \item Cuando despliego mi práctica en Python Anywhere, algunos recursos reconocidos no me funcionan, pero otros (YouTube entre ellos), sí. Todo me funciona bien en mi versión local. ¿Qué está pasando?
 
   Las máquinas virtuales de Python Anywhere están limitadas en cuanto a los sitios a los que se pueden conectar: sólo se pueden conectar a aquellos que están en una cierta ``lista blanca''. Por eso, si el sitio al que tu programa se tiene que conectar para obtener recursos no está en la lista blanca, no va a poder descargarse el documento XML o JSON de esos recursos. Para evitar problemas, en el caso de despliegue en Python Anywhere pedimos que funcionen bien los recursos reconocidos que están en la lista blanca, y para los demás, que tengan recursos en la base de datos de despliegue. Más detalles en el apartado sobre despliegue de este enunciado (\ref{sec:practica-2023-05:despliegue}).
