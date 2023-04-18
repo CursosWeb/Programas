@@ -13,7 +13,7 @@
 
 Este es el enunciado del proyecto final del curso 2022-2023, tanto para la convocatoria ordinaria como para la extraordinaria.
 
-La práctica final de la asignatura consiste en la creación de una aplicación web, llamada ``DeCharla'', que permitirá poner mensajes, y ver los mensajes que hayan puesto otros. Algunos de los mensajes podrán ser obtenidos automáticamente de ciertas fuentes soportadas. Los mensajes podrán ser un texto o una imagen. Los mensajes se organizarán en ``salas'', que serán accesibles cada una en un recurso. El nombre del recurso de cada sala será decidido por quien la cree, en el momento de la creación. El ``nombre de la sala'' será el nombre del recurso de la sala, quitándole la ``/'' inicial. La ``página de la sala'' será al página HTML que se recibe cuando se invoca mediante GET el recurso de la sala. No habrá autenticación de usuarios para acceder a las salas: cada visitante podrá poner mensajes en una sala si conoce el nombre de su recurso. Cuando en este enunciado se indique que ``hizo algo en el sitio'' (por ejemplo, se diga ``se verán los mensajes escritos anteriormente'' o ``desde que se visitó la página por última vez'') se refiere a que se hizo algo en el sitio desde el mismo navegador en que se está ahora (por ejemplo ``se verán los mensajes escritos anteriormente desde el mismo navegador'' o ``desde que se visitó la página por última vez desde el mismo navegador'').
+La práctica final de la asignatura consiste en la creación de una aplicación web, llamada ``DeCharla'', que permitirá poner mensajes, y ver mensajes que hayan puesto otros. Algunos de los mensajes podrán ser obtenidos automáticamente de ciertas fuentes soportadas. Los mensajes podrán ser un texto o una imagen. Los mensajes se organizarán en ``salas'', que serán accesibles cada una en un recurso. El nombre del recurso de cada sala será decidido por quien la cree, en el momento de la creación. El ``nombre de la sala'' será el nombre del recurso de la sala, quitándole la ``/'' inicial. La ``página de la sala'' será al página HTML que se recibe cuando se invoca mediante GET el recurso de la sala. No habrá autenticación de usuarios para acceder a las salas: cada visitante podrá poner mensajes en una sala si conoce el nombre de su recurso. Cuando en este enunciado se indique que ``hizo algo en el sitio'' (por ejemplo, se diga ``se verán los mensajes escritos anteriormente'' o ``desde que se visitó la página por última vez'') se refiere a que se hizo algo en el sitio desde el mismo navegador en que se está ahora (por ejemplo ``se verán los mensajes escritos anteriormente desde el mismo navegador'' o ``desde que se visitó la página por última vez desde el mismo navegador'').
 
 A continuación se describe el funcionamiento y la arquitectura general de la aplicación, la funcionalidad mínima que debe proporcionar, y otra funcionalidad optativa que podrá tener.
 
@@ -36,7 +36,7 @@ Se servirán al menos las siguientes páginas (recursos) con los contenidos desc
 
 \begin{description}
 \item[Página principal.] En la página principal se ofrecerá un listado de todas las salas en las que se ha puesto algún mensaje. Para cada sala se indicará su nombre, que se presentará como un enlace a la página de la sala, y dos números: el número de mensajes total, y el número de mensajes desde que se visitó la sala por última vez.
-\item[Página de cada sala.] En la página de cada sala se mostrará:
+\item[Página de cada sala.] En la página de cada sala se mostrarán:
   \begin{itemize}
   \item Formularios para poner un mensaje en la sala. Como el mensaje podrá ser un texto o una imagen, el formulario incluirá una caja de texto, en el que se podrá escribir el texto de un mensaje o la URL de una imagen, y un ``checkbox''\footnote{Input type checkbox: \\ \url{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox}} que si está seleccionado indicará que el texto es una URL (y el texto de un mensaje si no es así).
   \item Un listado de todos los mensajes puestos en la sala desde cualquier navegador (primero los más recientes). Las imágenes se mostrarán con un tamaño del 50\% del ancho disponible, usando por ejemplo\footnote{Ver detalles sobre cómo definir el tamaños de la imágenes en: \\ \url{https://imagekit.io/blog/how-to-resize-image-in-html/}}:
@@ -192,15 +192,16 @@ En el formulario de entrega se pide que se justifique por qué se considera func
 
   \item Permitir que las sesiones autenticadas se puedan terminar. Esto es, que haya una opción para ``terminar la sesión'', de forma que al usarla, si se vuelve a acceder al sitio vuelva a recibirse el formulario para autenticarse (FÁCIL).
 
-  \item Permitir votar las las salas. Para ello, en cada sala aparecerá un botón ``Me gusta'' para indicar que se da un voto a la sala. Cada sala, en el listado general, saldrá junto a los votos que tiene.
+  \item Permitir votar las las salas. Para ello, en cada sala aparecerá un botón ``Me gusta'' para indicar que se da un voto a la sala. Cada sala, en el listado general, saldrá junto a los votos que tiene. (MEDIO)
+        
+  \item Atención al idioma indicado por el navegador. El idioma de la interfaz de usuario de la aplicación tendrá en cuenta lo que especifique el navegador. Para ello, pueden utilizarse las facilidades que proporciona Django para la localización\footnote{Django, Internationalization and localization: \\ \url{https://docs.djangoproject.com/en/4.2/topics/i18n/} } (MEDIO).
+    
+  \item Mejora de los tests de la práctica, incluyendo test de condiciones de error, test de escenarios con más de una invocación de recurso, tests de API Python, etc. En general, si se realizan tests más allá de los básicos ``extremo a extremo'' que se piden, serán considerados como opciones (MEDIO).
+
 
   \item Creación de un script para utilizar información de un sitio y subirla a la DeCharla como uno o varios mensajes, usando el formato XML descrito anteriormente. Por ejemplo, se puede usar información de la AEMET para subir a una cierta sala mensajes sobre el tiempo previsto en una localidad. Pueden realizarse varios scripts de este estilo, con diferentes sitios de información (DIFÍCIL).
 
   \item Igual que la anterior, pero incorporando directamente a DeCharla la funcionalidad de obtener información de sitios terceros e incluirla como mensajes en una sala. En este caso, en cada sala aparecerá uno o varios formularios, cada uno con los datos necesarios para incorporar esa funcionalidad. Por ejemplo, para incorporar previsiones de tiempo de la AEMET, el formulario ofrecerá una caja de texto para poner el nombre de la localidad (DIFÍCIL).
-        
-  \item Atención al idioma indicado por el navegador. El idioma de la interfaz de usuario de la aplicación tendrá en cuenta lo que especifique el navegador. Para ello, pueden utilizarse las facilidades que proporciona Django para la localización\footnote{Django, Internationalization and localization: \\ \url{https://docs.djangoproject.com/en/4.2/topics/i18n/} } (REGULAR).
-    
-  \item Mejora de los tests de la práctica, incluyendo test de condiciones de error, test de escenarios con más de una invocación de recurso, tests de API Python, etc. En general, si se realizan tests más allá de los básicos ``extremo a extremo'' que se piden, serán considerados como opciones (REGULAR).
 \end{itemize}
 
 %%----------------------------------------------------------------------------
@@ -226,7 +227,7 @@ Recordad que es importante ir haciendo commits de vez en cuando y que sólo al h
 
 Se recomienda mantener el repositorio como privado, hasta el momento en que se entregue la práctica.
 
-\item Para considerar la práctica como entregada es fundamental que en el directorio raíz del repositorio de entrega haya un fichero \texttt{README.md} cuya priumera línea sea:
+\item Para considerar la práctica como entregada es fundamental que en el directorio raíz del repositorio de entrega haya un fichero \texttt{README.md} cuya primera línea sea:
 
 \begin{verbatim}
 # ENTREGA CONVOCATORIA XXX
