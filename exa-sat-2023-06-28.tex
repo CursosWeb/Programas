@@ -1,0 +1,446 @@
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de ITT-SAT, 28 de junio de 2023}
+
+\subsubsection{Enunciado}
+
+Se quiere construir un sitio web, CancionVerano, donde se pueden ver y comentar las canciones actuales y votarlas para ser la canción del verano. La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+\item En el sitio no hay cuentas para usuarios: toda la funcionalidad está disponible para cualquiera que lo visite.
+\item De todas formas, cualquier visitante podrá reservar un nombre que no esté ya en uso para cuando suba información al sitio. Este nombre se mantendrá mientras el visitante utilice el mismo navegador.
+\item La página principal del sitio mostrará a los visitantes un formulario para buscar canciones, como documento HTML. Ese formulario permitirá especificar el nombre de un artista o banda. Una vez especificado, el sitio devolverá un listado de las canciones de ese artista, y un nuevo formulario como el anterior (por si el visitante quiere buscar canciones de otro artista o banda). Este listado que aparecerá en la página principal incluirá, para cada canción, su título (como enlace a la página de la canción, ver más abajo), su vídeo musical y un listado de los artistas que participan en la canción. Las canciones aparecerán en orden cronológico inverso (esto es, cuanto más recientes, más arriba).
+\item La página principal tendrá también, cuando el visitante no haya reservado nombre, un formulario para ponerlo. Si se rellena ese formulario, volverá a verse la página principal, pero ahora ya con el nombre reservado (salvo que el nombre ya estuviera reservado previamente, en ese caso volverá a ver el formulario). Desde ese momento en adelante, en la página principal se verá siempre el nombre reservado, mientras se conecte desde el mismo navegador.
+\item Cada canción tendrá una página. En esa página aparecerá el título de la canción, su letra, su vídeo musical, los comentarios que ha habido para esa canción, los likes de la canción, un formulario para poner un comentario y un botón de ``like''. Los comentarios aparecerán en orden inverso de publicación (los más recientes primero).
+\item Cada visitante puede poner un comentario utilizando el formulario indicado anteriormente. Cuando lo ponga, aparecerá su nombre (si ha reservado uno), o como anónimo (si no lo ha hecho). Al poner un comentario, el visitante volverá a ver la página de la canción que estaba viendo, pero ahora con el comentario que acaba de poner.
+\item Todas las páginas del sitio tendrán una imagen de cabecera (banner).
+\item Los vídeos musicales están alojados en la plataforma de YouTube.
+\item Todas las páginas HTML del sitio incluyen una imagen de 1 pixel, servida por el sitio \texttt{tracking.com}. Cada una de estas imágenes se sirve con una URL diferente si está en una página diferente, pero igual si está en la misma página.
+
+\end{enumerate}
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+\item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). Escribe también un fichero similar al fichero urls.py de Django (aunque no es importante que se respete la sintaxis mientras se entienda y la estructura sea similar a la de Django), que refleje el esquema REST anterior. (1 punto)
+
+\item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+\item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario. El escenario comienza cuando un visitante que accede por primera vez al sitio pone en el navegador la URL de la página principal del sitio. A continuación, después de ver esta página principal, rellena el formulario para elegir un nombre. Pero el nombre elegido ya está reservado, y el visitante ha de rellenar el formulario por segunda vez (esta vez, el nombre no estará previamente reservado). El escenario termina cuando el visitante ve de nuevo la página principal, ya con el nombre que ha reservado. (1 punto)
+
+\item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario. El escenario comienza con un visitante que ya ha reservado nombre y está viendo la página de una canción en su navegador. El visitante da ``like'' a esa canción. El visitante rellena el formulario de comentarios, poniendo uno. El escenario termina cuando el visitante ve la página de la canción con su ``like'' y su comentario. (1 punto)
+
+\item Explica cómo debería ser la cookie o cookies que envíe el sitio a cada navegador, de forma que permita asegurar la funcionalidad indicada, pero nada más: (a) Explica qué campos tendría o tendrían (los mínimos posibles), (b) cuándo habría que enviarla (o enviarlas), siendo siempre el envío lo más tarde posible en las interacciones entre cada navegador (visitante) y la aplicación, (c) y para qué serviría. Explica también (d) si se enviarían cookies de otros sitios que no sean el sitio CancionVerano. Explica el porqué en todos los casos. En general, asegúrate de que la aplicación envía cookies sólo cuando lo necesita para cumplir su funcionalidad. (1 punto)
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador sólo cuando sea necesario.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
+% ------------------------------------------------
+% ------------------------------------------------
+\subsubsection{Solución y rúbrica calificación}
+
+% ------------------------------------------------
+\textbf{Ejercicio 1}
+
+Tabla de recursos:
+\vspace{.4cm}
+
+\begin{tabular}{|l|l|l|l|}
+  \hline
+  Recurso & Método & Semántica & Datos \\ \hline\hline
+  /       & GET    & Página principal & \\
+  /       & POST   & Canciones de un artista & \texttt{artista="Nombre Artista"} \\
+  /       & POST   & Nombre de visitante & \texttt{nombre="Nombre Visitante"} \\
+  /\{id\_cancion\} & GET & Página de la canción & \\
+  /\{id\_cancion\} & POST & Nuevo comentario & \texttt{texto="..."}\\
+  /\{id\_cancion\} & POST & ``Like'' & \texttt{like=True}\\
+  /banner & GET & Banner (imagen de cabecera) &  \\
+  \hline
+\end{tabular}
+
+
+\vspace{.4cm}
+Fichero \texttt{urls.py}:
+
+\begin{verbatim}
+from django.urls import path
+from . import views
+
+urlpatterns = [
+  path('', views.index, name='index')
+  path('<id_cancion>', views.cancion, name='cancion')
+  path('banner', views.banner, name='banner')
+]
+\end{verbatim}
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+Para estar correcto, el ejercicio ha de incluir tanto una tabla con un documento \texttt{urls.py} correctos, completos, y sin recursos innecesarios.
+
+Indicaciones aproximadas de errores:
+
+\begin{itemize}
+\item No hay columna de datos en la tabla, o está incorrecta: -0.3
+\item No hay recurso para banner: -0.3
+\item No hay recurso para pedir las canciones de un artista: -0.3
+\item No hay recurso para poner un nombre de visitante: -0.3
+\item No hay recurso para dar un ``like'' o poner comentario: -0.3
+\item No coincide la tabla con el fichero \texttt{urls.py}: -0.2
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 2}
+
+Hay varias soluciones, una podría ser:
+
+\begin{verbatim}
+from django.db import models
+
+class Visitante (models.Model):
+  id = models.CharField(max_lenght = 50)
+  nombre = models.CharField(max_lenght = 100)
+
+class Artista (models.Model):
+  nombre = models.CharField(max_lenght = 100)
+
+class Cancion (models.Model):
+  titulo = models.CharField(max_lenght = 200)
+  letra: models.TextField()
+  video: models.URLField()
+  fecha: models.DateTimeField()
+
+class ArtistaCancion(models.Model):
+  artista = models.ForeignKey('Artista')
+  cancion = models.ForeignKey('Cancion')
+
+claas Like(models.Model):
+  visitante = models.ForeignKey('Visitante')
+  cancion = models.ForeignKey('Cancion')
+
+class Comentario (models.Model):
+  visitante = models.ForeignKey('Visitante')
+  cancion = models.ForeignKey('Cancion')
+  texto: models.CharField(max_lenght = 500)
+  fecha: models.DateTimeField()
+\end{verbatim}
+
+La tabla \texttt{Visitante} se usa para considerar los visitantes (navegadores distintos), y su id será el valor de la cookie que se les envíe.
+
+La tabla \texttt{Artista} se usa para considerar los datos de un artista.
+
+La tabla \texttt{Cancion} se usa para considerar las canciones que están almacenadas en la base de datos de la aplicación. El campo \texttt{fecha} hace falta para poder ordenar las canciones por fecha en la página principal.
+
+La tabla \texttt{ArtistaCancion} se usa para expresar las relaciones entre artistas y sus canciones. Como una canción puede tener varios artistas, no se puede expresar con un campo ``foreign key'' apuntando a \texttt{Artista} en la tabla \texttt{Cancion}. De la misma forma, como un artista puede participar en varias canciones, no se puede expresar en la tabla \texttt{Artista} como un campo ``foreign key'' apuntando a la tabla \texttt{Cancion}. Sí podría expresarse también como un campo \texttt{ManyToManyField} entre \texttt{Artista} y \texttt{Cancion}.
+
+La tabla \texttt{Like} se usa para expresar la relación entre visitantes y las canciones a las que ha ``dado un like''. No se puede expresar con un contador en la tabla \texttt{Cancion} porque no habría forma de comprobar que se ha recibido más de un like del mismo visitante. Sí podría expresarse también como un campo \texttt{ManyToManyField} entre \texttt{Visitante} y \texttt{Cancion}.
+
+
+La tabla \texttt{Comentario} almacena el texto de los comentarios, la canción en la que fueron puestos, el visitante que los puso,  y la fecha en que fueron puestos. La canción se utilizará para mostrar en cada página de canción sus mensajes. La fecha se usará para poder ponerlos en orden. Para esto último se podría utilizar también el \texttt{Id} de la tabla, dado que Django lo autoincrementará, y por tanto también sirve para ordenar. En ese caso, no haría falta el campo \texttt{fecha}.
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+\begin{itemize}
+\item No están las tablas \texttt{Artista}, \texttt{Cancion} y \texttt{Comentario} (y no sé ve cómo cumplir el enunciado): -0.6
+\item No está la tabla \texttt{Visitante}, o alguna que cumpla su función: -0.3
+\item No están las tablas \texttt{ArtistaCancion} o \texttt{Like}, o alguna que cumpla su función: -0.3
+\item Hay campos innecesarios
+\item \texttt{Comentario} o \texttt{Cancion} no permiten ordenar por fecha: -0.2
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 3}
+
+Las interacciones son entre el navegador y dos servidores web: el sitio y tracking.com. Como el navegador no ha accedido nunca al sitio, no puede tener una cookie para él. En este escenario se enviará cookie de sesión en cuanto hace falta: cuando se asigna un nombre válido al visitante. Antes no hace falta pues no se realiza ninguna acción que necesite identificar al visitante (ponerse un nombre, poner un comentario o dar un like). Como en este escenario no se ha hecho una consulta sobre las canciones de algún artista, la página principal no tendrá listado de canciones, y por tanto tampoco habrá que realizar consultas a YouTube. El escenario comenzará con una petición GET del navegador al recurso principal, que obtendrá como respuesta la página HTML principal. A continuación, se envía un POST, resultado de que el visitante haya rellenado el nombre del artista en el formulario de listado de canciones. Este POST falla, por lo que se vuelve a recibir la misma página HTML. Se repite el proceso, y esta vez se puede poner el nombre, por lo que se enviará cookie en respuesta al POST, que irá por tanto junto con la página HTML ya con el nombre puesto, y con eso termina el escenario.
+
+\begin{itemize}
+
+\item CancionVerano: Petición GET al recurso principal: 
+
+\begin{verbatim}
+  GET / HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página principal, HTML]
+\end{verbatim}
+
+\item CancionVerano: Petición del banner:
+
+  \begin{verbatim}
+  GET /banner HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Banner]
+\end{verbatim}
+
+\item tracking.com: Petición de la imagen:
+
+  \begin{verbatim}
+  GET /imagen-principal HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Imagen]
+\end{verbatim}
+
+  
+\item CancionVerano: POST para poner un nombre:
+
+\begin{verbatim}
+  POST / HTTP/1.1
+  ...
+  nombre="Pepita Grilla"
+\end{verbatim}
+
+\item Respuesta, suponiendo que \texttt{Pepita Grilla} es un nombre que ya existe.
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página principal, HTML, indicando que el nombre ya existe]
+  
+\end{verbatim}
+
+\item CancionVerano: Petición del banner (suponemos que no se usa la cache): igual que la anterior (petición y respuesta).
+
+\item tracking.com: Petición de la imagen (suponemos que no se usa la cache): igual que la anterior (petición y respuesta).
+
+\item CancionVerano: Nuevo POST para poner un nombre:
+
+\begin{verbatim}
+  POST / HTTP/1.1
+  ...
+  nombre="Pepito Grillo"
+\end{verbatim}
+
+\item Respuesta, suponiendo que \texttt{Pepito Grillo} es un nombre válido que no tenía ningún visitante.
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+  Set-Cookie: vistante="4343fae54be...."; Expires=Fri, 6 Jul 2035 06:32:33 GMT; Secure; HttpOnly
+
+  [Página principal, HTML, ya con el nombre Pepito Grillo en ella]
+  
+\end{verbatim}
+  
+\item CancionVerano: Petición del banner  (suponemos que no se usa la cache):
+
+  \begin{verbatim}
+  GET /banner HTTP/1.1
+  ...
+  Cookie: vistante="4343fae54be...."
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Banner]
+\end{verbatim}
+
+\item tracking.com: Petición de la imagen (suponemos que no se usa la cache): igual que la anterior (petición y respuesta).
+\end{itemize}
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+Se espera que las interacciones sean correctas, incluyan todos los campos indicados, y las cookies sean correctas y consistentes con el ejercicio anterior.
+
+\begin{itemize}
+\item Interacciones no consistentes con primer ejercicio: -0.3
+\item Faltan datos en la respuesta: -0.4
+\item Falta interacción para banner: -0.3
+\item Falta interacción para imagen: -0.3
+\item Faltan interacciones para segundo POST: -0.4
+\item Query string equivocada en algún POST: -0.2
+\item Cookies incorrectas: -0.3
+\item Cookie enviada demasiado pronto: -0.2
+\item Se violan reglas de funcionamiento de cookies (ej: se envía una cookie que no se ha recibido, o un navegador inicia una cookie): -0.4
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 4}
+
+Las interacciones son entre el navegador y tres servidores web: el sitio, YouTube, y tracking.com. Como el navegador ya ha accedido al sitio para elegir nombre de visitante, tendrá una cookie para él, por lo que se enviará siempre que se conecte al sitio. Además, como la página HTML de la canción incluye el vídeo de la canción en YouTube, habrá al menos un acceso a YouTube para descargar la muestra del vídeo que éste ofrece. El escenario comenzará con una petición POST del navegador a la página de la canción, que se produce cuando el visitante pulsa el botón ``Like''. Esta petición obtendrá como respuesta la página HTML de la canción, ya con el ``like'' incluido. A continuación, se envía un nuevo POST, resultado de que el visitante decida poner un comentario. Esta petición recibe de nuevo la página HTML de la canción, ya con el comentario puesto, y con eso termina el escenario.
+
+
+\begin{itemize}
+
+\item CancionVerano: Petición POST al recurso correspondiente a la página de la canción, para hacer el ``like'' (suponemos que \texttt{/3452} es el recurso correspondiente a la página de la canción: 
+
+\begin{verbatim}
+  POST /3452 HTTP/1.1
+  ...
+  Cookie: vistante="4343fae54be...."
+  ...
+
+  like=True
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página de la canción, con el "like" contabilizado, HTML]
+\end{verbatim}
+
+\item CancionVerano: Petición del banner (suponemos que no se usa la cache):
+
+  \begin{verbatim}
+  GET /banner HTTP/1.1
+  ...
+  Cookie: vistante="4343fae54be...."
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Banner]
+\end{verbatim}
+
+\item tracking.com: Petición de la imagen:
+
+  \begin{verbatim}
+  GET /imagen-cancion-3452 HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Imagen]
+\end{verbatim}
+
+\item YouTube: Petición de muestra del vídeo (suponemos que el recurso de YouTube que la sirve es \texttt{/recurso-video.3452}. Podría haber varias peticiones si, por ejemplo, se descarga un script JavaScript que se encarga de preparar la muestra y éste a su vez se descarga más elementos de YouTube, pero suponemos que basta con una interacción, por simplificar:
+
+  \begin{verbatim}
+  GET /recurso-video-3452 HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Muestra del video]
+\end{verbatim}
+  
+\item CancionVerano: POST para poner el comentario:
+
+\begin{verbatim}
+  POST /3452 HTTP/1.1
+  ...
+  Cookie: vistante="4343fae54be...."
+  ...
+
+  texto="Texto del comentario"
+\end{verbatim}
+
+\item Respuesta:
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página de la canción, HTML, ya con el comentario]
+  
+\end{verbatim}
+
+\item CancionVerano: Petición del banner (suponemos que no se usa la cache): igual que la anterior (petición y respuesta).
+
+\item tracking.com: Petición de la imagen (suponemos que no se usa la cache): igual que la anterior (petición y respuesta).
+
+\item YouTube: Petición de muestra del vídeo (suponemos que no se usa la cache): igual que la anterior (petición y respuesta).
+\end{itemize}
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+Se espera que las interacciones sean correctas, incluyan todos los campos indicados, y las cookies sean correctas y consistentes con el ejercicio anterior.
+
+\begin{itemize}
+\item Interacciones no consistentes con primer ejercicio: -0.3
+\item Interacciones no consistentes con ejercicio anterior: -0.3
+\item Faltan datos en la respuesta: -0.4
+\item Falta interacción para banner: -0.3
+\item Falta interacción para imagen: -0.3
+\item Falta interacción para YouTube: -0.3
+\item Faltan interacciones para alguno de los POST: -0.4
+\item Query string equivocada en algún POST: -0.2
+\item Cookies incorrectas: -0.3
+\item Se violan reglas de funcionamiento de cookies (ej: se envía una cookie que no se ha recibido, o un navegador inicia una cookie): -0.4
+\end{itemize}
+
+
+
+
+% ------------------------------------------------
+\textbf{Ejercicio 5}
+
+Para mantener información asociado a los visitantes a CancionVerano, el sitio tendrá que enviar una cookie de sesión cuando el visitante haga alguna acción que haya que relacionar con un visitante concreto. Dado el enunciado, estas acciones son: ponerse un nombre, dar un ``like'' a una canción, o poner un comentario en una canción. Por lo tanto, la cookie se tendrá que enviar cuando ocurra una de estas tres cosas. Será una cookie de sesión, y es conveniente que sea persistente (se mantenga aunque el navegador rearranque): para ello tendrá que tener fecha de expiración. Como la cookie de sesión permite que un visitante se impersone como otro si tiene acceso a su cookie de sesión, es conveniente también que la cookie se envíe sólo sobre conexiones cifradas (HTTPS), para lo que tendrá que tener el campo \texttt{Secure}. Para mitigar algunos tipos de ataques, puede ser conveniente que la cookie sea inaccesible a JavaScript, para lo que se puede usar el campo \texttt{HttpOnly}
+
+Un ejemplo completo de cómo enviar la cookie, por tanto, podría ser:
+
+\begin{verbatim}
+Set-Cookie: vistante="4343fae54be...."; Expires=Fri, 6 Jul 2035 06:32:33 GMT; Secure; HttpOnly
+\end{verbatim}
+
+Para el sitio tracking.com no se describe funcionalidad específica, pero es muy posible que para poder realizar sus funciones de trazado de páginas vistas, envié una cookie que en este caso no necesita ser segura, aunque sí será conveniente que sea persistente:
+
+\begin{verbatim}
+Set-Cookie: id="43334566750...."; Expires=Sat, 7 Jul 2035 16:32:33 GMT
+\end{verbatim}
+
+Por su parte, aunque no hace falta para la funcionalidad descrita en la página, YouTube enviará sus propias cookies. En caso de que el usuario esté autenticado en YouTube (haya hecho login en una sesión), se habrán recibido sus cookies ligadas a un usuario concreto, y se enviarán éstas en cada interacción. Si no es así, típicamente YouTube enviará cookies al menos para trazar la sesión anónima.
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+\begin{itemize}
+\item Cada apartado mal: -0.3
+\end{itemize}
+
+

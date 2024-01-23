@@ -1,0 +1,334 @@
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de ITT-SAT, 15 de mayo de 2023}
+
+\subsubsection{Enunciado}
+
+Se quiere construir un sitio web, Chs.ts, para poder comunicarse mediante mensajes. La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+\item Toda la funcionalidad del sitio está disponible para cualquier visitante: no hay cuentas, ni hace falta acreditarse para tener acceso a la funcionalidad que proporciona.
+
+\item La página principal del sitio mostrará enlaces a las salas en que el visitante ha entrado alguna vez (haya puesto mensajes o no) desde ese mismo navegador. También ofrecerá un botón para crear una nueva sala. Si se pulsa el botón, se creará una nueva sala, y como resultado de la operación el usuario quedará en la página de la sala.
+
+\item Todas las salas del sitio se generan mediante el botón anterior (sólo se puede usar una sala si ha sido creada). Cada sala tiene una URL única (que mostrará la página de la sala), donde el nombre de recurso es una cadena de caracteres aleatorios de 50 caracteres.
+
+\item La página de cada sala podrá ser utilizada por cualquier visitante, si conoce su URL. Al acceder a esta URL se verán los últimos 10 mensajes que se haya puesto en la sala por cualquier visitante. También habrá un formulario para poner nuevos mensajes: si se usa, el mensaje puesto será uno de los 10 mensajes que verá cualquier visitante en esta sala a partir de este momento, hasta que se pongan otros 10 después de él, momento en que ya no aparecerá si se accede a la URL de la sala.
+
+\item El sitio también permite que quien quiera envíe mensajes desde un programa (usando el mismo mecanismo que usa el formulario de mensajes), y que los mensajes de una sala sean descargados en formato JSON (igualmente, solo los 10 últimos). Para esta descarga se utilizará una URL para cada sala, distinta de la que permite acceso ``normal'' a la sala desde el navegador.
+
+\item Todas las páginas HTML del sitio usarán un único documento CSS, servido por el propio sitio, que definirá el estilo de todas ellas de forma uniforme.
+\end{enumerate}
+
+En esta descripción, considérese que un ``visitante'' corresponde con un cierto navegador, con su propio almacén de cookies. Esto es, una misma persona que use dos navegadores distintos, cada uno con su propio almacén de cookies, será considerada como dos visitantes, mientras que varias personas usando el mismo navegador, con un único almacén de cookies para todas ellas, serán consideradas como un único visitante.
+
+\newpage
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+\item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). Escribe también un fichero similar al fichero \texttt{urls.py} de Django (aunque no es importante que se respete la sintaxis mientras se entienda y la estructura sea similar a la de Django), que refleje el esquema REST anterior. (1 punto)
+
+\item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Asegúrate de que incluyes en el modelo de datos los campos o tablas necesarios para garantizar que la funcionalidad es la descrita, y que el sitio nunca guarda más información que la estrictamente necesaria para cumplir su función. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero \texttt{models.py} en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+\item Explica cómo debería ser la cookie o cookies que envíe el sitio a cada navegador, de forma que permita asegurar la funcionalidad indicada, pero nada más: (a) Explica qué campos tendría o tendrían (los mínimos posibles), (b) cuándo habría que enviarla (o enviarlas), siendo siempre el envío lo más tarde posible en las interacciones entre cada navegador (visitante) y la aplicación, (c) y para qué serviría. Explica también (d) si se enviarían cookies a los programas (no navegadores) que lean y escriban mensajes en una cierta sala según se describe en el enunciado. Explica el porqué en todos los casos. En general, asegúrate de que la aplicación envía cookies sólo cuando lo necesita para cumplir su funcionalidad.
+  
+\item Describe las interacciones HTTP que ocurrirán entre el navegador y la aplicación en el siguiente escenario. El escenario comienza cuando un visitante que no ha accedido nunca al sitio pone su URL en el navegador para acceder por primera vez. El visitante ve la página principal, crea una sala, y pone un mensaje en ella. El escenario termina cuando el visitante ve en su navegador la página de la sala con el mensaje que acaba de poner.
+
+  Para cada interacción HTTP indica claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \item Si hubiera envío de datos de formulario, recuerda indicar de forma explícita dónde van esos datos, y si es posible, en qué formato.
+  \end{itemize}
+
+  Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
+  En general, para todas las interacciones descritas, considérese que la cache del navegador no se está usando, y que el navegador acepta cualquier cookie que se le envíe, y nunca la borra salvo que la cookie expire. (1 punto)
+
+\item Se quiere implementar, para cada sala del sitio, un botón para borrarla. Cuando un visitante pulse un botón, el contenido de la sala y la propia sala se destruirán, y el usuario pasará a ver la página principal (sin enlace para la sala que acaba de borrar, que ya no existe). A partir de ese momento cualquier visitante no podré acceder a la sala o a sus contenidos. Explica cómo implementarías la vista que reciba la acción de pulsar el botón, y en particular: (a) En qué nombre de recurso se activaría esta vista, (b) suponiendo que reciba una petición POST, que vendría como query string en ella, (c) qué acciones habría que hacer sobre la base de datos, (d) qué cookies habría que enviar al navegador, si hay que enviar alguna, y (e) qué código HTTP de resultado devolvería la vista en su respuesta, si la operación se ha realizado correctamente. Explica el porqué de tus respuestas (1 punto). 
+\end{enumerate}
+
+\newpage
+
+% ------------------------------------------------
+% ------------------------------------------------
+\subsubsection{Solución y rúbrica calificación}
+
+% ------------------------------------------------
+\textbf{Ejercicio 1}
+
+Tabla de recursos:
+\vspace{.4cm}
+
+\begin{tabular}{|l|l|l|l|}
+  \hline
+  Recurso & Método & Semántica & Datos \\ \hline\hline
+  /       & GET    & Página principal & \\
+  /       & POST   & Nueva sala & \texttt{sala=true} \\
+  /\{id\_sala\} & GET & Página de la sala & \\
+  /\{id\_sala\} & POST & Nuevo mensaje & \texttt{texto="..."}\\
+  /\{id\_sala\}.json & GET & Contenido de sala como JSON & \\
+  /main.css & GET & Documento CSS &  \\
+  \hline
+\end{tabular}
+
+
+\vspace{.4cm}
+Fichero \texttt{urls.py}:
+
+\begin{verbatim}
+from django.urls import path
+from . import views
+
+urlpatterns = [
+  path('', views.index, name='index')
+  path('<id_sala>', views.sala, name='sala')
+  path('<id_sala>.json', views.sala_json, name='sala_json')
+  path('main.css', views.css, name='css')
+]
+\end{verbatim}
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+Para estar correcto, el ejercicio ha de incluir tanto una tabla con un documento \texttt{urls.py} correctos, completos, y sin recursos innecesarios.
+
+Indicaciones aproximadas de errores:
+
+\begin{itemize}
+\item No hay columna de datos en la tabla, o está incorrecta: -0.3
+\item No hay recurso para documento CSS: -0.3
+\item No hay recurso para documento JSON: -0.3
+\item No hay recurso o método para crear sala o poner mensaje: -0.3
+\item El recurso para documento JSON no incluye id de sala: -0.2
+\item No coincide la tabla con el fichero \texttt{urls.py}: -0.2
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 2}
+
+Hay varias soluciones, una podría ser:
+
+\begin{verbatim}
+from django.db import models
+
+class Sesion (models.Model):
+  id = models.CharField(max_lenght = 50)
+
+class Sala (models.Model):
+  id = models.CharField(max_lenght = 50)
+
+class Visitada (models.Model):
+  sala: models.ForeignKey('Sala')
+  sesion: models.ForeignKey('Sesion')
+
+class Mensaje (models.Model):
+  texto: models.CharField(max_lenght = 500)
+  sala: models.ForeignKey('Sala')
+  fecha: models.DateTimeField()
+\end{verbatim}
+
+La tabla \texttt{Sesion} se usa para considerar los visitantes (navegadores distintos), y su id será el valor de la cookie que se les envíe. También servirá, en combinación con la tabla \texttt{Visitada} para saber qué salas ha visitado un navegador.
+
+La tabla \texttt{Sala} se usa para consdierar las salas que se han abierto, y poder detectar cuándo se pide una sala que no existe.
+
+La tabla \texttt{Visitada} se usa para saber qué salas ha visitado un navegador, y se actulizará por la vista de cada sala, cuando detecte que un nuevo navegador está accediendo a ella.
+
+La tabla \texttt{Mensaje} almacena el texto de los mensajes, la sala en la que fueron puestos, y la fecha en que fueron puestos. La sala se utilizará para mostrar en cada sala sus mensajes. La fecha se usará para poder ponerlos en orden. Para esto último se podría utilizar también el \texttt{Id} de la tabla, dado que Django lo autoincrementará, y por tanto también sirver para ordenar. En ese caso, no haría falta el campo \texttt{fecha}.
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+\begin{itemize}
+\item No están las tres tablas \texttt{Sesion}, \texttt{Sala} y \texttt{Mesaje} (y no sé ve cómo cumplir el enunciado): -0.6
+\item No está la tabla \texttt{Visitada}, o alguna que cumpla su función: -0.3
+\item Las referencias están al revés en \texttt{Sala} (ej: \texttt{Mensaje} desde \texttt{Sala}): -0.2
+\item Hay campos innecesarios (ej: \texttt{sesion} en \texttt{Mensaje})
+\item \texttt{Mensaje} no permite ordenar por fecha: -0.2
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 3}
+
+Basta con una cookie que se envíe a cada navegador cuando se visite una página de sala por primera vez. Antes, no hace falta, porque no hay ningún dato relevante que almacenar. La cookie ha de ser una cookie de sesión, por lo que puede ser una cadena de caracteres aleatorios. En esta solución utilizamos cadenas de 50 caracteres, como se vio en el campo \texttt{id} de la tabla \texttt{Sesion}. Suponiendo que se elija entre unos 60 caracteres diferentes para cada posición de la cadena (letras mayúsculas y minúsculas, y números, por ejemplo), tendríamos $60^{50}$ cadenas distintas, lo que es un número suficientemente grande como para poder manejar un número de navegadores incluso de varios miles de millones.
+
+\begin{itemize}
+\item[(a)] Al enviar la cookie por primera vez, con \texttt{Set-Cookie}, bastaría con incluir un nombre y un valor de cookie (por ejemplo, \texttt{sesion}, y el valor sería la cadena aleatoria generada para ese navegador, que se almacenaría en la tabla \texttt{Sesion}).
+
+  Si se quiere que la cookie se almacene en almacenamiento estable (el enunciado no lo pide) basta con poner una fecha de expiración muy lejos en el futuro. Y para evitar que la cookie pueda ser espiada durante su tránsito por la red (el enunciado no lo pide, pero sería muy convenienet dado el enunciado), habría que incluir el campo \texttt{Secure}. Así, por ejemplo:
+
+\begin{verbatim}
+Set-Cookie: sesion=ae453...3rsv56; Expires=Mon, 22 May 2083 20:48:00 GMT; Secure
+\end{verbatim}
+
+\item[(b)] Se enviaría cuando se reciba una petición sin cookie válida (o no la hay, o no se encuentra en la tabla \texttt{Sesion}) en el recurso que sirve la página de cualquier sala (la primera vez que un navegador visita una sala cualquiera del sitio).
+
+\item[(c)] Serviría para poder ir apuntando qué salas va visitando el navegador (en el modelo de datos, en la tabla \texttt{Visitada}).
+
+\item[(d)] No es preciso que los programas que descarguen los documentos JSON reciban o envíen cookies, ya que no hay nada que el servidor tenga que ``recordar'' de ellos, dado el enunciado. De todas formas, si el programa pone un mensaje en una sala, como realizará un POST al recurso de la sala, y el navegador no tiene forma de saber que es un programa y no un navegador, le enviará una cookie, como si fuera un navegador que visita una sala por primera vez. Pero el programa no tiene porqué volver a enviar esa cookie a la aplicación en futuras interacciones.
+\end{itemize}
+
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+\begin{itemize}
+\item No se explican los campos (o no se mencionan): -0.3
+\item Se envían las cookies demasiado pronto: -0.3
+\item El diseño de cookies no funciona en general: -0.8
+\item El diseño de cookies no funciona para algún caso: -0.4
+\item El diseño de cookies no es óptimo: -0.2
+\item Respuesta incorrecta para el caso del programa: -0.3
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 4}
+
+Todas las interacciones son entre el navegador y el sitio. Como el navegador no ha accedido nunca al sitio, no puede tener una cookie para él. El escenario comenzará con una petición GET del navegador al recurso principal, que obtendrá como respueta la página HTML principal. A continuación, el usuario pulsa el botón de crear una sala, y el navegador enviará un POST al recurso principal, que creará la sala y obtendrá como respuesta una redirección al recurso correspondiente a la página de la sala. Ante esta redirección, el navegador realizará un GET al recurso de la página de la sala, recibiendo como respuesta la página HTML de la sala. El usuario rellenará el formulario para poner un mensaje, y al pulsar el botón de enviar, el navegador realizará un POST sobre el recurso de la sala, para poner el mensaje. Como respuesta, obtendrá la página HTML de la sala, con el mensaje ya en ella.
+
+\begin{itemize}
+
+\item Petición GET al recurso principal: 
+
+\begin{verbatim}
+  GET / HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página principal, HTML]
+\end{verbatim}
+
+\item Petición de la hoja de estilo CSS que incluye la página CSS (suponemos que no se usa la cache):
+
+  \begin{verbatim}
+  GET /main.css HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Documento CSS]
+\end{verbatim}
+
+\item POST para crear una sala:
+
+\begin{verbatim}
+  POST / HTTP/1.1
+  ...
+  sala=true
+\end{verbatim}
+
+\item Respuesta, suponiendo que \texttt{/2df45..3gh} es el recurso de la nueva sala creada.
+
+\begin{verbatim}
+  HTTP/1.1 303 See Other
+  ...
+  Location: /2df45..3gh
+  ...
+\end{verbatim}
+  
+\item Nueva petición GET, en respuesta a la redirección:
+
+\begin{verbatim}
+  GET /2df45..3gh HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta. Se incluye la cookie, como se ha indicado anteriormente, dado que la aplicación recibe una petición sin cookie en el recurso de una sala:
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+  Set-Cookie: sesion=ae453...3rsv56; Expires=Mon, 22 May 2083 20:48:00 GMT; Secure
+
+  [Página HTML de la sala]
+\end{verbatim}
+
+\item Petición del documento CSS \texttt{/main.css}, igual que antes, pero ahora el navegador envía la cookie, igual que en la interacción siguiente.
+
+\item POST para poner un mensaje. Se envía la cookie porque se recibió anteriormente:
+
+\begin{verbatim}
+  POST /2df45..3gh HTTP/1.1
+  ...
+  Cookie: sesion=ae453...3rsv56
+  ...
+
+  mensaje="Este es mi primer mensaje"
+\end{verbatim}
+  
+\item Respuesta:
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página HTML de la sala, con el nuevo mensaje]
+\end{verbatim}
+
+\item Petición del documento CSS \texttt{/main.css}, igual que antes, también el navegador envía la cookie, igual que en la interacción anterior.
+\end{itemize}
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+Se espera que las interacciones sean correctas, incluyan todos los campos indicados, y las cookies sean correctas y consistentes con el ejercicio anterior.
+
+\begin{itemize}
+\item Interacciones no consistentes con primer ejercicio: -0.3
+\item Faltan datos en la respuesta: -0.4
+\item Falta interacción para CSS: -0.3
+\item Falta interacción para imagen: -0.3
+\item Faltan interacciones para segundo POST: -0.4
+\item Query string equivocada en algún POST: -0.2
+\item Cookies diferentes de ejercicio anterior, e incorrectas: -0.3
+\item Cookies diferentes de ejercicio anterior, y correctas: -0.2
+\item Cookie enviada demasiado pronto: -0.2
+\item Se violan reglas de funcionamiento de cookies (ej: se envía una cookie que no se ha recibido, o un navegador inicia una cookie): -0.4
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 5}
+
+La vista que reciba la acción POST de pulsar el botón deberá borrar la sala de la tabla \texttt{Sala}. De esta forma, si se recibe una nueva petición GET o POST para esa sala, al no encontrarla en \texttt{Sala}, se tratará como si no existiera. Podría usarse el recurso de la sala (\texttt{/\{id\_sala\}}) para atender esta pertición.
+
+\begin{itemize}
+
+\item[(a)] El recurso de la sala (\texttt{/\{id\_sala\}}).
+ 
+\item[(b)] \texttt{borrar=True} (por ejemplo).
+
+\item[(c)] Borrar la entrada correspondiete a la sala (obtenida a partir del nombre de recurso), asegurándose de que se borran las referencias a ella de la tabla \texttt{Mensaje} y \texttt{visitada}, para evitar inconsistencias. Django se podrá encargar automáticamente de ello si se ha configurado bien el modelo de datos. Si no es así, habría que realizar primero las queries correspndientes en esa tabla para borrar todas las entradas donde se referencie a la sala borrada.
+
+\item[(d)] No habría que enviar ninguna cookie que no se hubiera enviado ya.
+
+\item[(e)] Debería devolverse un código de redirección al recurso principal, dado el enunciado:
+
+\begin{verbatim}
+  HTTP/1.1 303 See Other
+  ...
+  Location: /
+  ...
+\end{verbatim}
+
+
+\end{itemize}
+
+\vspace{.4cm}\textbf{Rúbrica}
+
+\begin{itemize}
+\item Cada apartado mal: -0.3
+\end{itemize}
+
+
