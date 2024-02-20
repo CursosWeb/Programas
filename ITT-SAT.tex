@@ -17,9 +17,9 @@
 
 \title{Servicios y Aplicaciones Telemáticas \\
 Grado en Ingeniería en Tecnologías de Telecomunicación \\
-Guía de Estudio, curso 2022/2023}
+Guía de Estudio, curso 2023/2024}
 \author{Jesús M. González Barahona, Gregorio Robles Martínez, \\
-  David Moreno Lumbreras \\
+  Sergio Montes \\
 GSyC, Universidad Rey Juan Carlos}
 
 %\date{}
@@ -77,7 +77,7 @@ En esta asignatura se pretende que el alumno obtenga conocimientos detallados so
 
 La asignatura tiene un enfoque eminentemente práctico. Por ello se realizará en la medido de lo posible en el laboratorio, y las prácticas realizadas (incluyendo especialmente el proyecto final) tendrán gran importancia en la evaluación de la asignatura. Los conocimientos teóricos necesarios se intercalarán con los prácticos, en gran media mediante metodologías apoyadas en la resolución de problemas. En las clases teóricas se utilizan, en algunos casos, transparencias que sirven de guión. En todos los casos se recomendarán referencias (usualmente documentos disponibles en Internet) para profundizar conocimientos, y complementarias de los detalles necesarios para la resolución de los problemas prácticos. En el desarrollo diario, las sesiones docentes incluirán habitualmente tanto aspectos teóricos como prácticos.
 
-Se usa un sistema de apoyo telemático a la docencia (aula virtual de la URJC) para realizar actividades complementarias a las presenciales, y para organizar parte de la documentación ofrecida a los alumnos. La mayoría de los contenidos utilizados en la asignatura están disponibles o enlazados desde el sitio web CursosWeb. Asimismo, se utiliza el servicio GitLab de la ETSIT como repositorio, tanto de los materiales de la asignatura, como para entregar las prácticas por parte de los alumnos.
+Se usa un sistema de apoyo telemático a la docencia (aula virtual de la URJC) para realizar actividades complementarias a las presenciales, y para organizar parte de la documentación ofrecida a los alumnos. La mayoría de los contenidos utilizados en la asignatura están disponibles o enlazados desde el sitio web CursosWeb. Asimismo, se utiliza el servicio GitLab de la EIF como repositorio, tanto de los materiales de la asignatura, como para entregar las prácticas por parte de los alumnos.
 
 \newpage
 
@@ -196,10 +196,8 @@ Evaluación extraordinaria:
    \hline
   Martes & Jueves \\ \hline \hline
   \nameref{cal:martesA} & \nameref{cal:juevesA} \\ \hline
-  \nameref{cal:martesB} & \nameref{cal:juevesB} \\ 
-                        & \nameref{cal:juevesBb} \\ \hline
-  \nameref{cal:martesC} & \nameref{cal:juevesC} \\
-                        & \nameref{cal:juevesCb} \\  \hline
+  \nameref{cal:martesB} & \nameref{cal:juevesB} \\ \hline
+  \nameref{cal:martesC} & \nameref{cal:juevesC} \\ \hline
   \nameref{cal:martesD} & \nameref{cal:juevesD} \\ \hline
   \nameref{cal:martesE} & \nameref{cal:juevesE} \\  \hline
   \nameref{cal:martesF} & \nameref{cal:juevesF} \\ \hline
@@ -351,7 +349,7 @@ Invocaciones a aplicaciones web desde aplicaciones web. Servicios web como un co
 \item \textbf{Material:} Transparencias, tema ``REST''
 %\item \textbf{Discusión de ejercicio:} ``Cache de contenidos'' (ejercicio~\ref{subsec:cache-contenidos}). \\
 %  Trabajo en grupos y discusión de los detalles del ejercicio.
-%  Repo GitLab: \url{https://gitlab.etsit.urjc.es/CursosWeb/X-Serv-App-Cache}
+%  Repo GitLab: \url{https://gitlab.eif.urjc.es/CursosWeb/X-Serv-App-Cache}
 \item \textbf{Ejercicio (entrega en el foro):} ``Listado de lo que tengo en la nevera'' (ejercicio~\ref{subsec:contenido-nevera}). \\
   Entrega recomendada: \martesH
 \end{itemize}
@@ -465,7 +463,7 @@ Uso de XML en aplicaciones web.
 %\item \textbf{Ejercicio (discusión en clase):} ``Forks de un repositorio GitLab''
 %  (ejercicio~\ref{subsec:json-gitlab-forks})
 \item \textbf{Ejercicio (entrega en GitLab):} ``Gestor de contenidos con videos de YouTube (simple)'' (ejercicio~\ref{subsec:django-cms-youtube})
-  Repositorio: \url{https://gitlab.etsit.urjc.es/cursosweb/practicas/server/django-youtube} \\
+  Repositorio: \url{https://gitlab.eif.urjc.es/cursosweb/practicas/server/django-youtube} \\
   Entrega: \martesM
 \item \textbf{Ejercicio (voluntario, entrega en GitLab en el mismo repositorio que el ejercicio~\ref{subsec:django-cms-youtube}):} ``Gestor de contenidos con videos de YouTube (2)'' (ejercicio~\ref{subsec:django-cms-youtube-2}) \\
 %\item \textbf{Ejercicio (entrega en GitLab):} ``Gestor de contenidos con video de Youtube (tests) (ejercicio~\ref{subsec:django-cms-youtube-tests}) \\
@@ -579,7 +577,7 @@ Programa de las prácticas de la asignatura (tentativo).
 Introducción al lenguaje de programación Python, que se utilizará para la realización de las prácticas de la asignatura.
 
 %%----------------------------------------------------------------------------
-\subsubsection{\juevesA: Python y entorno de desarrollo}
+\subsubsection{\juevesA: Python y entorno I  (2 horas)}
 \label{cal:juevesA}
 
 \begin{itemize}
@@ -596,49 +594,34 @@ Introducción al lenguaje de programación Python, que se utilizará para la rea
 \end{itemize}
 
 %%----------------------------------------------------------------------------
-\subsubsection{\juevesB: Python II (0.5 horas)}
+\subsubsection{\juevesB: Python y entorno II  (2 horas)}
 \label{cal:juevesB}
 
 \begin{itemize}
+\item \textbf{Frikiminutos:} ``Servidor web Python de una línea''
 %\item \textbf{Presentación:} ``Introducción a Python'' (estructuras condicionales (if else), listas, bucles (for))
 %\item \textbf{Material:} Transparencias ``Introducción a Python''
 \item \textbf{Presentación:} ``Entornos virtuales en Python''
 % \item \textbf{Material:} Ejercicio ``Ficheros y listas'' (ejercicio~\ref{subsec:ficheros-listas}).
 % \item \textbf{Ejercicio:} ``Ficheros, diccionarios y excepciones''~\ref{subsec:ficheros-dic-excep}.
+\item \textbf{Presentación:} ``El GitLab de la EIF''. Interacción básica vía web, creación de repositorios, ``fork'', clonado de repositorios. Acceso a repositorios en GitLab desde PyCharm.
+\item \textbf{Recursos:} GitLab de la EIF, \url{gitlab.eif.urjc.es}
 \item \textbf{Ejercicio propuesto (entrega en GitLab):} ``Calculadora'' (ejercicio~\ref{subsec:calculadora}). \\
   Entrega recomendada: antes del \juevesC.
 \end{itemize}
 
 %%----------------------------------------------------------------------------
-\subsubsection{\juevesB: GitLab (1.5 horas)}
-\label{cal:juevesBb}
-
-\begin{itemize}
-\item \textbf{Frikiminutos Python:} ``Servidor web''.  
-\item \textbf{Presentación:} ``El GitLab de la ETSIT''. Interacción básica vía web, creación de repositorios, ``fork'', clonado de repositorios. Acceso a repositorios en GitLab desde PyCharm.
-\item \textbf{Recursos:} GitLab de la ETSIT, \url{gitlab.etsit.urjc.es}
-\end{itemize}
-
-%%----------------------------------------------------------------------------
-\subsubsection{\juevesC: Python III (1.5 horas)}
+\subsubsection{\juevesC: Python y entorno III  (2 horas)}
 \label{cal:juevesC}
 
 \begin{itemize}
-\item \textbf{Frikiminutos Python:} ``Generador de QRs''.
+\item \textbf{Frikiminutos:} ``Generador de QRs''
 \item \textbf{Presentación:} ``Introducción a Python''. Clases y orientación a objetos en Python.
 \item \textbf{Material:} Transparencias ``Introducción a Python''
-\item \textbf{Ejercicio propuesto (entrega en GitLAb):} ``Descarga de documentos web con módulos'' (ejercicio~\ref{subsec:eje-python-descarga-web-modulos}). \\
-Entrega recomendada: antes de \juevesD.
-
-\end{itemize}
-
-%% --------------------------------------------------------------------------
-\subsubsection{\juevesC: Git (0.5 horas)}
-\label{cal:juevesCb}
-
-\begin{itemize}
 \item \textbf{Presentación:} ``Git desde la línea de comandos''.
 \item \textbf{Presentación (repaso):} Introducción a la entrega de prácticas en GitLab (seccion~\ref{sec:eje-entrega-practicas-incr}).
+\item \textbf{Ejercicio propuesto (entrega en GitLAb):} ``Descarga de documentos web con módulos'' (ejercicio~\ref{subsec:eje-python-descarga-web-modulos}). \\
+Entrega recomendada: antes de \juevesD.
 \end{itemize}
 
 %%----------------------------------------------------------------------------
@@ -654,8 +637,8 @@ Construcción de aplicaciones web mínimas sobre la biblioteca Sockets de Python
 \label{cal:juevesD}
 
 \begin{itemize}
-\item \textbf{Frikiminutos Python:} ``Descarga de audio de YouTube''
- \item \textbf{Ejercicio:} ``Aplicación web hola mundo'' (ejercicio~\ref{subsec:aplweb-hola-mundo}) \\
+\item \textbf{Frikiminutos:} ``Descarga de audio de YouTube''
+\item \textbf{Ejercicio:} ``Aplicación web hola mundo'' (ejercicio~\ref{subsec:aplweb-hola-mundo}) \\
    Se muestra la solución del ejercicio, y se comenta en clase. Se pide a los alumnos que lo ejecuten, lo modifiquen y se fijen en las cabeceras HTTP enviadas por el cliente y que el servidor muestra en pantalla (pero no hay entrega específica).
  \item \textbf{Ejercicio:} ``Variaciones de la aplicación web hola mundo'' (ejercicio~\ref{subsec:aplweb-hola-mundo-var}).
 \item \textbf{Ejercicio propuesto:} ``Aplicación web generadora de URLs aleatorias'' (ejercicio~\ref{subsec:aplweb-urls-aleatorias})
@@ -674,7 +657,7 @@ Construcción de algunos servidores de contenidos que permitan comprender la est
 \label{cal:juevesE}
 
 \begin{itemize}
-\item \textbf{Frikiminutos Python:} ``Eliminación de fondo en fotos''.
+\item \textbf{Frikiminutos:} ``Eliminación de fondo en fotos''.
 \item \textbf{Comentario de ejercicio:} ``Aplicación web generadora de URLs aleatorias'' (ejercicio~\ref{subsec:aplweb-urls-aleatorias})
 \item \textbf{Comentario de ejercicio:} ``Aplicación redirectora'' (ejercicio~\ref{subsec:aplweb-redirectora}).
 \item \textbf{Comentario de ejercicio:} ``Sumador simple'' (ejercicio~\ref{subsec:sumador-simple}) 
