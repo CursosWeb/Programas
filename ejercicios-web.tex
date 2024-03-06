@@ -2686,21 +2686,45 @@ Construye la clase contentAppUsersStrict, que implemente la misma funcionalidad 
 \subsection{Gestor de contenidos con HTMX}
 \label{subsec:contentapp-htmx}
 
+\textbf{Enunciado:}
+
 Construye una versión del gestor de contenidos (ejercicio~\ref{subsec:contentapp}) que utilice HTMX, para probar cómo funciona este sistema, que permite hacer peticiones dinámicas desde una página HTML.
 
 La aplicación implementada por este gestor de contenidos ha de servir en el recurso principal (\verb|/|) una página HTML que incluye elementos HTMX. Tendrá un botón que cuando se pulse, realizará un GET sobre el recurso \verb|/hola|, recibiendo el valor de ese recurso (que sirve la aplicación). El contenido de ambos recursos (\verb|/| y \verb|/hola|) se almacenarán en un diccionario, como en el caso del gestor de contenidos básicos. De forma que la aplicación simplemente sirve lo que hay en ese diccionario cuando se le pide con `GET`.
 
 Prueba la aplicación, y mira cómo se comporta analizando su comportamiento con la pestaña ``Red'' de las herramientas de desarrollador del navegador. Prueba también a descargar los dos recursos que sirve con curl.
 
+\textbf{Referencias:}
+
+HTMX: \url{https://htmx.org/}
+
+HTMX in a nutshell: \url{https://htmx.org/docs/}
+
+\textbf{Solución:}
+
+Consulta el fichero \texttt{contentapp.py} en el directorio \texttt{Python-Web/http-server-classes-htmx}
+
 %%----------------------------------------------------------------------------
 \subsection{Gestor de contenidos con HTMX (actualización con POST)}
 \label{subsec:contentapp-htmx-post}
+
+\textbf{Enunciado:}
 
 Construye una versión del gestor de contenidos (ejercicio~\ref{subsec:contentapp}) que utilice HTMX, en este caso haciendo peticiones GET y POST sin recargar la página HTML básica.
 
 La aplicación implementada por este gestor de contenidos servirá una página HTML para cualquier recurso que no comience por \verb|/content/|. Esa página incluye elementos HTMX para hacer un GET o un POST a \verb|/content/<recurso>|, y un campo para escribir texto. Por ejemplo, si el recurso es \verb|/hola|, el GET y el POST se hacen sobre \verb|/content/hola|. El GET obtiene el contenido del diccionario para ese recurso (si lo hay) y el POST pone lo que haya en el campo para escribir texto como contenido del diccionario para ese recurso.
 
 Prueba la aplicación, y mira cómo se comporta analizando su comportamiento con la pestaña ``Red'' de las herramientas de desarrollador del navegador. Prueba también a interaccionar con los recursos que sirve usando curl.
+
+\textbf{Referencias:}
+
+HTMX: \url{https://htmx.org/}
+
+HTMX in a nutshell: \url{https://htmx.org/docs/}
+
+\textbf{Solución:}
+
+Consulta el fichero \texttt{contentapp-post.py} en el directorio \texttt{Python-Web/http-server-classes-htmx}
 
 
 %%----------------------------------------------------------------------------
