@@ -963,7 +963,7 @@ El HTTP que se recibe del servidor habrá que obtenerlo usando \texttt{urllib}, 
 Para poder almacenar el HTTP con el cliente, es importante darse cuenta de que el que se envía al navegador lo produce la propia aplicación, por lo que basta con almacenarlo antes de enviarlo. El que se recibe del navegador habrá que obtenerlo de la petición recibida.
 
 %%-----------------------------------------------------------------------------
-\subsection{Gestor de contenidos miltilingüe versión REST}
+\subsection{Gestor de contenidos multilingüe versión REST}
 \label{subsec:contentappmulti}
 
 \textbf{Enunciado:}
@@ -2681,6 +2681,26 @@ Cada usuario registrado tendrá un nombre y una contraseña (que puedes almacena
 \textbf{Enunciado:}
 
 Construye la clase contentAppUsersStrict, que implemente la misma funcionalidad de contentAppUsers (ejercicio~\ref{subsec:contentappusers}), pero que además controle que sólo actualiza un contenido quien lo creó. En otras palabras, cuando la aplicación recibe un PUT, se comprueba que el recurso no existe, y en ese caso, si lo está subiendo un usuario autenticado, se crea. Pero si el recurso existe, sólo lo actualiza si el usuario que está invocando el PUT es el mismo que creó el recurso. Para implementar esta funcionalidad puedes utilizar un diccionario que ``recuerde'' quien creó cada recurso, o añadir, a los datos del diccionario de contenidos (donde sólo había la página HTML para el recurso en cuestión) un nuevo elemento (por ejemplo, usando una lista): el usuario que creó el recurso.
+
+%%----------------------------------------------------------------------------
+\subsection{Gestor de contenidos con HTMX}
+\label{subsec:contentapp-htmx}
+
+Construye una versión del gestor de contenidos (ejercicio~\ref{subsec:contentapp}) que utilice HTMX, para probar cómo funciona este sistema, que permite hacer peticiones dinámicas desde una página HTML.
+
+La aplicación implementada por este gestor de contenidos ha de servir en el recurso principal (\verb|/|) una página HTML que incluye elementos HTMX. Tendrá un botón que cuando se pulse, realizará un GET sobre el recurso \verb|/hola|, recibiendo el valor de ese recurso (que sirve la aplicación). El contenido de ambos recursos (\verb|/| y \verb|/hola|) se almacenarán en un diccionario, como en el caso del gestor de contenidos básicos. De forma que la aplicación simplemente sirve lo que hay en ese diccionario cuando se le pide con `GET`.
+
+Prueba la aplicación, y mira cómo se comporta analizando su comportamiento con la pestaña ``Red'' de las herramientas de desarrollador del navegador. Prueba también a descargar los dos recursos que sirve con curl.
+
+%%----------------------------------------------------------------------------
+\subsection{Gestor de contenidos con HTMX (actualización con POST)}
+\label{subsec:contentapp-htmx-post}
+
+Construye una versión del gestor de contenidos (ejercicio~\ref{subsec:contentapp}) que utilice HTMX, en este caso haciendo peticiones GET y POST sin recargar la página HTML básica.
+
+La aplicación implementada por este gestor de contenidos servirá una página HTML para cualquier recurso que no comience por \verb|/content/|. Esa página incluye elementos HTMX para hacer un GET o un POST a \verb|/content/<recurso>|, y un campo para escribir texto. Por ejemplo, si el recurso es \verb|/hola|, el GET y el POST se hacen sobre \verb|/content/hola|. El GET obtiene el contenido del diccionario para ese recurso (si lo hay) y el POST pone lo que haya en el campo para escribir texto como contenido del diccionario para ese recurso.
+
+Prueba la aplicación, y mira cómo se comporta analizando su comportamiento con la pestaña ``Red'' de las herramientas de desarrollador del navegador. Prueba también a interaccionar con los recursos que sirve usando curl.
 
 
 %%----------------------------------------------------------------------------
