@@ -1,0 +1,352 @@
+%%----------------------------------------------------------------------------
+%%----------------------------------------------------------------------------
+\section{Proyecto final: TeVeO (2024)}
+\label{practica-final-2024-05}
+
+\textbf{Repositorio plantilla.}
+
+\url{https://gitlab.etsit.urjc.es/cursosweb/2023-2024/final-teveo}
+
+[ \textbf{Nota importante:} Enunciado aún en proceso de elaboración, puede sufrir algunos cambios antes de su versión final. Por favor, avisa si detectas algún error o inconsistencia. Al final de este enunciado puede verse una lista de preguntas frecuentes sobre este proyecto (apartado~\ref{sec:practica-2024-05:preguntas}). ]
+
+%[ \textbf{Nota importante:} Este enunciado puede sufrir cambios si se detectan errores en él. ]
+
+Este es el enunciado del proyecto final del curso 2023-2024, tanto para la convocatoria ordinaria como para la extraordinaria.
+
+La práctica final de la asignatura consiste en la creación de una aplicación web, llamada ``TeVeO'', que permitirá comentar lo que se vea en ciertas cámaras. La información de las cámaras que se podrán comentar se obtendrá automáticamente de ciertas fuentes soportadas, ver apartado ``Fuentes de datos'' (apartado~\ref{sec:practica-2024-05:datos}). Los comentarios serán textuales, e incluirán automáticamente el momento en que se comienza a poner el comentario, y una imagen con lo que se vea en la cámara en ese momento. Cada cámara tendrá un identificador único, que se decidirá según la fuente de datos, y una información asociada, también dependiente de la fuente de datos. La información asociada a una cámara, con los comentarios puestos para ella, se verán en la ``página de la cámara''. No habrá autenticación de usuarios para acceder a las salas: cada visitante podrá poner mensajes en una sala si conoce el nombre de su recurso. Cuando en este enunciado se indique que ``hizo algo en el sitio'' (por ejemplo, se diga ``se verán los mensajes escritos anteriormente'' o ``desde que se visitó la página por última vez'') se refiere a que se hizo algo en el sitio desde el mismo navegador en que se está ahora (por ejemplo ``se verán los mensajes escritos anteriormente desde el mismo navegador'' o ``desde que se visitó la página por última vez desde el mismo navegador'').
+
+A continuación se describe el funcionamiento y la arquitectura general de la aplicación, la funcionalidad mínima que debe proporcionar, y otra funcionalidad optativa que podrá tener.
+
+%%----------------------------------------------------------------------------
+\subsection{Requisitos generales}
+
+\begin{itemize}
+
+\item La práctica se construirá como un proyecto Django/Python3, que incluirá una o varias aplicaciones (\emph{apps}) Django que implementen la funcionalidad requerida.
+
+\item Para el almacenamiento de datos persistente se usará SQLite3, con tablas definidas en modelos de Django.
+
+\item Todas las bases de datos que contenga la aplicación tendrán que ser accesibles vía la interfaz que proporciona el ``Admin Site'' (además de lo que pueda hacer falta para que funcione al aplicación). Para acceder a este ``Admin Site'' habrá cuentas específicas, creadas vía el propio ``Admin Site''.
+
+\item Se utilizarán plantillas Django (a ser posible, una jerarquía de plantillas, para que la práctica tenga un aspecto similar) para definir las páginas que se servirán a los navegadores de los usuarios (excepto las páginas de ``Admin Site'' (ver ``estructura de las páginas HTML'', a continuación).
+
+\end{itemize}
+
+Se servirán al menos las siguientes páginas (recursos) con los contenidos descritos a continuación:
+
+\begin{description}
+\item[Página principal.] En la página principal se ofrecerá un listado de los comentarios puestos, organizados de más nuevos a más viejos, y opcionalmente paginado. Para cada comentario se mostrará el identificador de la cámara a la que se refiere (que será un enlace a la página de la cámara), la fecha del comentario, el texto del comentario, y la imagen de la cámara en el momento en que se puso el mensaje.
+
+\item[Página de cámaras.] En esta página se verá:
+
+  \begin{itemize}
+  \item Un listado de las fuentes de datos disponibles, con un botón junto a cada una de ellas. Si se pulsa el botón se descargará esa fuente de datos, y se almacenará la información correspondiente en la base de datos (solo las cámaras que tenga un identificador diferente a los ya almacenados para esa fuente de datos).
+  \item Un listado de todas las cámaras, opcionalmente paginado. En la parte superior aparecerá la imagen de una cámara aleatoria. Debajo, para cada cámara, se verá su identificador, junto a dos enlaces: uno a la página de la cámara, otro a la página dinámica de la cámara. Además, aparecerá el nombre de la cámara, y el número de comentarios que tiene. Las cámaras aparecerán ordenadas por número de comentarios (de más a menos comentarios).
+  \end{itemize}
+
+\item[Página de cada cámara.] El nombre de recurso de la página de cada cámara será el identificador único de la cámara, con el carácter ``/'' por delante. En la página de cada cámara se mostrarán:
+  \begin{itemize}
+  \item Enlace a la página dinámica de la cámara.
+  \item Información de la cámara: nombre y localización (longitud, latitud).
+  \item Imagen actual de la cámara.
+  \item Enlace para pasar a la página que permite escribir un comentario para la cámara.
+  \item Un listado de todos los comentarios puestos para esa cámara desde cualquier navegador (primero los más recientes).
+  \item La imagen de la cámara se mostrará con un tamaño del 50\% del ancho disponible, usando por ejemplo\footnote{Ver detalles sobre cómo definir el tamaños de la imágenes en: \\ \url{https://imagekit.io/blog/how-to-resize-image-in-html/}}:
+
+\begin{verbatim}
+img {
+  width: 50%;
+  height: auto;
+}
+\end{verbatim}
+
+  \end{itemize}
+
+\item[Página para poner un comentario.] El nombre de recurso de esta página será \verb|/comentario|. Esta página aceptará un parámetro, en formato query string, que indicará el identificador de la cámara a la que se está poniendo el mensaje. Cuando se cargue la página, se verá la información de la cámara, la imagen de la cámara que se reciba en ese momento, la fecha y hora, y un formulario para poner el texto del comentario.
+  
+\item[Página dinámica de cada cámara.] El nombre de recurso de la página dinámica de cada cámara será el mismo que el de la página de la cámara, con el sufijo \verb|-dyn|.' En la página dinámica de cada cámara habrá un enlace a la página de la cámara, y el mismo contenido que en la página de la cámara, pero usando HTMX para:
+
+  \begin{itemize}
+  \item Solicitar periódicamente (cada 30 segundos) la imagen, que de esta forma se irá actualizando.
+  \item Actualizar los comentarios para la cámara cada 30 segundos. 
+  \item Cargar, al pulsar el enlace correspondiente, el formulario que permita poner un comentario (incluyendo la imagen actual y la fecha del comentario). Cuando se rellene ese formulario, se pondrá el comentario correspondiente, que se verá en cuanto se actualicen los comentarios (como se ha indicado).
+  \end{itemize}
+  
+\item[Página de configuración.] Permitirá configurar el sitio para ese navegador. Incluirá:
+  \begin{itemize}
+  \item Un formulario para elegir el nombre con el que se pondrán los comentarios (nombre de comentador).
+  \item Un formulario para elegir los elementos de apariencia personalizables del sitio (el tamaño y el tipo de la letra).
+  \end{itemize}
+\item[Página de ayuda.] Página con información en HTML indicando la autoría de la práctica, explicando su funcionamiento y una brevísima documentación.
+\end{description}
+
+Elementos generales que aparecerán en todas las páginas HTML:
+
+\begin{description}
+\item[Cabecera.] En la parte superior estará la cabecera del sitio, que consistirá de un texto (el nombre del sitio, ``TeVeO'') en un tipo de letra que resalte claramente, sobre una imagen de fondo. El texto será un enlace al recurso ``/'' del sitio. También se verá el nombre de comentador que se está usando desde ese navegador (o ``Anónimo'' si no se ha especificado uno).
+
+\item[Menú.] En una barra debajo del elemento anterior tendremos un menú desde el que se podrá acceder, mediante enlaces, al menos a las siguientes páginas (salvo si la opción apunta a la página en la que se está, en cuyo caso no aparecerá en esa página):
+  \begin{itemize}
+  \item la página principal (con el texto ``Principal'')
+  \item la página de cámaras (con el texto ``Cámaras'')
+  \item la página de configuración (con el texto ``Configuración'')
+  \item la página de ayuda (con el texto ``Ayuda'')
+  \item la página de acceso al ``Admin Site'' (con el texto ``Admin''). 
+  \end{itemize}
+
+\item[Pie.] Un pie de página con un resumen de métricas: ``Cámaras: XXX. Comentarios: YYY'', siendo XXX el número de cámaras, e YYY el número de comentarios en todo el sitio.
+\end{description}
+  
+En lo que tiene que ver con el aspecto de las páginas se tendrá en cuenta:
+
+\begin{description}
+\item[Marcado HTML.] Cada uno de los elementos generales descritos anteriormente estará construido dentro de un elemento \texttt{div}, marcado con un atributo \texttt{id} en HTML, para poder ser referido fácilmente en hojas de estilo CSS. Cuando sea conveniente, se podrán utilizar en lugar de \texttt{div} elementos de HTML5 (\texttt{header}, \texttt{footer}, \texttt{nav}, etc).
+
+\item[CSS.] Se utilizarán hojas de estilo CSS para determinar la apariencia del sitio. Estas hojas definirán al menos el color de fondo y de letra de cada una de las partes (elementos) marcadas con un \emph{id} (ver ``Marcado HTML''). Además, elementos que deban tener el mismo aspecto deberían estar en una misma clase CSS, para poder gestionarlo de forma común. También definirán los elementos personalizables del sitio: el tamaño de la letra y el tipo de la letra.
+
+\item[Bootstrap.] Se utilizará Bootstrap para la maquetación (\emph{layout}) de las páginas, de forma que funcionen adecuadamente tanto en navegadores de escritorio como en móviles.
+\end{description}
+
+El sitio también proporcionará:
+
+\begin{description}
+\item[Cámaras en formato JSON.] Para cada cámara, se ofrecerá un recurso donde el documento servido estará en formato JSON, e incluirá, para cada cámara, toda su información (incluyendo el número de comentarios).
+
+\end{description}
+
+
+Autenticación:
+
+\begin{itemize}
+
+\item Cualquier navegador podrá acceder a toda la funcionalidad del sitio.
+
+\item Habrá un mecanismo para autorizar a otro navegador a acceder al sitio con la misma configuración. Para activarlo, se pedirá, en la página de configuración, un enlace de autorización. Ese enlace será la URL del sitio, con la query string \verb|?<id>|, siendo \verb|<id>| un identificador único para cada sesión (cada navegador que empezó a usar el sitio). 
+
+\end{itemize}
+
+Tests:
+
+\begin{description}
+\item[Extremo a extremo.] Para cada tipo de recurso de la práctica habrá que realizar al menos un test ``extremo a extremo''.
+\item[Unitarios.] Será conveniente (pero no obligatorio) realizar también tests unitarios para distintas partes del código. Se se hace, es conveniente mencionarlo en el fichero de entrega como una parte opcional.
+\end{description}
+
+%% ----------------------------------------------------------------------------
+\subsection{Fuentes de datos}
+\label{sec:practica-2024-05:datos}
+
+La práctica deberá funcionar con al menos las fuentes de datos ``Listado 1'' y ``Listado 2'', y con cualquier otra fuente de datos XML o JSON disponible públicamente. A continuación se referencian las fuentes de datos ``Listado 1'' y ``Listado 2'', dos posibles fuentes de datos más (del Ayuntamiento de Madrid y de la DGT) y un catálogo que incluye muchas más posibles fuentes de datos:
+
+\begin{itemize}
+\item Listado 1: \\
+  \url{https://gitlab.eif.urjc.es/cursosweb/2023-2024/final-teveo/-/raw/main/listado1.xml}
+\item Listado 2: \\
+  \url{https://gitlab.eif.urjc.es/cursosweb/2023-2024/final-teveo/-/raw/main/listado2.xml}
+\item Cámaras del Ayuntamiento de Madrid: \\
+  \url{http://datos.madrid.es/egob/catalogo/202088-0-trafico-camaras.kml}
+\item Cámaras de la DGT: \\
+  \url{https://infocar.dgt.es/datex2/dgt/CCTVSiteTablePublication/all/content.xml}
+\item Otros catálogos de cámaras disponibles en XML y otros formatos: \\
+  \url{https://datos.gob.es/es/catalogo?q=c%C3%A1maras&sort=score+desc%2C+metadata_created+desc}
+\end{itemize}
+
+Importante: para cada fuente de datos se identificará un campo que sirva como identificador único, y se diferenciará de los identificadores únicos de otras fuentes de datos usando un prefijo. Para el Listado~1, el prefijo será \verb|LIS1-|, para el Listado~2, el prefijo será \verb|LIS2-|. Para los demás, el alumno deberá utilizar el prefijo que desee.
+
+%%----------------------------------------------------------------------------
+\subsection{Despliegue}
+\label{sec:practica-2024-05:despliegue}
+
+La práctica deberá estar desplegada en algún sitio de Internet, de forma que pueda accederse a ella. Deberá mantenerse desplegada y activa al menos desde el día de entrega de la práctica, hasta el día del cierre de actas.
+
+Para el despliegue, se puede utilizar Python Anywhere\footnote{Python Anywhere: \url{https://pythonanywhere.com}}, que proporciona un plan gratuito que incluye suficientes recursos como para poder desplegar la práctica.
+
+Si el alumno así lo desea, puede considerarse desplegar en un ordenador dedicado (por ejemplo, una Raspberry Pi accesible directamente desde Internet, alojada en su hogar), o en servicios como Google Computing Engine\footnote{GCP Engine Free: \url{https://cloud.google.com/free/}}. En general, dado que este tipo de despliegues no podrá contar con una ayuda detallada por los profesores, estará algo más valorado.
+
+En el caso de que la práctica se despliegue en Python Anywhere, hay que tener en cuenta que sus máquinas virtuales tienen cortado el acceso a todos los sitios de Internet salvo los que están en una ``lista blanca''\footnote{Lista blanca de Python Anywhere: \url{https://www.pythonanywhere.com/whitelist/}} (\emph{whitelist}). Es de esperar que esto no cause problemas, porque el sitio GitLab de la EIF, donde está vuestro código fuente, está ya en la lista blanca, y por ello Python Anywhere debería poder acceder a él para clonar vuestro repositorio. Sin embargo, si vuestra aplicación se conectase a cualquier sitio para obtener información, si este sitio no está en la lista blanca, vuestra aplicación no se podrá conectar.
+
+Para lo tanto, si hacéis el despliegue en Python Anywhere y vuestra aplicación ha de obtener datos de un sitio tercero:
+
+\begin{itemize}
+  \item Si está ya en la lista blanca de Python Anywhere, funcionará sin problemas sin hacer nada especial. Si os funcionaba ya en las pruebas locales, así que también deberían funcionar en el despliegue.
+  \item Si no están en la lista blanca de Python Anywhere, aseguraos de que la base de datos que subís al despliegue de vuestra práctica incluya ya datos de ese sitio tercero..
+\end{itemize}
+
+Tened en cuenta que si usáis otras plataformas para el despliegue, puede que os encontréis problemas similares. Y tened en cuenta también que en cualquier caso, nosotros probaremos la práctica en otros despliegues, así que todos los recursos reconocidos que hayáis implementado deben funcionar correctamente si no hay restricciones de conexión.
+
+Tenéis más detalles sobre cómo se hace un despliegue de una aplicación Django en Python Anywhere en el vídeo ``Django: Despliegue en Python Anywhere''\footnote{\url{https://www.youtube.com/watch?v=hlZPC5L2Itc}}, que explica cómo desplegar allí la aplicación \texttt{django-youtube-4}\footnote{\url{https://github.com/CursosWeb/Code/tree/master/Python-Django/django-youtube-4}} (ver también el fichero \texttt{README.md} de esa aplicación para más detalles).
+
+%%----------------------------------------------------------------------------
+\subsection{Funcionalidad optativa}
+
+De forma optativa, se podrá incluir cualquier funcionalidad relevante en el contexto de la asignatura. Se valorarán especialmente las funcionalidades que impliquen el uso de técnicas nuevas, o de aspectos de Django no utilizados en los ejercicios previos, y que tengan sentido en el contexto de esta práctica y de la asignatura.
+
+En el formulario de entrega se pide que se justifique por qué se considera funcionalidad optativa lo que habéis implementado. Sólo a modo de sugerencia, se incluyen algunas posibles funcionalidades optativas:
+
+\begin{itemize}
+\item Cualquiera de las que se indican como funcionalidades optativas en el enunciado de la práctica.
+  
+\item Inclusión de un \emph{favicon} del sitio (FÁCIL).
+
+\item Permitir que las sesiones se puedan terminar. Esto es, que haya una opción para ``terminar la sesión'', de forma que al usarla, si se vuelve a acceder al sitio, este se comporte como si fuera la primera vez que se accede a él (FÁCIL).
+
+\item Permitir votar las cámaras. Para ello, en cada página de cámara aparecerá un botón ``Me gusta'' para indicar que se da un voto a la cámara. Cada cámara, en la página de cámaras, saldrá junto a los votos que tiene. (MEDIO)
+
+\item Atención al idioma indicado por el navegador. El idioma de la interfaz de usuario de la aplicación tendrá en cuenta lo que especifique el navegador. Para ello, pueden utilizarse las facilidades que proporciona Django para la localización\footnote{Django, Internationalization and localization: \\ \url{https://docs.djangoproject.com/en/4.2/topics/i18n/} } (MEDIO).
+    
+\item Mejora de los tests de la práctica, incluyendo test de condiciones de error, test de escenarios con más de una invocación de recurso, tests de API Python, etc. En general, si se realizan tests más allá de los básicos ``extremo a extremo'' que se piden, serán considerados como opciones (MEDIO).
+
+\item Obtención de listados de cámaras de nuevas fuentes de datos, distintas de las mencionadas en este enunciado (DIFÍCIL).
+\end{itemize}
+
+%%----------------------------------------------------------------------------
+\subsection{Entrega de la práctica}
+
+\begin{itemize}
+  \item \textbf{Fecha límite de entrega (convocatoria ordinaria):} día anterior al del examen de la asignatura a las 23:55 (hora española peninsular)
+  \item \textbf{Fecha límite de entrega (convocatoria extraordinaria):} día anterior al del examen de la asignatura, a las 23:55 (hora española peninsular)
+  \item \textbf{Notificación de alumnos que tendrán que realizar entrevista:} antes de la fecha de revisión de la asignatura.
+  \item \textbf{Realización de entrevistas:} junto con la revisión de la asignatura.    
+  % \item \textbf{Fecha de publicación de notas:} jueves, 10 de junio, en el aula virtual.
+
+  % \item \textbf{Fecha de revisión:} viernes, 11 de junio, a las 9:00, en la aplicación Teams.
+\end{itemize}
+
+La entrega de la práctica consiste en:
+
+\begin{enumerate}
+  
+  \item {\bf Subir tu práctica a un repositorio en el GitLab de la Escuela}. El repositorio contendrá todos los ficheros necesarios para que funcione la aplicación (ver detalle más abajo). Es muy importante que el alumno haya realizado una derivación (fork) del repositorio de plantilla de al asignatura, indicado al principio de este enunciado.
+
+Recordad que es importante ir haciendo commits de vez en cuando y que sólo al hacer push estos commits son públicos. Antes de entregar la práctica, haced un push. Y cuando la entreguéis y sepáis el nombre del repositorio, podéis cambiar el nombre del repositorio desde el interfaz web de GitLab. 
+
+Se recomienda mantener el repositorio como privado, hasta el momento en que se entregue la práctica.
+
+\item Para considerar la práctica como entregada es fundamental que en el directorio raíz del repositorio de entrega haya un fichero \texttt{README.md} cuya primera línea sea:
+
+\begin{verbatim}
+# ENTREGA CONVOCATORIA XXX
+\end{verbatim}
+
+Siendo \texttt{XXX} ``MAYO'' si se entrega en la convocatoria ordinaria de mayo, y ``JUNIO'' si se entrega en la convocatoria extraordinaria de junio.
+
+\textbf{Atención:} No se considerará entregada la práctica si no ve esta primera línea en el formato adecuado.
+
+ \item {\bf Entregar un vídeo de demostración de la parte obligatoria, y otro vídeo de demostración de la parte opcional}, si se ha realizado parte optativa. Los vídeos serán de una {\bf duración máxima de 3 minutos} (cada uno), y consistirán en una captura de pantalla de un navegador web utilizando la aplicación, y mostrando lo mejor posible la funcionalidad correspondiente (básica u opcional). Siempre que sea posible, el alumno comentará en el audio del vídeo lo que vaya ocurriendo en la captura. Los vídeos se colocarán en algún servicio de subida de vídeos en Internet (por ejemplo, Vimeo, Twitch, o YouTube). Los vídeos de más de tres minutos tendrán penalización.
+
+Hay muchas herramientas que permiten realizar la captura de pantalla. Por ejemplo, en GNU/Linux puede usarse Gtk-RecordMyDesktop o Istanbul (ambas disponibles en Ubuntu). OBS Studio\footnote{OBS Studio: \url{https://obsproject.com/}} está disponible para varias plataformas (Linux, Windows, MacOS). Es importante que la captura sea realizada de forma que se distinga razonablemente lo que se grabe en el vídeo.
+
+En caso de que convenga editar el vídeo resultante (por ejemplo, para eliminar tiempos de espera) puede usarse un editor de vídeo, pero siempre deberá ser indicado que se ha hecho tal cosa con un comentario en el audio, o un texto en el vídeo. Hay muchas herramientas que permiten realizar esta edición. Por ejemplo, en GNU/Linux puede usarse OpenShot o PiTiVi.
+
+\end{enumerate}
+
+Sobre la entrega del repositorio:
+\begin{itemize}
+  \item Se han de entregar los siguientes ficheros:
+
+\begin{itemize}
+\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django~4.1. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
+
+\item La base de datos habrá de tener datos suficientes como para poder probarlo. Estos datos incluirán cámaras obtenidas desde el listado 1 proporcionado en la plantilla, y comentarios puestos desde al menos dos navegadores, con al menos diez mensajes en total, en al menos tres cámaras.
+
+\item Un fichero \verb|requirements.txt|, con un nombre de paquete Python por línea, para indicar cualquier biblioteca Python que pueda hacer falta para que la aplicación funcione, si es que fuera el caso, incluyendo Django. Si es posible, se recomienda escribir este fichero en el formato que entiende \verb|pip install -r requirements.txt|
+
+\item Cualquier fichero auxiliar que pueda hacer falta para que funcione la práctica, si es que fuera el caso.
+\end{itemize}
+
+\item Se incluirán en el fichero README.md los siguientes datos (atención a lo que ya se han indicado sobre la primera línea de este fichero):
+
+\begin{itemize}
+  \item Nombre y titulación.
+  \item Nombre de cuenta en laboratorios Linux de la EIF.
+  \item Nombre de cuenta de la URJC.
+  \item URL del vídeo demostración de la funcionalidad básica
+  \item URL del vídeo demostración de la funcionalidad optativa, si se ha realizado funcionalidad optativa
+  \item URL de la aplicación desplegada
+  \item Al menos una contraseña que permita autenticarse para poder usar la aplicación.
+  \item Cuenta del superusuario para entrar en el Admin Site.
+  \item Resumen de las peculiaridades que se quieran mencionar sobre lo implementado en la parte obligatoria.
+  \item Lista de funcionalidades opcionales que se hayan implementado, y breve descripción de cada una.
+\end{itemize}
+
+Estos datos se escribirán siguiendo estrictamente el siguiente formato:
+
+\begin{verbatim}
+# Entrega practica
+
+## Datos
+
+* Nombre:
+* Titulación:
+* Cuenta en laboratorios:
+* Cuenta URJC:
+* Video básico (url):
+* Video parte opcional (url):
+* Despliegue (url):
+* Contraseñas:
+* Cuenta Admin Site: usuario/contraseña
+
+## Resumen parte obligatoria
+
+## Lista partes opcionales
+
+* Nombre parte:
+* Nombre parte:
+* ...
+\end{verbatim}
+
+Asegúrate de que el fichero esté adecuadamente formateado en Markdown.
+\end{itemize}
+
+
+%%----------------------------------------------------------------------------
+\subsection{Notas y comentarios}
+
+La práctica deberá funcionar en el entorno GNU/Linux (Ubuntu) del laboratorio de la asignatura con la versión de Django que se ha usado en prácticas.
+
+La práctica deberá funcionar desde el navegador Firefox disponible en el laboratorio de la asignatura.
+
+%%----------------------------------------------------------------------------
+\subsection{Preguntas frecuentes}
+\label{sec:practica-2024-05:preguntas}
+
+A continuación, algunas preguntas relacionadas con el enunciado de esta práctica, junto con sus respuestas:
+
+\begin{itemize}
+
+\item ¿Cómo puedo construir la ``Página dinámica de cada cámara''?
+
+  Se hará utilizando HTMX, y si es conveniente, recursos específicos para que ésta funcione (por ejemplo, un recurso que proporcione el listado de comentarios del sitio en HTML, y nada más).
+  
+\item Cuando despliego mi práctica en Python Anywhere, puedo descargar fuentes de datos de cámaras de algunos sitios, pero de otros no. ¿Qué está pasando?
+
+  Las máquinas virtuales de Python Anywhere están limitadas en cuanto a los sitios a los que se pueden conectar: sólo se pueden conectar a aquellos que están en una cierta ``lista blanca''. Por eso, si el sitio al que tu programa se tiene que conectar para obtener recursos no está en la lista blanca, no va a poder descargarse el documento XML o JSON de esos recursos. Para evitar problemas, en el caso de despliegue en Python Anywhere pedimos que funcionen bien los recursos reconocidos que están en la lista blanca, y para los demás, que tengan recursos en la base de datos de despliegue. Más detalles en el apartado sobre despliegue de este enunciado (\ref{sec:practica-2024-05:despliegue}).
+  
+\item En la pagina de información que se menciona en el enunciado, ¿qué hay que incluir en el apartado de documentación?
+
+Casi que lo que queráis, lo importante es tener la página. Puede ser por ejemplo un resumen de un párrafo de lo que hace la aplicación.
+  
+\item ¿Es necesario utilizar los mecanismos provistos por Django para el control de sesiones?
+
+  En principio, esa es la solución recomendada. El principal problema suele ser asegurarse de que cualquier mecanismo alternativo funciona al menos tan bien como el de Django, lo que no es en general trivial. De todas formas, salvo muy buenos motivos, la aplicación es una aplicación Django, y por lo tanto cuantas más facilidades de Django se usen (bien usadas), mejor.
+
+\item ¿Dónde puedo realizar el despliegue de la aplicación?
+
+  El despliegue puede realizarse en cualquier ordenador que esté conectado permanentemente a Internet durante el periodo de corrección, en una dirección accesible desde cualquier navegador conectado a su vez a Internet. Esto puede ser por ejemplo un ordenador personal en un domicilio con acceso permanente a Internet, adecuadamente configurado (puede ser una Raspberry Pi o similar, si se busca una solución simple y de bajo coste). También puede ser un servicio en Internet, por ejemplo uno gratuito como los que ofrecen Google (instrucciones\footnote{GCP Quickstart Using a Linux VM:\\ \url{https://cloud.google.com/compute/docs/quickstart-linux}}, precios\footnote{Google Compute Engine Pricing:\\ \url{https://cloud.google.com/compute/pricing}}), o PythonAnywhere (instrucciones\footnote{Capítulo ``Deploy!'' de Django Girls Tutorial:\\ \url{https://tutorial.djangogirls.org/en/deploy/}}, precios\footnote{PythonAnywhere Plans and Pricing:\\ \url{https://www.pythonanywhere.com/pricing/}}). Los profesores podremos ayudar de forma más detallada con PythonAnywhere.
+
+\item Algunos documentos no se descargan de PythonAnywhere. ¿Qué está pasando?
+
+  Algunos documentos estáticos (por ejemplo, la hora de estilo CSS que estoy usando) no se carga en el navegador cuando despliego la práctica en PythonAnywhere. Sin embargo, cuando pruebo en mi ordenador, o en los ordenadores del laboratorio, todo parece ir bien. ¿Qué está pasando.
+
+  Lo que ocurre es que para servir los ficheros estáticos (los que no genera tu aplicación Django, sino que simplemente los sirve a partir de ficheros ya existentes), hay que indicarle a PythonAnywhere qué ficheros son esos, y para qué recursos deben servirse. Es muy típico que esto ocurra, por ejemplo, con el fichero que tenga la hoja de estilo CSS. Puedes ver esto en la consola web, donde indica:
+
+  \begin{verbatim}
+Static files:
+
+Files that aren't dynamically generated by your code, like CSS, JavaScript or uploaded files, can be served much faster straight off the disk if you specify them here. You need to Reload your web app to activate any changes you make to the mappings below.
+\end{verbatim}
+
+  Añade en esa tabla tus ficheros, y si no hay más problemas te funcionará.
+
+\end{itemize}
+
