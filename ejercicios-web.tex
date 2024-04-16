@@ -1546,6 +1546,45 @@ Esta práctica puede realizarse usando el módulo \texttt{html.parser} de la bil
 %%-----------------------------------------------------------------------------
 \section{Ejercicios 05: Hojas de estilo CSS}
 
+
+%%-------------------------------------------------------------------------
+%%-------------------------------------------------------------------------
+\subsection{Django cms\_css basico}
+\label{subsec:django-cms-css-basico}
+
+\textbf{Enunciado:}
+
+Crea una hoja de estilo en la URL ``/main.css'' en ``Django cms\_put'' (ejercicio~\ref{subsec:django-cms-put}), que se servirá de manera dinámica (esto es, main.css no será un archivo estático en el servidor, sino que se generará con cada petición a Django). Tendrás que seguir los siguientes pasos:
+
+\begin{enumerate}
+
+\item Incluye la siguiente línea en la plantilla para que llame a la hoja de estilo: 
+
+\begin{verbatim}
+<link href="main.css" rel="stylesheet">
+\end{verbatim}
+
+\item Añade una referencia a a ``main.css'' en urls.py para que se envíe a la vista ``style''.
+
+\item La vista ``style'' ha de devolver el siguiente contenido en su HttpResponse:
+
+\begin{verbatim}
+body {
+  margin: 10px 20% 50px 70px;
+  font-family: sans-serif;
+  color: red;
+  background: aqua;
+}
+\end{verbatim}
+
+\item HttpResponse, por defecto, incluye la cabecera ``Content-type: text/html'', pero en nuestro caso debería ser ``Content-type: text/css''. Comprueba la documentación de Django para ver qué parámetro hay que pasarle a HttpResponse para que envíe la cabecera correcta.
+
+\item Modifica la vista ``style'' para que los valores de las propiedades de ``color'' y ``background'', se elijan de manera aleatoria de la siguiente lista de colores: blue, gold, red, aqua, green, black, yellow.
+\end{enumerate}
+
+Repositorio de entrega en GitLab: \\
+\url{https://gitlab.etsit.urjc.es/cursosweb/2023-2024/django-cms-css-basico}
+
 %%-------------------------------------------------------------------------
 %%-------------------------------------------------------------------------
 \subsection{Django cms\_css simple}
