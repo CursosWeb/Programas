@@ -2599,6 +2599,23 @@ Realiza las siguientes modificaciones a la aplicación de Django llamada concier
 
 %%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
+\subsection{Django HTMX}
+\label{subsec:django-htmx}
+
+Realiza un proyecto Django cuyo recurso principal sirva una página HTML que mueste dos imágenes:
+
+\begin{itemize}
+\item La primera imagen se cargará cada 3 segundos, invocando un recurso \texttt{/image\_embedded}, que devolverá un texto HTML que sustiturá el contenido de un cierto elemento DIV de la página. Este texto HTML incluirá la imagen embebida en el atributo SRC.
+\item La segunda imagen se cargará cada 3 segundos, invocando un recurso \texttt{/image\_html}, que devolverá un texto HTML que sustuirá el contenido de otro elemento DIV de la página. Este texto HTML incluirá una referencia al recurso \texttt{/image}, que devolverá la imagen como objeto \texttt{image/jpeg}.  
+\end{itemize}
+
+En ambos casos, cuando el proyecto reciba la petición de \texttt{/image\_embedded} o \texttt{/image}, primero obtendrá la imagen de una cierta URL en Internet, que corresponderá con una imagen que cambe en el tiempo con relativa frecuencia, para poder probar la aplicación.
+
+Como ejemplo de imagen a descargar puede usarse cualquiera de las obtenidas de las cámaras de tráfico del Ayuntamiento de Málaga: \\
+\url{https://movilidad.malaga.eu/es/servicios/camaras-de-trafico/}
+
+%%----------------------------------------------------------------------------
+%%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
 \section{Ejercicios P4: Servidores simples de contenidos}
 
