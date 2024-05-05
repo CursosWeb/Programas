@@ -330,7 +330,7 @@ Casi que lo que queráis, lo importante es tener la página. Puede ser por ejemp
 
   En principio, esa es la solución recomendada. El principal problema suele ser asegurarse de que cualquier mecanismo alternativo funciona al menos tan bien como el de Django, lo que no es en general trivial. De todas formas, salvo muy buenos motivos, la aplicación es una aplicación Django, y por lo tanto cuantas más facilidades de Django se usen (bien usadas), mejor.
 
-\item Si usamos el mecanismo básico de sesiones de Django, que nos proporciona la propiedad \texttt{request.session.session_key} como parte del objeto \texttt{request} que reciben las vistas, ¿podemos usarla como cookie para ``transferir'' la sesión a otro navegador?
+\item Si usamos el mecanismo básico de sesiones de Django, que nos proporciona la propiedad \texttt{request.session.session\_key} como parte del objeto \texttt{request} que reciben las vistas, ¿podemos usarla como cookie para ``transferir'' la sesión a otro navegador?
 
   Puedes consultar la documentación sobre los mecanismos para gestionar sesiones que proporciona Django\footnote{Documentación de Django sobre sesiones:\\
     \url{https://docs.djangoproject.com/en/5.0/topics/http/sessions/}}, que incluye información sobre este tema.
