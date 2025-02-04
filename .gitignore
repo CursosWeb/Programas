@@ -1,0 +1,15 @@
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb*
+*.fls
+*.log
+*.run*
+*.sync*
+*.pdf*
+*.xdv*
+*.out
+.DS_Store
+*.cut
+*.toc
