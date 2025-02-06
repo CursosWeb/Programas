@@ -1838,6 +1838,35 @@ Crea un repositorio en GitLab, mediante fork del repositorio plantilla indicado 
   \url{https://gitlab.eif.urjc.es/cursosweb/repodeprueba}
 \end{itemize}
 
+%%-------------------------------------------------------------------------
+%%-------------------------------------------------------------------------
+\subsection{Uso de git con ssh en GitLab}
+\label{subsec:practicas-programa-gitssh}
+
+\textbf{Enunciado:}
+
+Configura tu cuenta en el GitLab de la EIF para que se pueda usar git con ssh para interaccionar con los repositorios git que se alojen en él. Pruébalo, usando la URL de clonado con ssh, y sincronizando con el repositorio desde línea de comandos y desde PyCharm. Utiliza tamibén \texttt{ssh-add}.
+
+Para comenzar a trabajar, puedes seguir los siguientes pasos:
+
+\begin{itemize}
+\item Genera un par de claves pública-privada con \texttt{ssh-keygen}.
+\item Sube la clave pública a EIF GitLab.
+\item Añade la clave ssh al demonio que las gestiona, usando \texttt{ssh-add}, para que no te pida descifrarla cada vez que la quieras usar.
+\item Clona uno de tus repositorios de EIF GitLab, usando la URL de ssh.
+\item Haz algún cambio, crea un commit, y luego súbelo al repositorio con \texttt{git~push}.
+\item Haz el cambio, commit y subida con PyCharm.
+\end{itemize}
+
+\textbf{Materiales:}
+
+\begin{itemize}
+\item Use SSH keys to communicate with GitLab: \\
+  \url{https://docs.gitlab.com/ee/user/ssh.html}
+\item GitLab SSH login setup: \\
+  \url{https://research.engr.oregonstate.edu/haller/wiki/index.php/Public/GitLabSSHLoginSetup}
+\end{itemize}
+
 
 %%-------------------------------------------------------------------------
 %%-------------------------------------------------------------------------
@@ -1846,23 +1875,23 @@ Crea un repositorio en GitLab, mediante fork del repositorio plantilla indicado 
 
 \textbf{Enunciado:}
 
-Instala el plugin de PyCharm ``Sourcegraph Cody''. Configúralo y pruébalo.
+Instala el plugin de PyCharm ``Codeium''. Configúralo y pruébalo.
 
-Puedes probar también otros plugins con funcionalidad similar, como Codeium.
+Puedes probar también otros plugins con funcionalidad similar, como Sourcegraph Cody.
 
 \textbf{Materiales:}
 
 \begin{itemize}
-\item Información sobre el plugin Cody: \\
-  \url{https://plugins.jetbrains.com/plugin/9682-sourcegraph-cody--code-search}
-\item Código fuente de Cody: \\
-  \url{https://github.com/sourcegraph/sourcegraph/tree/main/client/jetbrains}
 \item Información sobre el plugin Codeium: \\
   \url{https://plugins.jetbrains.com/plugin/20540-codeium-ai-autocomplete-and-chat-for-python-js-ts-java-go-}
 \item Sitio web de Codeium: \\
   \url{https://codeium.com/}
 \item Código fuente de Codeium: \\
-  \url{https://github.com/Exafunction/codeium.vim}
+  \url{https://github.com/Exafunction/CodeiumJetBrains}
+\item Información sobre el plugin Cody: \\
+  \url{https://plugins.jetbrains.com/plugin/9682-sourcegraph-cody--code-search}
+\item Código fuente de Cody: \\
+  \url{https://github.com/sourcegraph/sourcegraph/tree/main/client/jetbrains}
 \end{itemize}
 
 
@@ -1940,7 +1969,7 @@ Puedes partir del siguiente repositorio: \verb|https://github.com/CursosWeb/X-Se
 \label{subsec:calculadora}
 
 \textbf{Repositorio plantilla (para entrega):} \\
-\url{https://gitlab.etsit.urjc.es/cursosweb/2023-2024/calculadora}
+\url{https://gitlab.etsit.urjc.es/cursosweb/2024-2025/calculadora}
 
 \textbf{Enunciado:}
 
