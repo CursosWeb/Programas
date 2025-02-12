@@ -2049,6 +2049,36 @@ Se ofrece una posible solución en los siguientes ficheros del directorio \verb|
 \item \verb|cache_web_modules.py|: programa principal
 \end{itemize}
 
+%%------------------------------------------------------------------------
+%%------------------------------------------------------------------------
+\subsection{Cabeceras de recursos web}
+\label{subsec:eje-python-cabreceras}
+
+\textbf{Repositorio plantilla (para entrega):} \\
+\url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/cabeceras}
+
+\textbf{Enunciado:}
+
+Crea un fichero Python, \verb|robot.py|, con una clase que ayude a mostrar las cabeceras HTTP que se reciben al pedir recursos web. Este fichero tendrá también un programa principal (que se ejecutará sólo cuando el fichero sea ejecutado directamente) que probará la clase.
+
+La clase se llamará \verb|Robot|, que proporcionará un ``robot'' que se encarga de mostrar las cabeceras HTTP que se reciben al pedir un recurso web, dada su URL. Cumplirá la siguiente especificación:
+  \begin{itemize}
+  \item Se instanciará indicando como argumento la URL del recurso del que se ocupará el robot.
+  \item Tendrá un método \verb|retrieve|, sin argumentos, que se encargará de descargar el recurso de la url de la que se ocupa el robot (utilizando GET). Mostrará un mensaje en pantalla: ``Descargando url'' (siendo ``url'' la url en cuestión), y almacenará las cabeceras en una variable del objeto.
+  \item Tendrá un método \verb|headers|, sin argumentos, que devolverá una cadena de caracteres (\emph{string}) con las cabeceras recibidas al descargar el recurso. Para poder mostrarlo, \verb|headers| se encargará de usar \verb|retrieve| si es necesario (si no se ha descargado previamente el recurso).
+  \item Tendra un método \verb|show|, sin argumentos, que mostrará en pantalla las cabeceras que se recibieron al descargar el recurso. Para poder mostrarlo, \verb|show| se encargará de usar \verb|headers|.
+  \end{itemize}
+
+Se recomienda que la clase \verb|Robot| use el módulo estándar de Python \verb|urllib.request|\footnote{Módulo urllib.request: \\ \url{https://docs.python.org/3/library/urllib.request.html}}\footnote{Ejemplos del módulo urllib.request: \\ \url{https://docs.python.org/3/library/urllib.request.html\#examples}} para descargar documentos.
+
+El programa principal creará al menos dos objetos de la clase Robot, llamará a varios de sus métodos, y creará al menos dos objetos de la clase Cache, llamando también a varios de sus métodos, para mostrar que todo funciona.
+
+Además, se creará un programa principal llamado \verb|cabeceras.py| que usando el método \verb|show| de la clase \verb|Robot| del fichero \verb|robot.py|, muestre en pantalla las cabeceras recibidas al pedir el recurso cuya URL se haya especificado como argumento en la línea de comandos. Por ejemplo, el programa se invocará como sigue:
+
+\begin{verbatim}
+% python3 cabeceras.py http://gsyc.urjc.es
+\end{verbatim}
+
 \newpage
 
 %%------------------------------------------------------------------------------------
