@@ -45,67 +45,54 @@ Conviene visitar el repositorio propio en GitLab, para comprobar que efectivamen
 %%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
 \subsection{Minipráctica 1 (entrega voluntaria)}
-\label{subsec:minipractica-1-2022}
+\label{subsec:minipractica-1-2025}
 
 \textbf{Repositorio plantilla (para entrega):} \\
-\url{https://gitlab.eif.urjc.es/cursosweb/2023-2024/mini-1-acortadora}
+\url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/mini-1-acortadora}
 
-Esta práctica tendrá como objetivo la creación de una aplicación web simple para acortar URLs. Los usuarios de la aplicación podrán especificar URLs, y la aplicación generará para ellos un recurso aleatorio que, a partir de ese momento, redireccionará a la URL correspondiente. La aplicación podrá realizarse según el esquema de clases explicado en clase (usando, si se quiere, el módulo \texttt{webapp.py}), o de cualquier otra forma.
+Esta práctica tendrá como objetivo la creación de una aplicación web para acortar URLs. Los usuarios podrán especificar URLs y un alias opcional para la URL acortada. Si no especifican un alias, se mostrará un error. La aplicación almacenará las URLs acortadas en un fichero persistente utilizando la biblioteca \texttt{shelve}.
 
-El código ha de guardarse en un fichero llamado \emph{randomshort.py}.
+El código ha de guardarse en un fichero llamado \emph{shortener.py}.
 
 El funcionamiento de la aplicación será el siguiente:
 
 \begin{itemize}
-\item Recurso ``/'', invocado mediante GET. Devolverá una página HTML con un formulario. En ese formulario habrá un campo para la url a acortar. El formulario se enviará al servidor mediante POST, y su campo se llamará \texttt{url}. Además, esa misma página incluirá un listado de todas las URLs reales y acortadas que ha configurado ese navegador hasta ese momento.
-
-\item Recurso ``/'', invocado mediante POST. Si el comando POST incluye una \texttt{qs} (query string) con un campo \texttt{url} se devolverá una página HTML con todas las URLs reales y acortadas que ha configurado ese navegador hasta ese momento (incluida esta), y se apuntará la correspondencia (ver más abajo).
-
-Si el POST no trae una \texttt{qs} que se haya podido generar en el formulario, devolverá una página HTML con un mensaje de error.
-
-Si la URL especificada en el formulario comienza por ``http://'' o ``https://'', se considerará que ésa es la URL a acortar. Si no es así, se le añadirá ``https://'' por delante, y se considerará que esa es la url a acortar. Por ejemplo, si en el formulario se escribe ``http://gsyc.es'', la URL a acortar será ``http://gsyc.es''. Si se escribe ``gsyc.es'', la URL a acortar será ``https://gsyc.es''.
-
-Si se recibe una petición para un nombre de recurso que ya corresponde con una URL conocida por el acortdor, usará el mismo recurso aleatorio acortado que ya se le asignó.
-
-Así, por ejemplo, si se quiere acortar \texttt{http://gsyc.urjc.es}, y la aplicación está en el puerto 1234 de la máquina ``localhost'', se invocará (mediante POST) la URL
-
-\texttt{https://localhost:1234/}
-
-y en el cuerpo de esa petición HTTP irá la \texttt{qs}
-
-\verb|url=https://gsyc.urjc.es|
-
-Normalmente, esta invocación POST se realizará rellenando el formulario que ofrece la aplicación.
-
-Como respuesta, la aplicación devolverá (en el cuerpo de la respuesta HTTP) una página HTML con el formulario, y la lista de URLs acortadas hasta el momento para este navegador, incluyendo esta.
-
-
-\item Recursos correspondientes a URLs acortadas. Estos serán los recursos aleatorios que se han ido construyendo para las urls a acortar, todos con el prefijo ``/''. Cuando la aplicación reciba un GET sobre uno de estos recursos, si el número corresponde a una URL acortada, devolverá un HTTP REDIRECT a la URL real. Si no la tiene, devolverá HTTP ERROR ``Recurso no disponible''.
-
-Por ejemplo, si se recibe 
-
-\verb|http://localhost:1234/sd34te|
-
-y ese recurso aleatorio está configurado para redirigir a \texttt{http://gsyc.urjc.es}, la aplicación devolverá un HTTP REDIRECT a la URL
-
-\verb|https://gsyc.urjc.es|
-
+    \item \textbf{Recurso ``/'' (GET):} Devuelve una página HTML con un formulario donde el usuario podrá ingresar una URL y un alias para la URL acortada. También mostrará un listado de todas las URLs acortadas hasta el momento.
+    
+    \item \textbf{Recurso ``/'' (POST):} Si el formulario incluye una \texttt{qs} con un campo \texttt{url} y un campo \texttt{alias}, se validará la entrada y se generará una URL acortada con el alias proporcionado por el usuario. Si el alias ya ha sido utilizado, se actualizará con la nueva URL. La respuesta incluirá el formulario junto con la lista de URLs acortadas, incluyendo la nueva o la actualizada. Si no se especifica un alias, se majenará y devolverá un mensaje error.
+    
+    \item \textbf{Recurso ``/alias'' (GET):} Si el alias corresponde a una URL almacenada, se realizará un HTTP 3XX REDIRECT a la URL real. Si no existe, se mostrará un mensaje de error (4XX) indicando que el recurso no está disponible.
+    
+    \item \textbf{Recurso ``/delete/alias'' (GET):} Permite eliminar una URL acortada si el usuario lo desea. Se mostrará un mensaje confirmando la eliminación.
 \end{itemize}
 
-La aplicación funcionará con estado: se supone que cada vez que la aplicación muera y vuelva a ser lanzada, no perderá todo su estado anterior. Para ello, se guardarán las URLs acortadas en un fichero con \texttt{shelve}. Al lanzar la aplicación, se leerá el fichero con las URLs acortadas. Y cada vez que se incluya una nueva URL acortada en el sistema, también se guardará esta información en el fichero.
-
-\textbf{Comentario}
-
-Se recomienda utilizar un diccionario para almacenar las URLs reales y los nombres de recurso correspondientes. La clave de búsqueda será el nombre de recurso, y el valor, la URL real.
-
-Se recomienda realizar la aplicación en varios pasos:
+\textbf{Ejemplo de funcionamiento:}
 
 \begin{itemize}
-\item Comenzar por reconocer ``GET /'', y devolver el formulario correspondiente.
-\item Reconocer ``POST /'', y devolver la página HTML correspondiente (con la URL a acortar).
-\item Reconocer ``GET /recurso'' (para cualquier recurso), y realizar la redirección correspondiente.
-\item Manejar las condiciones de error y realizar el resto de la funcionalidad.
+    \item Un usuario accede a la aplicación en \texttt{http://localhost:1234/} y ve un formulario donde puede ingresar la URL que desea acortar y un alias. Justo debajo aparece un listado de todas las URLs acortadas hasta el momento (extraído del fichero persistente usando \texttt{shelve})
+    \item El usuario ingresa ``http://gsyc.es'' y el alias ``miweb'' en el formulario.
+    \item Al enviar el formulario, la aplicación responde con una página que contiene:
+    \begin{verbatim}
+    URL original: http://gsyc.es
+    URL acortada: http://localhost:1234/miweb
+    \end{verbatim}
+    Internamente se habrá guardado la información en el fichero persistente con \texttt{shelve}.
+    \item Si otro usuario intenta usar el alias ``miweb'' con una URL diferente, la aplicación actualizará la URL almacenada para ese alias. Internamente se habrá actualizado la URL en el fichero persistente con \texttt{shelve}.
+    \item Si alguien accede a \texttt{http://localhost:1234/miweb}, la aplicación redirige a la URL actualizada.
+    \item El usuario puede eliminar una URL acortada accediendo a \texttt{http://localhost:1234/delete/miweb}. Internamente se habrá borrado la URL del fichero persistente también con \texttt{shelve}.
 \end{itemize}
+
+\textbf{Pasos recomendados para la implementación:}
+
+\begin{itemize}
+    \item Implementar ``GET /'' para mostrar el formulario y la lista de URLs acortadas.
+    \item Implementar ``POST /'' para procesar el formulario y almacenar las URLs acortadas.
+    \item Implementar ``GET /recurso'' para redireccionar correctamente a las URLs.
+    \item Implementar ``GET /delete/alias'' para permitir eliminar URLs acortadas.
+    \item Manejar las condiciones de error y realizar el resto de la funcionalidad.
+\end{itemize}
+
+\textbf{Comentario:} Se recomienda el uso de un diccionario para almacenar las URLs reales y los alias. La clave será el alias y el valor será la URL real.
 
 %%---------------------------------------------------------------------
 %%---------------------------------------------------------------------
