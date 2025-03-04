@@ -50,20 +50,20 @@ Conviene visitar el repositorio propio en GitLab, para comprobar que efectivamen
 \textbf{Repositorio plantilla (para entrega):} \\
 \url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/mini-1-acortadora}
 
-Esta práctica tendrá como objetivo la creación de una aplicación web para acortar URLs. Los usuarios podrán especificar URLs y un alias opcional para la URL acortada. Si no especifican un alias, se mostrará un error. La aplicación almacenará las URLs acortadas en un fichero persistente utilizando la biblioteca \texttt{shelve}.
+Esta práctica tiene como objetivo la creación de una aplicación web para acortar URLs. Los usuarios podrán especificar una URL y un alias para la URL acortada. Si no especifican un alias, se mostrará un error. La aplicación almacenará las URLs acortadas en un fichero persistente utilizando la biblioteca \texttt{shelve}.
 
 El código ha de guardarse en un fichero llamado \emph{shortener.py}.
 
-El funcionamiento de la aplicación será el siguiente:
+El funcionamiento de la aplicación ha de ser el siguiente:
 
 \begin{itemize}
     \item \textbf{Recurso ``/'' (GET):} Devuelve una página HTML con un formulario donde el usuario podrá ingresar una URL y un alias para la URL acortada. También mostrará un listado de todas las URLs acortadas hasta el momento.
     
-    \item \textbf{Recurso ``/'' (POST):} Si el formulario incluye una \texttt{qs} con un campo \texttt{url} y un campo \texttt{alias}, se validará la entrada y se generará una URL acortada con el alias proporcionado por el usuario. Si el alias ya ha sido utilizado, se actualizará con la nueva URL. La respuesta incluirá el formulario junto con la lista de URLs acortadas, incluyendo la nueva o la actualizada. Si no se especifica un alias, se majenará y devolverá un mensaje error.
+    \item \textbf{Recurso ``/'' (POST):} Si el formulario incluye una \texttt{qs} con un campo \texttt{url} y un campo \texttt{alias}, se validará la entrada y se generará una URL acortada con el alias proporcionado por el usuario. Si el alias ya ha sido utilizado, se actualizará con la nueva URL. La respuesta incluirá el formulario junto con la lista de URLs acortadas, incluyendo la nueva o la actualizada. Si no se especifica un alias, se devolverá un mensaje error.
     
-    \item \textbf{Recurso ``/alias'' (GET):} Si el alias corresponde a una URL almacenada, se realizará un HTTP 3XX REDIRECT a la URL real. Si no existe, se mostrará un mensaje de error (4XX) indicando que el recurso no está disponible.
+    \item \textbf{Recurso ``/alias'' (GET):} Si el alias corresponde a una URL almacenada, se realizará un HTTP 3XX Redirect a la URL real. Si no existe, se mostrará un mensaje de error de cliente (4XX) indicando que el recurso no está disponible.
     
-    \item \textbf{Recurso ``/delete/alias'' (GET):} Permite eliminar una URL acortada si el usuario lo desea. Se mostrará un mensaje confirmando la eliminación.
+    \item \textbf{Recurso ``/delete/alias'' (GET):} Permite eliminar una URL acortada si el usuario lo desea. Se mostrará un mensaje confirmando la eliminación o un error si no existiera tal alias.
 \end{itemize}
 
 \textbf{Ejemplo de funcionamiento:}
