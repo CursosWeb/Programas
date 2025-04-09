@@ -1,0 +1,395 @@
+%%----------------------------------------------------------------------------
+%%----------------------------------------------------------------------------
+\section{Proyecto final: GameRank (2025)}
+\label{practica-final-2025-05}
+
+\textbf{Repositorio plantilla.}
+
+\url{https://gitlab.etsit.urjc.es/cursosweb/2024-2025/final-gamerank}
+
+[ \textbf{Nota importante:} Enunciado aún en proceso de elaboración, puede sufrir algunos cambios antes de su versión final. Por favor, avisa si detectas algún error o inconsistencia. Al final de este enunciado puede verse una lista de preguntas frecuentes sobre este proyecto (apartado~\ref{sec:practica-2025-05:preguntas}). ]
+
+%[ \textbf{Nota importante:} Este enunciado puede sufrir cambios si se detectan errores en él. ]
+
+Este es el enunciado del proyecto final del curso 2023-2024, tanto para la convocatoria ordinaria como para la extraordinaria.
+
+La práctica final de la asignatura consiste en la creación de una aplicación web llamada GameRank, que funcionará como una plataforma de exploración y valoración de videojuegos. La información de los juegos se obtendrá inicialmente desde un fichero XML proporcionado por el profesorado (ver apartado Fuentes de datos~\ref{sec:practica-2025-05:datos}), y opcionalmente desde APIs públicas como FreeToGame o MMOBomb. Cada juego tendrá un identificador único, y una serie de datos asociados como el título, plataforma, género, desarrollador, fecha de lanzamiento, etc. Los usuarios podrán comentar cada juego y puntuarlo del 0 al 5. Cada comentario incluirá automáticamente la fecha y hora en que se escribió y estará vinculado al juego correspondiente.
+
+Habrá autenticación mediante usuario/contraseña: cada visitante tendrá una configuración propia. Cada usuario podrá votar un juego y se guardará automáticamente en la lista de juegos votados, además podrá seguir juegos y se añadirán a su lista personal de juegos seguidos
+
+A continuación se describe el funcionamiento y la arquitectura general de la aplicación, la funcionalidad mínima que debe proporcionar, y otra funcionalidad optativa que podrá tener.
+
+%%----------------------------------------------------------------------------
+\subsection{Requisitos generales}
+
+\begin{itemize}
+
+\item La práctica se construirá como un proyecto Django/Python3, que incluirá una o varias aplicaciones (\emph{apps}) Django que implementen la funcionalidad requerida.
+
+\item Para el almacenamiento de datos persistente se usará SQLite3, con tablas definidas en modelos de Django.
+
+\item Todas las bases de datos que contenga la aplicación tendrán que ser accesibles vía la interfaz que proporciona el ``Admin Site'' (además de lo que pueda hacer falta para que funcione al aplicación). Para acceder a este ``Admin Site'' habrá cuentas específicas, creadas vía el propio ``Admin Site''.
+
+\item Se utilizarán plantillas Django (a ser posible, una jerarquía de plantillas, para que la práctica tenga un aspecto similar) para definir las páginas que se servirán a los navegadores de los usuarios (excepto las páginas de ``Admin Site'' (ver ``estructura de las páginas HTML'), a continuación).
+
+\end{itemize}
+
+Se servirán al menos las siguientes páginas (recursos), con los contenidos descritos a continuación:
+
+\begin{description}
+\item[Página principal.] Se ofrecerá un listado de los juegos ordenados por puntuación media (de mayor a menor). Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, y enlace a la página de detalles.
+
+\item[Página de detalles del juego.] El nombre de recurso de esta página será el identificador del juego. Se mostrará:
+\begin{itemize}
+\item Imagen grande del juego.
+\item Información detallada: descripción, desarrollador, publicador, plataforma, género, fecha de lanzamiento.
+\item Listado de comentarios existentes, ordenados de más recientes a más antiguos.
+\item Formulario para valorar el juego (entre 0 y 5).
+\item Formulario para escribir un comentario.
+\end{itemize}
+
+\item[Página dinámica del juego.] Igual que la anterior, pero implementada con HTMX para:
+\begin{itemize}
+\item Recargar automáticamente los comentarios cada 30 segundos.
+\item Cargar dinámicamente el formulario para comentar, con previsualización del juego.
+\item Ver inmediatamente el nuevo comentario tras enviarlo.
+\end{itemize}
+
+\item[Página de usuario.] Una vez autenticado, el usuario accederá a una página donde podrá ver:
+\begin{itemize}
+\item Numero de votaciones que ha realizado.
+\item Puntuación media del usuario.
+\item Enlace al listado de juegos que ha puntuado, junto con la puntuación dada.
+\item Enlace al listado de juegos que ha marcado como \textit{seguidos} o \textit{favoritos}.
+\end{itemize}
+
+\item[Página de juegos votados por usuario.] Se ofrecerá un listado de los juegos ordenados por puntuación media (de mayor a menor) por el usuario. Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, y enlace a la página de detalles.
+
+\item[Página de juegos seguidos por el usuario.] Se ofrecerá un listado de los juegos seguidos por el usuario, ordenados por puntuación media (de mayor a menor). Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, y enlace a la página de detalles.
+
+\item[Página de configuración.] Permitirá personalizar la experiencia del usuario desde su navegador. Incluirá:
+\begin{itemize}
+\item Formulario para cambiar el nombre visible del usuario (alias).
+\item Selector del tipo de letra y del tama~no del texto para la interfaz.
+\end{itemize}
+
+\item[Página de ayuda.] Mostrará información general sobre el funcionamiento de la aplicación, su estructura, y créditos del equipo de desarrollo. Podrá estar redactada en HTML plano.
+
+\item[Página de juegos seguidos.] Mostrará todos los juegos que el usuario ha marcado como \textbf{seguidos}, con enlaces a sus fichas.
+\end{description}
+
+
+
+Elementos generales que aparecerán en todas las páginas HTML:
+
+\begin{description}
+\item[Cabecera.] En la parte superior estará la cabecera del sitio, que consistirá de un texto (el nombre del sitio, ``GameRank'') en un tipo de letra que resalte claramente, sobre una imagen de fondo. El texto será un enlace al recurso ``/'' del sitio. También se verá el nombre de comentador que se está usando desde ese navegador (o ``Anónimo'' si no se ha especificado uno).
+
+\item[Menú.] En una barra debajo del elemento anterior tendremos un menú desde el que se podrá acceder, mediante enlaces, al menos a las siguientes páginas (salvo si la opción apunta a la página en la que se está, en cuyo caso no aparecerá en esa página):
+  \begin{itemize}
+  \item la página principal (con el texto ``Principal'')
+  \item la página de usuario (con el texto el nombre del usuario logueado)
+  \item la página de los juegos votados (con el texto el nombre ``Juegos votados'')
+  \item la página de los juegos seguidos (con el texto el nombre ``Juegos seguidos'')
+  \item la página de configuración (con el texto ``Configuración'')
+  \item la página de ayuda (con el texto ``Ayuda'')
+  \item la página de acceso al ``Admin Site'' (con el texto ``Admin''). 
+  \end{itemize}
+
+\item[Pie.] Un pie de página con un resumen de métricas: ``Juegos: XXX. Comentarios: YYY. Juegos votados por el usuario: ZZZ. Comentarios por el usuario: WWW'', siendo XXX el número de juegos, YYY el número de comentarios en todo el sitio, ZZZ el número de juegos votados por el usuario, y WWW los comentarios puestos por el usuario.
+\end{description}
+  
+En lo que tiene que ver con el aspecto de las páginas se tendrá en cuenta:
+
+\begin{description}
+\item[Marcado HTML.] Cada uno de los elementos generales descritos anteriormente estará construido dentro de un elemento \texttt{div}, marcado con un atributo \texttt{id} en HTML, para poder ser referido fácilmente en hojas de estilo CSS. Cuando sea conveniente, se podrán utilizar en lugar de \texttt{div} elementos de HTML5 (\texttt{header}, \texttt{footer}, \texttt{nav}, etc).
+
+\item[CSS.] Se utilizarán hojas de estilo CSS para determinar la apariencia del sitio. Estas hojas definirán al menos el color de fondo y de letra de cada una de las partes (elementos) marcadas con un \emph{id} (ver ``Marcado HTML''). Además, elementos que deban tener el mismo aspecto deberían estar en una misma clase CSS, para poder gestionarlo de forma común. También definirán los elementos personalizables del sitio: el tamaño de la letra y el tipo de la letra.
+
+\item[Bootstrap.] Se utilizará Bootstrap para la maquetación (\emph{layout}) de las páginas, de forma que funcionen adecuadamente tanto en navegadores de escritorio como en móviles.
+\end{description}
+
+El sitio también proporcionará:
+
+\begin{description}
+\item[Juego en formato JSON.] Para cada juego, se ofrecerá un recurso donde el documento servido estará en formato JSON, e incluirá, para cada juego, toda su información (incluyendo el número de comentarios).
+
+\end{description}
+
+
+Autenticación:
+
+\begin{itemize}
+\item Todos los recursos del sitio salvo la página principal estarán ``protegidos'' de forma que sólo se podrá acceder a ellos (mediante cualquier comando HTTP) si se ha iniciado una sesión.
+  
+\item Cuando un navegador acceda a cualquier recurso del sitio sin haber iniciado sesión, recibirá un formulario en el que se le solicitará una contraseña. El sitio mantendrá una lista de una o más contraseñas válidas (que serán cadenas alfanuméricas de cualquier longitud), en una tabla de la base de datos. Si la contraseña indicada en el formulario es una de ellas, se iniciará la sesión usando cookies (y se realizará la función correspondiente al recurso invocado). Si no es así, se enviará el formulario de nuevo, con código de error 401 (Unauthorized).
+
+\item Una vez un navegador ha recibido una cookie de autenticación, no tendrá que mostrar ya el formulario de autenticación a ese navegador.
+  
+\item Los scripts que accedan al sitio para poner noticias mediante la interfaz XML podrán utilizar una contraseña válida, incluyéndola en su petición en la cabecera Authorization como la siguiente (siendo ``xx34d23'' la contraseña):
+
+\begin{verbatim}
+Autorization: Basic xx34d23
+\end{verbatim}
+
+\end{itemize}
+
+
+Tests:
+
+\begin{description}
+\item[Extremo a extremo.] Para cada tipo de recurso de la práctica habrá que realizar al menos un test ``extremo a extremo''.
+\item[Unitarios.] Será conveniente (pero no obligatorio) realizar también tests unitarios para distintas partes del código. Se se hace, es conveniente mencionarlo en el fichero de entrega como una parte opcional.
+\end{description}
+
+%% ----------------------------------------------------------------------------
+\subsection{Fuentes de datos}
+\label{sec:practica-2025-05:datos}
+
+La práctica deberá funcionar con al menos la fuente de datos ``Listado 1'', y con cualquier otra fuente de datos XML o JSON disponible públicamente. A continuación se referencian las fuentes de datos ``Listado 1'', más dos fuentes de datos más (API de juegos FreeToPlay y API de juegos MMORPG) en formato JSON:
+
+\begin{itemize}
+\item Listado 1: \\
+  \url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/final-gamerank/-/raw/main/listado1.xml}
+\item Free-To-Play Games Database API: \\
+  \url{https://www.freetogame.com/api/games}
+\item MMO Games API - By MMOBomb: \\
+  \url{https://www.mmobomb.com/api1/games}
+\end{itemize}
+
+Importante: para cada fuente de datos se identificará un campo que sirva como identificador único, y se diferenciará de los identificadores únicos de otras fuentes de datos usando un prefijo. Para el Listado~1, el prefijo será \verb|LIS1-|. Para los demás, el alumno deberá utilizar el prefijo que desee.
+
+%%----------------------------------------------------------------------------
+\subsection{Despliegue}
+\label{sec:practica-2025-05:despliegue}
+
+La práctica deberá estar desplegada en algún sitio de Internet, de forma que pueda accederse a ella. Deberá mantenerse desplegada y activa al menos desde el día de entrega de la práctica, hasta el día del cierre de actas.
+
+Para el despliegue, se puede utilizar Python Anywhere\footnote{Python Anywhere: \url{https://pythonanywhere.com}}, que proporciona un plan gratuito que incluye suficientes recursos como para poder desplegar la práctica.
+
+Si el alumno así lo desea, puede considerarse desplegar en un ordenador dedicado (por ejemplo, una Raspberry Pi accesible directamente desde Internet, alojada en su hogar), o en servicios como Google Computing Engine\footnote{GCP Engine Free: \url{https://cloud.google.com/free/}}. En general, dado que este tipo de despliegues no podrá contar con una ayuda detallada por los profesores, estará algo más valorado.
+
+En el caso de que la práctica se despliegue en Python Anywhere, hay que tener en cuenta que sus máquinas virtuales tienen cortado el acceso a todos los sitios de Internet salvo los que están en una ``lista blanca''\footnote{Lista blanca de Python Anywhere: \url{https://www.pythonanywhere.com/whitelist/}} (\emph{whitelist}). Es de esperar que esto no cause problemas, porque el sitio GitLab de la EIF, donde está vuestro código fuente, está ya en la lista blanca, y por ello Python Anywhere debería poder acceder a él para clonar vuestro repositorio. Sin embargo, si vuestra aplicación se conectase a cualquier sitio para obtener información, si este sitio no está en la lista blanca, vuestra aplicación no se podrá conectar.
+
+Para lo tanto, si hacéis el despliegue en Python Anywhere y vuestra aplicación ha de obtener datos de un sitio tercero:
+
+\begin{itemize}
+  \item Si está ya en la lista blanca de Python Anywhere, funcionará sin problemas sin hacer nada especial. Si os funcionaba ya en las pruebas locales, así que también deberían funcionar en el despliegue.
+  \item Si no están en la lista blanca de Python Anywhere, aseguraos de que la base de datos que subís al despliegue de vuestra práctica incluya ya datos de ese sitio tercero..
+\end{itemize}
+
+Tened en cuenta que si usáis otras plataformas para el despliegue, puede que os encontréis problemas similares. Y tened en cuenta también que en cualquier caso, nosotros probaremos la práctica en otros despliegues, así que todos los recursos reconocidos que hayáis implementado deben funcionar correctamente si no hay restricciones de conexión.
+
+Tenéis más detalles sobre cómo se hace un despliegue de una aplicación Django en Python Anywhere en el vídeo ``Django: Despliegue en Python Anywhere''\footnote{\url{https://www.youtube.com/watch?v=hlZPC5L2Itc}}, que explica cómo desplegar allí la aplicación \texttt{django-youtube-4}\footnote{\url{https://github.com/CursosWeb/Code/tree/master/Python-Django/django-youtube-4}} (ver también el fichero \texttt{README.md} de esa aplicación para más detalles).
+
+%%----------------------------------------------------------------------------
+\subsection{Funcionalidad optativa}
+
+De forma optativa, se podrá incluir cualquier funcionalidad relevante en el contexto de la asignatura. Se valorarán especialmente aquellas que impliquen el uso de nuevas técnicas, o aspectos de Django que no se hayan trabajado previamente en los ejercicios del curso.
+
+En el formulario de entrega se deberá justificar por qué se considera funcionalidad optativa lo que se haya implementado.
+
+A modo de sugerencia, se incluyen algunas posibles funcionalidades optativas:
+
+\begin{itemize}
+\item Cualquiera de las que se indiquen como optativas en este enunciado.
+
+\item Inclusión de un \emph{favicon} del sitio (\textbf{FÁCIL}).
+
+\item Permitir votar comentarios con "me gusta" o "no me gusta". Por ejemplo, en cada comentario puede aparecer un contador con likes y dislikes, y botones para registrarlos (\textbf{FÁCIL}).
+
+\item Formulario para obtener juegos filtrados por plataforma desde las APIs opcionales. Por ejemplo:
+\begin{itemize}
+\item GET \url{https://www.freetogame.com/api/games?platform=pc}
+\item GET \url{https://www.mmobomb.com/api1/games?platform=pc}
+\end{itemize}
+El formulario deberá permitir seleccionar la plataforma deseada (\textbf{MEDIO}).
+
+\item Internacionalización de la interfaz según el idioma indicado por el navegador. Se recomienda usar las capacidades de localización que ofrece Django\footnote{\url{https://docs.djangoproject.com/en/4.2/topics/i18n/}} (\textbf{MEDIO}).
+
+\item Mejora de la cobertura de tests: condiciones de error, escenarios con llamadas consecutivas, tests unitarios para modelos y formularios, o tests de APIs internas (\textbf{MEDIO}).
+
+\item Obtención de juegos desde fuentes de datos alternativas, no incluidas en este enunciado, por ejemplo mediante parsing de JSON en crudo, uso de scrapers sencillos, o APIs no documentadas (\textbf{DIFÍCIL}).
+\end{itemize}
+
+%%----------------------------------------------------------------------------
+\subsection{Entrega de la práctica}
+
+\begin{itemize}
+  \item \textbf{Fecha límite de entrega (convocatoria ordinaria):} día anterior al del examen de la asignatura a las 23:55 (hora española peninsular)
+  \item \textbf{Fecha límite de entrega (convocatoria extraordinaria):} día anterior al del examen de la asignatura, a las 23:55 (hora española peninsular)
+  \item \textbf{Notificación de alumnos que tendrán que realizar entrevista:} antes de la fecha de revisión de la asignatura.
+  \item \textbf{Realización de entrevistas:} junto con la revisión de la asignatura.    
+  % \item \textbf{Fecha de publicación de notas:} jueves, 10 de junio, en el aula virtual.
+
+  % \item \textbf{Fecha de revisión:} viernes, 11 de junio, a las 9:00, en la aplicación Teams.
+\end{itemize}
+
+La entrega de la práctica consiste en:
+
+\begin{enumerate}
+  
+  \item {\bf Subir tu práctica a un repositorio en el GitLab de la Escuela}. El repositorio contendrá todos los ficheros necesarios para que funcione la aplicación (ver detalle más abajo). Es muy importante que el alumno haya realizado una derivación (fork) del repositorio de plantilla de al asignatura, indicado al principio de este enunciado.
+
+Recordad que es importante ir haciendo commits de vez en cuando y que sólo al hacer push estos commits son públicos. Antes de entregar la práctica, haced un push. Y cuando la entreguéis y sepáis el nombre del repositorio, podéis cambiar el nombre del repositorio desde el interfaz web de GitLab. 
+
+Se recomienda mantener el repositorio como privado, hasta el momento en que se entregue la práctica.
+
+\item Para considerar la práctica como entregada es fundamental que en el directorio raíz del repositorio de entrega haya un fichero \texttt{README.md} cuya primera línea sea:
+
+\begin{verbatim}
+# ENTREGA CONVOCATORIA XXX
+\end{verbatim}
+
+Siendo \texttt{XXX} ``MAYO'' si se entrega en la convocatoria ordinaria de mayo, y ``JUNIO'' si se entrega en la convocatoria extraordinaria de junio.
+
+\textbf{Atención:} No se considerará entregada la práctica si no ve esta primera línea en el formato adecuado.
+
+ \item {\bf Entregar un vídeo de demostración de la parte obligatoria, y otro vídeo de demostración de la parte opcional}, si se ha realizado parte optativa. Los vídeos serán de una {\bf duración máxima de 3 minutos} (cada uno), y consistirán en una captura de pantalla de un navegador web utilizando la aplicación, y mostrando lo mejor posible la funcionalidad correspondiente (básica u opcional). Siempre que sea posible, el alumno comentará en el audio del vídeo lo que vaya ocurriendo en la captura. Los vídeos se colocarán en algún servicio de subida de vídeos en Internet (por ejemplo, Vimeo, Twitch, o YouTube). Los vídeos de más de tres minutos tendrán penalización.
+
+Hay muchas herramientas que permiten realizar la captura de pantalla. Por ejemplo, en GNU/Linux puede usarse Gtk-RecordMyDesktop o Istanbul (ambas disponibles en Ubuntu). OBS Studio\footnote{OBS Studio: \url{https://obsproject.com/}} está disponible para varias plataformas (Linux, Windows, MacOS). Es importante que la captura sea realizada de forma que se distinga razonablemente lo que se grabe en el vídeo.
+
+En caso de que convenga editar el vídeo resultante (por ejemplo, para eliminar tiempos de espera) puede usarse un editor de vídeo, pero siempre deberá ser indicado que se ha hecho tal cosa con un comentario en el audio, o un texto en el vídeo. Hay muchas herramientas que permiten realizar esta edición. Por ejemplo, en GNU/Linux puede usarse OpenShot o PiTiVi.
+
+\end{enumerate}
+
+Sobre la entrega del repositorio:
+\begin{itemize}
+  \item Se han de entregar los siguientes ficheros:
+
+\begin{itemize}
+\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django~4.1. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
+
+\item La base de datos habrá de tener datos suficientes como para poder probarlo. Estos datos incluirán juegos obtenidas desde el listado 1 proporcionado en la plantilla, y comentarios puestos desde al menos dos navegadores, con al menos diez mensajes en total, en al menos tres juegos.
+
+\item Un fichero \verb|requirements.txt|, con un nombre de paquete Python por línea, para indicar cualquier biblioteca Python que pueda hacer falta para que la aplicación funcione, si es que fuera el caso, incluyendo Django. Si es posible, se recomienda escribir este fichero en el formato que entiende \verb|pip install -r requirements.txt|
+
+\item Cualquier fichero auxiliar que pueda hacer falta para que funcione la práctica, si es que fuera el caso.
+\end{itemize}
+
+\item Se incluirán en el fichero README.md los siguientes datos (atención a lo que ya se han indicado sobre la primera línea de este fichero):
+
+\begin{itemize}
+  \item Nombre y titulación.
+  \item Nombre de cuenta en laboratorios Linux de la EIF.
+  \item Nombre de cuenta de la URJC.
+  \item URL del vídeo demostración de la funcionalidad básica
+  \item URL del vídeo demostración de la funcionalidad optativa, si se ha realizado funcionalidad optativa
+  \item URL de la aplicación desplegada
+  \item Al menos una contraseña que permita autenticarse para poder usar la aplicación.
+  \item Cuenta del superusuario para entrar en el Admin Site.
+  \item Resumen de las peculiaridades que se quieran mencionar sobre lo implementado en la parte obligatoria.
+  \item Lista de funcionalidades opcionales que se hayan implementado, y breve descripción de cada una.
+\end{itemize}
+
+Estos datos se escribirán siguiendo estrictamente el siguiente formato:
+
+\begin{verbatim}
+# Entrega practica
+
+## Datos
+
+* Nombre:
+* Titulación:
+* Cuenta en laboratorios:
+* Cuenta URJC:
+* Video básico (url):
+* Video parte opcional (url):
+* Despliegue (url):
+* Contraseñas:
+* Cuenta Admin Site: usuario/contraseña
+
+## Resumen parte obligatoria
+
+## Lista partes opcionales
+
+* Nombre parte:
+* Nombre parte:
+* ...
+\end{verbatim}
+
+Asegúrate de que el fichero esté adecuadamente formateado en Markdown.
+\end{itemize}
+
+
+%%----------------------------------------------------------------------------
+\subsection{Notas y comentarios}
+
+La práctica deberá funcionar en el entorno GNU/Linux (Ubuntu) del laboratorio de la asignatura con la versión de Django que se ha usado en prácticas.
+
+La práctica deberá funcionar desde el navegador Firefox disponible en el laboratorio de la asignatura.
+
+%%----------------------------------------------------------------------------
+\subsection{Preguntas frecuentes}
+\label{sec:practica-2025-05:preguntas}
+
+A continuación, algunas preguntas relacionadas con el enunciado de esta práctica, junto con sus respuestas:
+
+\begin{itemize}
+
+\item ¿Cómo puedo construir la ``Página dinámica de cada juego''?
+
+  Se hará utilizando HTMX, y si es conveniente, recursos específicos para que ésta funcione (por ejemplo, un recurso que proporcione el listado de comentarios del sitio en HTML, y nada más).
+  
+\item Cuando despliego mi práctica en Python Anywhere, puedo descargar fuentes de datos de juegos de algunos sitios, pero de otros no. ¿Qué está pasando?
+
+  Las máquinas virtuales de Python Anywhere están limitadas en cuanto a los sitios a los que se pueden conectar: sólo se pueden conectar a aquellos que están en una cierta ``lista blanca''. Por eso, si el sitio al que tu programa se tiene que conectar para obtener recursos no está en la lista blanca, no va a poder descargarse el documento XML o JSON de esos recursos. Para evitar problemas, en el caso de despliegue en Python Anywhere pedimos que funcionen bien los recursos reconocidos que están en la lista blanca, y para los demás, que tengan recursos en la base de datos de despliegue. Más detalles en el apartado sobre despliegue de este enunciado (\ref{sec:practica-2025-05:despliegue}).
+  
+\item En la pagina de información que se menciona en el enunciado, ¿qué hay que incluir en el apartado de documentación?
+
+Casi que lo que queráis, lo importante es tener la página. Puede ser por ejemplo un resumen de un párrafo de lo que hace la aplicación.
+  
+\item ¿Es necesario utilizar los mecanismos provistos por Django para el control de sesiones?
+
+  En principio, esa es la solución recomendada. El principal problema suele ser asegurarse de que cualquier mecanismo alternativo funciona al menos tan bien como el de Django, lo que no es en general trivial. De todas formas, salvo muy buenos motivos, la aplicación es una aplicación Django, y por lo tanto cuantas más facilidades de Django se usen (bien usadas), mejor.
+
+\item Si usamos el mecanismo básico de sesiones de Django, que nos proporciona la propiedad \texttt{request.session.session\_key} como parte del objeto \texttt{request} que reciben las vistas, ¿podemos usarla como cookie para ``transferir'' la sesión a otro navegador?
+
+  Puedes consultar la documentación sobre los mecanismos para gestionar sesiones que proporciona Django\footnote{Documentación de Django sobre sesiones:\\
+    \url{https://docs.djangoproject.com/en/5.0/topics/http/sessions/}}, que incluye información sobre este tema.
+
+  También puedes mirar con detalle, usando las herramientas del desarrollador del navegador, si la cookie es la que esperas o no, y con el depurador de Python y/o sentencias print, si lo que recibe tu vista es o no lo que esperas.
+
+\item Cuando estoy probando mi aplicación, veo que, para algunos juegos, me muestra bien la imagen en la página, pero para otras, no. En todos los casos, si accedo con el navegador directamente a la URL de los juegos, puedo ver la imagen. ¿Qué está ocurriendo?
+
+  Cuando el navegador está descargando una página desde tu aplicación, al navegador se aplican las reglas de permisos para cargar imágenes de sitios terceros que definan las cabeceras CORS de ese sitio tercero. Esas cabeceras pueden indicar que sólo se reciban las imágenes si están ``incluidas'' en una página del sitio que las sirve, por ejemplo. Tienes información sobre ello, por ejemplo, en la documentación sobre CORS\footnote{Documentación sobre CORS en MDN: \\
+    \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS}}.
+
+  Si el navegador no puede mostrar las imágenes de un sitio tercero porque CORS no lo permite, tendrá que ofrecérselas tu aplicación (que sí se las podrá descargar, porque no es un navegador, y no va a hacer caso a las cabeceras CORS). Puedes consultar el ejercicio Django HTMX (ejercicio~\ref{subsec:django-htmx}) donde la aplicación descarga imágenes, antes de enviárselas al navegador, para tener una idea de cómo se hace esto (que es independiente de que uses o no HTMX). En particular, mira la función \texttt{download\_image} y la vista \texttt{image} en la solución propuesta para ese ejercicio.
+  
+\item ¿Dónde puedo realizar el despliegue de la aplicación?
+
+  El despliegue puede realizarse en cualquier ordenador que esté conectado permanentemente a Internet durante el periodo de corrección, en una dirección accesible desde cualquier navegador conectado a su vez a Internet. Esto puede ser por ejemplo un ordenador personal en un domicilio con acceso permanente a Internet, adecuadamente configurado (puede ser una Raspberry Pi o similar, si se busca una solución simple y de bajo coste). También puede ser un servicio en Internet, por ejemplo uno gratuito como los que ofrecen Google (instrucciones\footnote{GCP Quickstart Using a Linux VM:\\ \url{https://cloud.google.com/compute/docs/quickstart-linux}}, precios\footnote{Google Compute Engine Pricing:\\ \url{https://cloud.google.com/compute/pricing}}), o PythonAnywhere (instrucciones\footnote{Capítulo ``Deploy!'' de Django Girls Tutorial:\\ \url{https://tutorial.djangogirls.org/en/deploy/}}, precios\footnote{PythonAnywhere Plans and Pricing:\\ \url{https://www.pythonanywhere.com/pricing/}}). Los profesores podremos ayudar de forma más detallada con PythonAnywhere.
+
+\item He desplegado en PythonAnywhere, y veo que las imágenes de algunos sitios que descarga mi aplicación, y que funcionaban sin problemas cuando probaba en mi ordenador y en el laboratorio, ahora no descargan (la aplicación desplegada en PythonAnywhere no las recibe). ¿Qué está pasando?
+
+Mira los comendatarios sobre la lista blanca de PythonAnywhere, en el apartado sobre despliegue del enunciado de la práctica.
+
+\item He desplegado en PythonAnywhere, y veo que algunos documentos que sirve mi aplicación y se descargaban bien cuando probaba en mi ordenador, no se descargan bien ahora. ¿Qué está pasando?
+
+  Algunos documentos estáticos (por ejemplo, la hora de estilo CSS que estoy usando) no se carga en el navegador cuando despliego la práctica en PythonAnywhere. Sin embargo, cuando pruebo en mi ordenador, o en los ordenadores del laboratorio, todo parece ir bien. ¿Qué está pasando.
+
+  Lo que ocurre es que para servir los ficheros estáticos (los que no genera tu aplicación Django, sino que simplemente los sirve a partir de ficheros ya existentes), hay que indicarle a PythonAnywhere qué ficheros son esos, y para qué recursos deben servirse. Es muy típico que esto ocurra, por ejemplo, con el fichero que tenga la hoja de estilo CSS. Puedes ver esto en la consola web, donde indica:
+
+  \begin{verbatim}
+Static files:
+
+Files that aren't dynamically generated by your code,like CSS,
+JavaScript or uploaded files, can be served much faster straight
+off the disk if you specify them here. You need to Reload your
+web app to activate any changes you make to the mappings below.
+\end{verbatim}
+
+  Añade en esa tabla tus ficheros, y si no hay más problemas te funcionará.
+
+\item Estoy tratando de descargar el listado de juegos o las imágenes de las juegos y almacenarlas en la base de datos usando migraciones de Django, pero no me acaba de funcionar. ¿Qué puedo hacer?
+
+  El enunciado de la práctica indica que los listados de juegos se han de descargar cuando se pulse el botón adecuado en la página principal, y las imágenes de los luegos, cuando se vea la página del juego en cuestión. Por lo tanto, no hay que ``precargar'' nada en la base de datos, y no hará falta usar migraciones para descargar el listado de juegos ni las imágenes de los juegos.
+
+\item ¿Hay que hacer algún tipo de autenticación para que los navegadores puedan ver la página principal de la aplicación?
+
+  No, el enunciado indica que no hay que hacer autenticación, cualquier navegador puede acceder a cualquier recurso de la aplicación. Sin embargo, sí que hay que llevar cuenta, en la aplicación, de si una petición nos llega desde un navegador que ya nos hizo una petición antes, porque puede haber algún dato que influya en la página que le tenemos que devolver (como por ejemplo, en nombre de usuario, si lo ha especificado).
+
+  El botón para terminar una sesión servirá para que la aplicación ``olvide'' cualquier acción que el navegador donde se pulse haya hecho hasta ese momento. A partir de ese momento, la próxima petición que se reciba desde ese navegador será tratada como si fuera la primera que se recibe desde ese navegador.
+\end{itemize}
+
