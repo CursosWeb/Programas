@@ -37,13 +37,14 @@ A continuación se describe el funcionamiento y la arquitectura general de la ap
 Se servirán al menos las siguientes páginas (recursos), con los contenidos descritos a continuación:
 
 \begin{description}
-\item[Página principal.] Se ofrecerá un listado de los juegos ordenados por puntuación media (de mayor a menor). Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, y enlace a la página de detalles.
+\item[Página principal.] Se ofrecerá un listado de los juegos ordenados por puntuación media (de mayor a menor). Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, un botón de ``Seguir'' (si el usuario está logueado y no sigue el juego) o de ``Dejar de seguir'' (si el usuario ya sigue el juego) y enlace a la página de detalles.
 
 \item[Página de detalles del juego.] El nombre de recurso de esta página será el identificador del juego. Se mostrará:
 \begin{itemize}
 \item Imagen grande del juego.
 \item Información detallada: descripción, desarrollador, publicador, plataforma, género, fecha de lanzamiento.
 \item Listado de comentarios existentes, ordenados de más recientes a más antiguos.
+\item Botón para seguir el juego.
 \item Formulario para valorar el juego (entre 0 y 5).
 \item Formulario para escribir un comentario.
 \end{itemize}
@@ -63,7 +64,7 @@ Se servirán al menos las siguientes páginas (recursos), con los contenidos des
 \item Enlace al listado de juegos que ha marcado como \textit{seguidos} o \textit{favoritos}.
 \end{itemize}
 
-\item[Página de juegos votados por usuario.] Se ofrecerá un listado de los juegos ordenados por puntuación media (de mayor a menor) por el usuario. Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, y enlace a la página de detalles.
+\item[Página de juegos votados por usuario.] Se ofrecerá un listado de los juegos ordenados por puntuación media (de mayor a menor) por el usuario. Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, un botón de ``Seguir'' (si el usuario está logueado y no sigue el juego) o de ``Dejar de seguir'' (si el usuario ya sigue el juego) y enlace a la página de detalles.
 
 \item[Página de juegos seguidos por el usuario.] Se ofrecerá un listado de los juegos seguidos por el usuario, ordenados por puntuación media (de mayor a menor). Para cada juego se mostrará: título, género, plataforma, puntuación media, nùmero de votos, y enlace a la página de detalles.
 
