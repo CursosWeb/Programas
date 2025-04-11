@@ -67,17 +67,30 @@ Se recomienda realizar la aplicación en varios pasos:
 %%---------------------------------------------------------------------
 %%---------------------------------------------------------------------
 \subsection{Minipráctica 2 (entrega voluntaria)}
-\label{subsec:minipractica-2-2025}
+\label{subsec:minipractica-2-2024}
 
 \textbf{Repositorio plantilla (para entrega):} \\
-\url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/mini-2-acortadora}
+\url{https://gitlab.eif.urjc.es/cursosweb/2023-2024/mini-2-acortadora}
 
 Esta práctica tendrá como objetivo la creación de una aplicación web (de nombre \emph{acorta}) simple para acortar URLs utilizando Django (en un nuevo proyecto Django llamado \emph{project}). Su enunciado será igual que el de la práctica 1 de entrega voluntaria (ejercicio~\ref{subsec:minipractica-1-2025}), salvo en los siguientes aspectos:
 
 \begin{itemize}
   \item Se implementará utilizando Django.
+  \item Se añadirá una nueva entrada en el formulario para elegir manualmente el recurso para la url acortada. Por lo tanto, en el recurso ``/'' invocado mediante POST, incluirá una qs que tenga campos \texttt{url} y \texttt{short}. 
+  
+  Así, por ejemplo, si se quiere acortar \texttt{http://gsyc.urjc.es} con el nombre de recurso \texttt{gsyc}, y la aplicación está en el puerto 1234 de la máquina ``localhost'', se invocará (mediante POST) la URL
 
-  \item Se añadirá el caso de que si el \emph{input} para el alias está vacío, se deberá acortar mediante un número aleatorio entre 0 y 1000.
+  \texttt{https://localhost:1234/}
+
+  y en el cuerpo de esa petición HTTP irá la \texttt{qs}
+
+  \verb|url=https://gsyc.urjc.es&short=gsyc|
+
+  Normalmente, esta invocación POST se realizará rellenando el formulario que ofrece la aplicación.
+
+  Como respuesta, la aplicación devolverá (en el cuerpo de la respuesta HTTP) una página HTML con el formulario, y la lista de URLs acortadas hasta el momento para este navegador, incluyendo esta.
+
+  \item Además si el recurso para la url acortada está vacío, se deberá acortar mediante un número entero que irá aumentando un valor de manera secuencial.
   
   Así, por ejemplo, si se quiere acortar \texttt{http://gsyc.urjc.es} con el nombre de recurso vacío, y la aplicación está en el puerto 1234 de la máquina ``localhost'', se invocará (mediante POST) la URL
 
@@ -85,25 +98,20 @@ Esta práctica tendrá como objetivo la creación de una aplicación web (de nom
 
   y en el cuerpo de esa petición HTTP irá la \texttt{qs}
 
-  \verb|url=https://gsyc.urjc.es&alias=|
+  \verb|url=https://gsyc.urjc.es&short=|
 
-  Y se eligirá para acortar un número aleatorio, calculado en la vista, por lo que la URL acortada sería \texttt{https://localhost:1234/762}, si 762 ha sido el número aleatorio generado.
+  Y se eligirá para acortar el número ``1'', por lo que la url acortada sería \texttt{https://localhost:1234/1}
 
-  Seguidamente si se quiere acortar \texttt{http://www.urjc.es} con el nombre de recurso vacío de nuevo, se calculará otro número aleatorio para acortar.
+  Seguidamente si se quiere acortar \texttt{http://www.urjc.es} con el nombre de recurso vacío de nuevo, se eligirá para acortar el número ``2'' por lo que la url acortada sería \texttt{https://localhost:1234/2}
 
-  Así sucesivamente, siempre y cuando el formulario para el nombre de recurso este vacío.
+  Así sucesivamente siempre y cuando el formulario para el nombre de recurso este vacío.
 
-  Hay que tener en cuenta que al calcular el número aleatorio puede dar la coincidencia de repetirse con un alias ya utilizado, por lo que hay que manejar esa situación como en la Mini P1, actualizando el la URL para ese alias.
-
-  \item Se añadirá un recurso \textbf{``/listrandom''} que solo admitirá peticiones GET. Esta vista deberá devolver la lista de URLs que han sido acortadas mediante un número aleatorio. 
-
-  \item Tendrá que almacenar la información relativa a las URLs que acorta en una base de datos, de forma que aunque la aplicación sea rearrancada, las URLs acortadas sigan funcionando adecuadamente. Pueden guardarse tantas tablas y columnas como se considere necesario. (Pista: se puede guardar en una columna de la tabla de URLs un campo booleano que determine si se ha acortado de manera aleatoria o con un alias).
+  \item Tendrá que almacenar la información relativa a las URLs que acorta en una base de datos, de forma que aunque la aplicación sea rearrancada, las URLs acortadas sigan funcionando adecuadamente.
   \item Utilizará plantillas, de manera que el código Python y el HTML estarán separados.
 \end{itemize}
 
 Repositorio de partida: \\
-\url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/mini-2-acortadora}
-
+\url{https://gitlab.eif.urjc.es/cursosweb/2023-2024/mini-2-acortadora}
 
 
 %%----------------------------------------------------------------------------
