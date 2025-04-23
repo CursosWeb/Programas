@@ -76,7 +76,6 @@ Se servirán al menos las siguientes páginas (recursos), con los contenidos des
 
 \item[Página de ayuda.] Mostrará información general sobre el funcionamiento de la aplicación, su estructura, y créditos del equipo de desarrollo. Podrá estar redactada en HTML plano.
 
-\item[Página de juegos seguidos.] Mostrará todos los juegos que el usuario ha marcado como \textbf{seguidos}, con enlaces a sus fichas.
 \end{description}
 
 
@@ -84,7 +83,7 @@ Se servirán al menos las siguientes páginas (recursos), con los contenidos des
 Elementos generales que aparecerán en todas las páginas HTML:
 
 \begin{description}
-\item[Cabecera.] En la parte superior estará la cabecera del sitio, que consistirá de un texto (el nombre del sitio, ``GameRank'') en un tipo de letra que resalte claramente, sobre una imagen de fondo. El texto será un enlace al recurso ``/'' del sitio. También se verá el nombre de comentador que se está usando desde ese navegador (o ``Anónimo'' si no se ha especificado uno).
+\item[Cabecera.] En la parte superior estará la cabecera del sitio, que consistirá de un texto (el nombre del sitio, ``GameRank'') en un tipo de letra que resalte claramente, sobre una imagen de fondo. El texto será un enlace al recurso ``/'' del sitio. También se verá el nombre de comentador que se está usando desde ese navegador (o nada o ``Anónimo'' si no se ha especificado uno). Esta cabecera debe de estar presente en todas las páginas del sitio, y debe de ser un elemento común a todas ellas.
 
 \item[Menú.] En una barra debajo del elemento anterior tendremos un menú desde el que se podrá acceder, mediante enlaces, al menos a las siguientes páginas (salvo si la opción apunta a la página en la que se está, en cuyo caso no aparecerá en esa página):
   \begin{itemize}
@@ -97,7 +96,7 @@ Elementos generales que aparecerán en todas las páginas HTML:
   \item la página de acceso al ``Admin Site'' (con el texto ``Admin''). 
   \end{itemize}
 
-\item[Pie.] Un pie de página con un resumen de métricas: ``Juegos: XXX. Comentarios: YYY. Juegos votados por el usuario: ZZZ. Comentarios por el usuario: WWW'', siendo XXX el número de juegos, YYY el número de comentarios en todo el sitio, ZZZ el número de juegos votados por el usuario, y WWW los comentarios puestos por el usuario.
+\item[Pie.] Un pie de página con un resumen de métricas: ``Juegos: XXX. Comentarios: YYY. Juegos votados por el usuario: ZZZ. Comentarios por el usuario: WWW'', siendo XXX el número de juegos, YYY el número de comentarios en todo el sitio, ZZZ el número de juegos votados por el usuario, y WWW los comentarios puestos por el usuario. Este pié de página debe de estar presente en todas las páginas del sitio, y debe de ser un elemento común a todas ellas.
 \end{description}
   
 En lo que tiene que ver con el aspecto de las páginas se tendrá en cuenta:
@@ -158,7 +157,7 @@ La práctica deberá funcionar con al menos la fuente de datos ``Listado 1'', y 
   \url{https://www.mmobomb.com/api1/games}
 \end{itemize}
 
-Importante: para cada fuente de datos se identificará un campo que sirva como identificador único, y se diferenciará de los identificadores únicos de otras fuentes de datos usando un prefijo. Para el Listado~1, el prefijo será \verb|LIS1-|. Para los demás, el alumno deberá utilizar el prefijo que desee.
+Importante: para cada fuente de datos se identificará un campo que sirva como identificador único, y se diferenciará de los identificadores únicos de otras fuentes de datos usando un prefijo. Para el Listado~1, el prefijo será \verb|LIS1-|. Para los demás, el alumno deberá utilizar el prefijo que desee. Además, habrá que usar requests para obtener los datos de las fuentes, y no se podrá usar el fichero XML directamente.
 
 %%----------------------------------------------------------------------------
 \subsection{Despliegue}
