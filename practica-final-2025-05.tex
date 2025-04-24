@@ -11,7 +11,7 @@
 
 %[ \textbf{Nota importante:} Este enunciado puede sufrir cambios si se detectan errores en él. ]
 
-Este es el enunciado del proyecto final del curso 2023-2024, tanto para la convocatoria ordinaria como para la extraordinaria.
+Este es el enunciado del proyecto final del curso 2024-2025, tanto para la convocatoria ordinaria como para la extraordinaria.
 
 La práctica final de la asignatura consiste en la creación de una aplicación web llamada GameRank, que funcionará como una plataforma de exploración y valoración de videojuegos. La información de los juegos se obtendrá inicialmente desde un fichero XML proporcionado por el profesorado (ver apartado Fuentes de datos~\ref{sec:practica-2025-05:datos}), y opcionalmente desde APIs públicas como FreeToGame o MMOBomb. Cada juego tendrá un identificador único, y una serie de datos asociados como el título, plataforma, género, desarrollador, fecha de lanzamiento, etc. Los usuarios podrán comentar cada juego y puntuarlo del 0 al 5. Cada comentario incluirá automáticamente la fecha y hora en que se escribió y estará vinculado al juego correspondiente.
 
@@ -126,12 +126,6 @@ Autenticación:
 
 \item Una vez un navegador ha recibido una cookie de autenticación, no tendrá que mostrar ya el formulario de autenticación a ese navegador.
   
-\item Los scripts que accedan al sitio para poner noticias mediante la interfaz XML podrán utilizar una contraseña válida, incluyéndola en su petición en la cabecera Authorization como la siguiente (siendo ``xx34d23'' la contraseña):
-
-\begin{verbatim}
-Autorization: Basic xx34d23
-\end{verbatim}
-
 \end{itemize}
 
 
