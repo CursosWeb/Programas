@@ -122,7 +122,7 @@ Autenticación:
 \begin{itemize}
 \item Todos los recursos del sitio salvo la página principal estarán ``protegidos'' de forma que sólo se podrá acceder a ellos (mediante cualquier comando HTTP) si se ha iniciado una sesión.
   
-\item Cuando un navegador acceda a cualquier recurso del sitio sin haber iniciado sesión, recibirá un formulario en el que se le solicitará una contraseña. El sitio mantendrá una lista de una o más contraseñas válidas (que serán cadenas alfanuméricas de cualquier longitud), en una tabla de la base de datos. Si la contraseña indicada en el formulario es una de ellas, se iniciará la sesión usando cookies (y se realizará la función correspondiente al recurso invocado). Si no es así, se enviará el formulario de nuevo, con código de error 401 (Unauthorized).
+\item Cuando un navegador acceda a cualquier recurso no protegido del sitio sin haber iniciado sesión, recibirá una redirección a un formulario en el que se le solicitará el ususario y contraseña (la pagina del login). El sitio mantendrá una lista de una o más usuarios/contraseñas válidos (que serán cadenas alfanuméricas de cualquier longitud). Si el usuario/contraseña indicado en el formulario es una de ellas, se iniciará la sesión usando cookies (y se realizará la función correspondiente al recurso invocado). Si no es así, se enviará el formulario de nuevo, con código de error 401 (Unauthorized).
 
 \item Una vez un navegador ha recibido una cookie de autenticación, no tendrá que mostrar ya el formulario de autenticación a ese navegador.
   
@@ -252,7 +252,7 @@ Sobre la entrega del repositorio:
   \item Se han de entregar los siguientes ficheros:
 
 \begin{itemize}
-\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django~4.1. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
+\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django~5.1.7. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
 
 \item La base de datos habrá de tener datos suficientes como para poder probarlo. Estos datos incluirán juegos obtenidas desde el listado 1 proporcionado en la plantilla, y comentarios puestos desde al menos dos navegadores, con al menos diez mensajes en total, en al menos tres juegos.
 
