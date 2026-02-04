@@ -285,6 +285,40 @@ Escribe como respuesta:
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
+\subsection{Servidor web con carrito de la compra}
+\label{subsec:servidor-carrito}
+
+\textbf{Enunciado:}
+
+Vamos a construir una aplicación servidora HTTP capaz de manejar usuarios, cada uno con su carrito de la compra, de forma sencilla y sin usar cookies. Para ello, haremos que la aplicación interprete parte de los nombres de recurso que le pidan como el identificador de usuario. Por ejemplo, podemos usar el formato \verb|\{recurso}/{id}|, o \verb|\{recurso}?{id}|.
+
+Para que la aplicación funcione, cuando le pidan un recurso que no tiene identificador de usuario, asignará uno, y devovlerá todas sus páginas ``marcadas'' con ese identificador. Para ``marcarlas'', hará que todos los enlaces (por ejemplo, en elementos \verb|<a href>|) incluyan ese identificador, y que en todos los formularios este identificador esté como campo oculto. De esta manera, todas las peticiciones que el navegador envíe a nuestra aplicación, bien porque el usuario ha pulsado sobre un enlace, bien porque ha rellenado un formulario, le llegarán con el identificador, bien en el nombre del recurso, bien como parte de la query string que se envía con los formularios.
+
+El carrito de cada usuario se puede simular con un diccionario en memoria, que tenga una clave para cada identificador de usuario, y como valor el objeto o los objetos que el usuario haya marcado para el carrito.
+
+Cada página de la aplicación puede devolver al menos un enlace a una ``página de objeto''. En esa página, habrá un botón para poder añadir el objeto al carrito de la compra del usuario que lo pulse. Los objetos pueden estar indentificados por números. La página de cada objeto será por tanto un recurso que incluya ese identificador de objeto. Cuando una página (por ejemplo la página principal) incluya el enlace a un objeto, incluirá ese enlace. En una aplicación real, estos números indentificadores de objeto estarían en una base de datos, pero aún no se pide implementar esa parte: por ahora cuando queramos generar un objeto, simplemente generaremos un número aleatorio.
+
+Además asegúrate que tu programa:
+
+\begin{itemize}
+\item Permite añadir al carrito de un usuario cualquier número de objetos.
+\item Muestre si se hace un GET al recurso \texttt{/carrito} el contenido del carrito, un botón para comprar el carrito, y un enlace para volver a la página principal.
+\item Si se pulsa el botón para comprar el carrito, se hace un POST al recurso \texttt{/comprar}, que devolverá un formulario que pedirá un número de tarjeta de crédito, y tendrá un botón para enviar dicho número, y un enlace para volver a la página principal.
+\item Si se pulsa el botón para enviar el número de tarjeta de crédito, se debe hacer un POST al recurso \texttt{/comprar}, que devolverá un mensaje de confirmación, y un enlace para volver a la página principal.
+\item Todas las páginas mostarán el valor de las cabeceras \texttt{Accept-Language} y \texttt{User-Agent}, si estas cabeceras vienen en la petición HTTP.
+\item Todas las respuestas de tu servidor incluirán una cabecera Server con el valor \texttt{Servidor Sencillo 0.0}.
+\end{itemize}
+
+\textbf{Solución parcial:}
+
+El programa \texttt{servidor.py} es la versión más simple, mientras que \texttt{servidor2.py} es una versión un poco más completa, que usa enlaces de la forma \texttt{/objetos/\{id\}} para acceder a los objetos, y tiene un formulario para añadir objetos solo en las páginas de los objetos.
+
+Carpeta de código: \texttt{Python-Web/servidor-carrito}
+
+
+
+%%-----------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 \subsection{Servidores que recuerdan}
 \label{subsec:servidores-recuerdan}
 
@@ -1850,12 +1884,12 @@ Para comenzar a trabajar, puedes seguir los siguientes pasos:
 
 %%-------------------------------------------------------------------------
 %%-------------------------------------------------------------------------
-\subsection{Asistente de IA generativa para PyCharm}
-\label{subsec:practicas-pycharm-ia}
+\subsection{Asistente de IA generativa para PyCharm (Codeium)}
+\label{subsec:practicas-pycharm-ia-codeium}
 
 \textbf{Enunciado:}
 
-Instala el plugin de PyCharm ``Codeium''. Configúralo y pruébalo.
+Instala el plugin de PyCharm ``Codeiun''. Configúralo y pruébalo.
 
 Puedes probar también otros plugins con funcionalidad similar, como Sourcegraph Cody.
 
@@ -1872,6 +1906,26 @@ Puedes probar también otros plugins con funcionalidad similar, como Sourcegraph
   \url{https://plugins.jetbrains.com/plugin/9682-sourcegraph-cody--code-search}
 \item Código fuente de Cody: \\
   \url{https://github.com/sourcegraph/sourcegraph/tree/main/client/jetbrains}
+\end{itemize}
+
+%%-------------------------------------------------------------------------
+%%-------------------------------------------------------------------------
+\subsection{Asistente de IA generativa para PyCharm (Windsurf)}
+\label{subsec:practicas-pycharm-ia}
+
+\textbf{Enunciado:}
+
+Instala el plugin de PyCharm ``Windsurf''. Configúralo y pruébalo.
+
+Puedes probar también otros plugins con funcionalidad similar, como Copilot o Kilo.
+
+\textbf{Materiales:}
+
+\begin{itemize}
+\item Información sobre el plugin Windsurf: \\
+  \url{https://plugins.jetbrains.com/plugin/20540-windsurf-plugin-for-python-js-java-go--}
+\item Sitio web de Windsurf: \\
+  \url{https://windsurf.com/}
 \end{itemize}
 
 
