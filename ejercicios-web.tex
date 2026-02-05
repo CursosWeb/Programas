@@ -16,11 +16,11 @@
 \subsection{Entrega de microprácticas y miniprácticas}
 \label{sec:eje-entrega-practicas-incr}
 
-Para la entrega de prácticas incrementales se utilizarán repositorios git públicos alojados en el GitLab de la ETSIT. Para cada práctica entregable los profesores abrirán un repositorio público en el proyecto CursosWeb~\footnote{\url{https://gitlab.eif.urjc.es/CursosWeb}}, con un nombre que comenzará por ``X--Serv--'', seguirá con el nombre del tema en el que se inscribe la práctica (por ejemplo, ``Python'' para el tema de introducción a Python) y el identificador del ejercicio (por ejemplo, ``Calculadora''). En el caso de las miniprácticas, el nombre comenzará por ``Mini--'', seguido de un número (el de orden de entrega), y el identificador del ejercicio. Este repositorio incluirá un fichero README.md, con el enunciado de la práctica, y cualquier otro material que los profesores estimen conveniente.
+Para la entrega de prácticas incrementales se utilizarán repositorios git públicos alojados en el GitLab de la EIF. Para cada práctica entregable los profesores abrirán un repositorio público en la carpeta de plantillas del curso actual, en el proyecto CursosWeb~\footnote{\url{https://gitlab.eif.urjc.es/CursosWeb}}, con un nombre que la identifique, similar al que aparece en el programa de la asignatura para el ejercicio correspondiente. En el caso de las miniprácticas, el nombre comenzará por ``Mini--'', seguido de un número (el de orden de entrega), y el identificador del ejercicio. Este repositorio incluirá un fichero README.md, con el enunciado de la práctica, y cualquier otro material que los profesores estimen conveniente.
 
-Cada alumno dispondrá de una cuenta en el GitLab de la ETSIT, que usará a efectos de entrega de prácticas. Esta cuenta deberá ser apuntada en una lista, en el sitio de la asignatura en el campus virtual, cuando los profesores se lo soliciten. Si el alumno desea que no sea fácil trazar su identidad a partir de esta cuenta, puede elegir abrir una cuenta no ligada a sus datos personales: a efectos de valoración, los profesores utilizará la lista anterior. Si el alumno lo desea, puede usar la misma cuenta en GitLab para otros fines, además de para la entrega de prácticas.
+Cada alumno dispone de una cuenta en el GitLab de la EIF, que usará a efectos de entrega de prácticas. Si el alumno lo desea, puede usar la misma cuenta en el GitLab de la EIF para otros fines, además de para la entrega de prácticas.
 
-Para trabajar en una práctica, los alumnos comenzarán por realizar una copia (fork) de cada uno de estos repositorios. Esto se realiza en GitLab, visitando (tras haberse autenticado con su cuenta de usuario de GitLab para entrega de prácticas) el repositorio con la práctica, y pulsando sobre la opción de realizar un fork. Una vez esto se haya hecho, el alumno tendrá un fork del repositorio en su cuenta, con los mismos contenidos que el repositorio original de la práctica. Visitando este nuevo repositorio, el alumno podrá conocer la url para clonarlo, con lo que podrá realizar su clon (copia) local, usando la orden \verb|git clone|.
+Para trabajar en una práctica, los alumnos comenzarán por realizar una copia (fork) de cada uno de estos repositorios. Esto se realiza en el GitLab de la EIF, visitando (tras haberse autenticado con su cuenta de usuario) el repositorio con la práctica, y pulsando sobre la opción de realizar un fork. Una vez esto se haya hecho, el alumno tendrá un fork del repositorio en su cuenta, con los mismos contenidos que el repositorio original de la práctica. Visitando este nuevo repositorio, el alumno podrá conocer la url para clonarlo, con lo que podrá realizar su clon (copia) local, usando la orden \verb|git clone|.
 
 A partir de este momento, el alumno creará los ficheros que necesite en su copia local, los irá marcando como cambios con \verb|git commit| (usando previamente \verb|git add|, si es preciso, para añadirlos a los ficheros considerados por git), y cuando lo estime conveniente, los subirá a su repositorio en GitLab usando \verb|git push|.
 
@@ -40,7 +40,7 @@ git commit .
 git push
 \end{verbatim}
 
-Conviene visitar el repositorio propio en GitLab, para comprobar que efectivamente los cambios realizados en la copia local se han propagado adecuadamente a él, tras haber invocado \verb|git push|.
+Conviene visitar el repositorio propio en el GitLab de la EIF, para comprobar que efectivamente los cambios realizados en la copia local se han propagado adecuadamente a él, tras haber invocado \verb|git push|.
 
 %%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
@@ -290,7 +290,7 @@ Escribe como respuesta:
 
 \textbf{Enunciado:}
 
-Vamos a construir una aplicación servidora HTTP capaz de manejar usuarios, cada uno con su carrito de la compra, de forma sencilla y sin usar cookies. Para ello, haremos que la aplicación interprete parte de los nombres de recurso que le pidan como el identificador de usuario. Por ejemplo, podemos usar el formato \verb|\{recurso}/{id}|, o \verb|\{recurso}?{id}|.
+Vamos a construir una aplicación servidora HTTP capaz de manejar usuarios, cada uno con su carrito de la compra, de forma sencilla y sin usar cookies. Para ello, haremos que la aplicación interprete parte de los nombres de recurso que le pidan como el identificador de usuario. Por ejemplo, podemos usar el formato \verb|{recurso}/{id}|, o \verb|{recurso}?{id}|.
 
 Para que la aplicación funcione, cuando le pidan un recurso que no tiene identificador de usuario, asignará uno, y devovlerá todas sus páginas ``marcadas'' con ese identificador. Para ``marcarlas'', hará que todos los enlaces (por ejemplo, en elementos \verb|<a href>|) incluyan ese identificador, y que en todos los formularios este identificador esté como campo oculto. De esta manera, todas las peticiciones que el navegador envíe a nuestra aplicación, bien porque el usuario ha pulsado sobre un enlace, bien porque ha rellenado un formulario, le llegarán con el identificador, bien en el nombre del recurso, bien como parte de la query string que se envía con los formularios.
 
