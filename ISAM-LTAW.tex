@@ -295,6 +295,7 @@ Páginas dinámicas (diferentes según cómo y cuándo se invocan). Identificaci
 Detalles del protocolo HTTP: cabeceras, cuerpo, formato de todo ello.
 
 \begin{itemize}
+\item \textbf{Discusión de ejercicio:} ``cURL básico'' (ejercicio~\ref{subsec:curl-basico})
 \item \textbf{Ejercicio continuado en clase, y propuesto (entrega en GitLab):} ``Servidor web con carrito de la compra'' (ejercicio~\ref{subsec:servidor-carrito}). \\
   Entrega recomendada: antes del \martesC. \\
   Repo plantilla: \\ {\footnotesize \url{https://gitlab.eif.urjc.es/cursosweb/2025-2026-ltaw/servidor-carrito}}
@@ -302,45 +303,58 @@ Detalles del protocolo HTTP: cabeceras, cuerpo, formato de todo ello.
 
 
 %%----------------------------------------------------------------
-\subsubsection{\lunesC: Conceptos básicos II (2 horas)}
+\subsubsection{\lunesC: Cookies (2 horas)}
 \label{cal:lunesC}
 
-Cómo realizar sesiones en HTTP. Profundización en el concepto de sesión, y técnicas para conseguirla, incluyendo cookies y otros mecanismos.
+Introducción a las cookies.
 
 \begin{itemize}
-\item \textbf{Ejercicio (discusión en clase):} ``Última búsqueda'' (ejercicio~\ref{subsec:ultima-busqueda}) \\
-  Se introducen las dos solucines típicas: cookie con la pregunta, y cookie con un identificador más tabla en el servidor.
-\item \textbf{Ejercicio (presentación en clase):} ``Espía a tu navegador (Firefox Developer Tools)'' (ejercicio~\ref{subsec:firefox-devel}) \\
-  Centrado en la pestaña de ``Inspección''.
 \item \textbf{Presentación:} Cookies
 \item \textbf{Material:} Transparencias, tema ``Cookies''
-\item \textbf{Ejercicio propuesto (entrega en el foro):} ``Explora tus cookies (2)'' (ejercicio~\ref{subsec:explora-cookies-2}) \\
-  Entrega recomendada: antes del \lunesC. \\
-\item \textbf{Ejercicio (discusión en clase):} ``Explora tus cookies'' (ejercicio~\ref{subsec:explora-cookies}) \\
-  Entrega recomendada: antes del \lunesB.
+\item \textbf{Ejercicio (recomendado):} ``Explora tus cookies'' (ejercicio~\ref{subsec:explora-cookies}).
 \end{itemize}
 
 
+%%----------------------------------------------------------------------------
+\subsubsection{\martesC: Cookies II  (2 horas)}
+\label{cal:martesC}
+
+Establecimiento de sesión con cookies. Autenticación de usuario.
+
+\begin{itemize}
+\item \textbf{Ejercicio desarrollado en clase, y propuesto (entrega en GitLab):} ``Servidor web con carrito de la compra (cookies)'' (ejercicio~\ref{subsec:servidor-carrito-cookies}). \\
+  Entrega recomendada: antes del \martesD. \\
+  Repo plantilla: \\ {\footnotesize \url{https://gitlab.eif.urjc.es/cursosweb/2025-2026-ltaw/servidor-cookies}}
+\end{itemize}
 
 
 %%----------------------------------------------------------------
-\subsubsection{\lunesD: Conceptos básicos III (2 horas)}
+\subsubsection{\lunesD: Cookies III (2 horas)}
 \label{cal:lunesD}
 
+Repàso de conceptos de cookies. Formato de cookies. Cookies de sesión y de almacenamiento.
+
 \begin{itemize}
-\item \textbf{Frikiminutos}: ``Pregunta, que te responderán'' (Stackoverflow).
 \item \textbf{Ejercicio (discusión en clase):} ``Última búsqueda'' (ejercicio~\ref{subsec:ultima-busqueda}) \\
   Discusión sobre el uso de cookies (u otros mecanismos) para conseguir la funcionalidad requerida. Se discute también el almacenamiento en el lado del servidor y en el lado del cliente. Relación entre peticiones HTTP. Cookies como herramienta para ambas situaciones. Analogía con la agencia de viajes física. Cómo tienen que ser las cookies de identificación para que no sean fácilmente ``adivinables''.
   \item \textbf{Ejercicio (discusión en clase):} ``Traza de historiales de navegación por terceras partes'' (ejercicio~\ref{subsec:navegacion-terceras-partes})
 \item Relación de traza de historias de navegación con identidades personales.
 \item \textbf{Discusión:} Usos de las cookies. \\
   Uso de las cookies para identificación de visitantes (como en el ejercicio~\ref{subsec:ultima-busqueda}), para autenticación (interacción de autenticación y cookie de sesión posterior), para almacenamiento (como en el ejercicio~\ref{subsec:ultima-busqueda}, con última búsqueda en la cookie). Implicaciones de trasladar una cookie de identificación o de sesión de un ordenador a otro. Implicaciones de almacenar datos en el lado del navegador.
-\item \textbf{Discusión de ejercicio:} ``cURL básico'' (ejercicio~\ref{subsec:curl-basico})
 \item \textbf{Ejercicio (discusión en clase):} ``Explora tus cookies'' (ejercicio~\ref{subsec:explora-cookies}) 
 \item \textbf{Ejercicio propuesto (entrega en el foro):} ``Explora tus cookies (2)'' (ejercicio~\ref{subsec:explora-cookies-2}) \\
   Entrega recomendada: antes del \lunesD.
 \end{itemize}
 
+%%----------------------------------------------------------------
+\subsubsection{\martesD: Cookies IV (2 horas)}
+\label{cal:martesD}
+
+Uso de cookies para traza de historias
+
+\begin{itemize}
+\item \textbf{Ejercicio (demo):} ``Trackers en páginas web'' (ejercicio~\ref{subsec:trackers-paginas-web})
+\end{itemize}
 
 %%----------------------------------------------------------------
 \subsubsection{\lunesE: Conceptos básicos IV (2 horas)}
@@ -610,21 +624,6 @@ Hojas de estilo CSS, y su uso para manejar la apariencia de las páginas HTML.
 
 
 
-
-%%----------------------------------------------------------------------------
-\subsubsection{\martesC: Python y entorno III  (2 horas)}
-\label{cal:martesC}
-
-\begin{itemize}
-\item \textbf{Frikiminutos:} ``Generador de QRs''
-\item \textbf{Presentación:} ``Introducción a Python''. Clases y orientación a objetos en Python.
-\item \textbf{Material:} Transparencias ``Introducción a Python''
-\item \textbf{Presentación:} ``Git desde la línea de comandos''.
-\item \textbf{Presentación (repaso):} Introducción a la entrega de prácticas en GitLab (seccion~\ref{sec:eje-entrega-practicas-incr}).
-\item \textbf{Ejercicio propuesto (entrega en GitLab):} ``Cabeceras de recursos web'' (ejercicio~\ref{subsec:eje-python-cabreceras}). \\
-Entrega recomendada: antes de \martesD.
-\end{itemize}
-
 %%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
 \subsection{P2 - Aplicaciones web simples}
@@ -634,8 +633,9 @@ Construcción de aplicaciones web mínimas sobre la biblioteca Sockets de Python
 
 
 %%----------------------------------------------------------------------------
-\subsubsection{\martesD: Aplicaciones web (2 horas)}
-\label{cal:martesD}
+%\subsubsection{\martesD: Aplicaciones web (2 horas)}
+\subsubsection{Aplicaciones web (2 horas)}
+%\label{cal:martesD}
 
 \begin{itemize}
 \item \textbf{Frikiminutos:} ``Descarga de audio de YouTube''

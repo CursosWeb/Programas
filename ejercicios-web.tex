@@ -315,6 +315,28 @@ El programa \texttt{servidor.py} es la versión más simple, mientras que \textt
 
 Carpeta de código: \texttt{Python-Web/servidor-carrito}
 
+%%-----------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
+\subsection{Servidor web con carrito de la compra (cookies)}
+\label{subsec:servidor-carrito-cookies}
+
+\textbf{Enunciado:}
+
+Realiza una aplicación web que permita manejar un carrito de la compra para cada usuario, tal y como se explica en el ejercicio ``Servidor web con carrito de la compra'' (ejercicio~\ref{subsec:servidor-carrito}), usando cookies en lugar de urls anotadas y campos ocultos en formularios. Además:
+
+\begin{itemize}
+\item La aplicación mantendrá en un diccionario un listado de usuarios reconocidos, y sus contraseñas
+\item Si un navegador hace una petición a cualquier recurso de la aplicación, sin enviar una cabecera de cookie de sesión válida, el navegador recibirá como respuesta una página HTML con un formulario para escribir un identificador de usuario y la contraseña correspondiente. Si el usuario los escribe correctamente, según el listado de usuarios reconocidos, se abrirá una nueva sesión, enviando al navegador la cookie correspondiente. Si no, volverá a enviarle al navegador el formulario de entrada.
+\item Cuando se haya establecido una sesión, el usuario podrá pulsar en un botón para terminar al sesion y ``salir'' de la aplicación.
+\end{itemize}
+
+Por lo tanto, solo cuando el usuario ``ha entrado'' en su cuenta podrá aañdir objetos a su carrito de la compra, y comprarlos.
+
+\textbf{Solución parcial:}
+
+El programa \texttt{servidor.py} es una versión simple, hecha con la ayuda de un asistente de IA.
+
+Carpeta de código: \texttt{Python-Web/servidor-cookies}
 
 
 %%-----------------------------------------------------------------------------
