@@ -588,10 +588,53 @@ Para poder ligar este historial a una identidad, basta con que, en un servidor q
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
-\subsection{Traza de historiales de navegación por terceras partes (implementación}
+\subsection{Traza de historiales de navegación por terceras partes (implementación)}
 \label{subsec:navegacion-terceras-partes-impl}
 
 Implementa un programa trazador, que funcione de forma similar a la descrita en el ejercicio ``Traza de historiales de navegación por terceras partes'' (ejercicio~\ref{subsec:navegacion-terceras-partes}).
+
+El programa trazador se llamará \texttt{trazador.py}, y cuando sea lanzado admitirá un argumento, que será el puerto TCP en el que quedará esperando peticiones HTTP. Por ejemplo, si se lanza de la siguiente forma, escuchará peticiones en el puerto 8002:
+
+\begin{verbatim}
+python3 trazador.py 8002
+\end{verbatim}
+
+Este programa mantendrá en memoria una lista con los accesos que se vayan realizando a los sitios que monitorice. Para cada acceso, anotará:
+
+\begin{itemize}
+\item La fecha y hora del acceso.
+\item El recurso solicitado.
+\item El sitio web donde ha tenido lugar el acceso.
+\item Un identificador único de navegador.
+\item La cabecera de identificación HTTP del navegador que realizó el acceso.
+\end{itemize}
+
+En cuanto al identificador único de navegador, cada navegador recibirá uno, pero éste deberá ser el mismo cuando ese navegador acceda a los distintos sitios monitorizados. De esta forma se podrá trazar la historia de navegación de cada navegador en todos los sitios monitorizados.
+
+Para poder trazar los acceso a los sitios monitorizados, \texttt{trazador.py} utilizará recursos con el prefijo \texttt{/rec/}.
+
+Además, \texttt{trazador.py} permitirá registrarse y autenticarse. Para registrarse y autenticarse, se ofrecerá un formulario en la página principal ``/'', donde un usuario cualquiera podrá crearse una cuenta o, si ya la tiene, usarla para autenticarse. Para registrarse se pedirá una dirección de correo y una contraseña. Para autenticarse se pedirá de nuevo una dirección de correo y una contraseña. Una vez se hayan autenticado, los usuarios podrán también cerrar la sesión, con lo que si vuelven al recurso ``/'', tendrían que volver a autenticase.
+
+Cuando un usuario se haya autenticado, el recurso principal le mosrtrará en formato tabla el histórico de accesos a todos los sitios monitorizados, como una tabla única, ordenada por fechas, con todos los datos recogidos para cada acceso. Si para alguno de esos navegadores se conoce la dirección de correo del usuario, gracias al mecanismo de registro, se mostrará también.
+
+Además, esa tabla tendrá un enlace a un recurso donde el usuario autenticado se podrá descargar la misma información de la tabla en formato JSON.
+
+Si un navegador, autenticado o no, accede a un recurso que no tenga el prefijo \texttt{/rec/}, que no sea el recurso principal (``/''), o que no sea el recurso que se use para cerrar la sesión, se le mostrará una página en blanco.
+
+Para que el trazado de los sitios monitorizados funcione, habrá que diseñar un esquema de recursos que se servirán con el prefijo \texttt{/rec/}. Este esquema se describirá en el fichero README.md. Ahí se explicará cómo se identificará, a partir del recurso que se pida, el sitio web y el recurso que se está accediendo. Tambień se explicará el nombre de la cookie utilizada para saber cuál es el navegador que está realizando el acceso.
+
+Para poder probar el esquema, se incluirá en el repositorio con la solución un directorio \texttt{web}, que tendrá al menos tres subdirectorios (\texttt{serv1}, \texttt{serv2} y \texttt{serv3}). Cada uno de esos subdirectorios tendrá al menos dos páginas, \texttt{hola.html} y \texttt{adios.html}. Estas páginas incluirán los recursos necesarios servidos por \texttt{trazador.py}, para que los accesos puedan ser trazados. Estos recursos supondrán que \texttt{trazador.py} espera peticiones HTTP en el puerto 8002 de 127.0.0.1 (localhost), como se ha indicado.
+
+La prueba de la práctica se realizará lanzando un servidor en cada directorio \texttt{serv1}, \texttt{serv2} y \texttt{serv3}, cada uno en un puerto diferente. Por ejemplo, para \texttt{serv1}:
+
+\begin{verbatim}
+cd web/serv1
+python3 -m http.server 9000
+\end{verbatim}
+
+Y lanzando a continuación \texttt{trazador.py} en el puerto 8002, como se ha indicado.
+
+Uan vez esté hecho esto, con varios navegadores (simulándolos, si es preciso, con ventanas de navegación en modo privado), se visitarán los servidores monitorizados, y se crearán cuentas para acceder a los datos del trazador, para probar la funcionalidad indicada.
 
 \textbf{Solución parcial:}
 
