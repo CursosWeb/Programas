@@ -1169,6 +1169,36 @@ Explicación del cálculo de Pi mediante el método Monte Carlo, incluyendo ejem
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
+\subsection{Sitio web para acceder a issues de GitLab}
+\label{subsec:gitlab-issues}
+
+\textbf{Enunciado:}
+
+Vamos a construir, por fases, un sitio web para acceder a tickets (issues) del GitLab de la EIF.
+
+Primero utiliza \texttt{curl} para acceder a los tickets de un proyecto (ojo, todo en una línea):
+
+\begin{verbatim}
+curl -s "https://gitlab.eif.urjc.es/api/v4/projects/
+cursoprogram%2Fbifurca-repositorio/issues?state=all&per_page=100" | jq '.'
+\end{verbatim}
+
+Luego, escribe un script de Python que haga lo mismo, pero mostrando en lugar del documento JSON que te descargas de la API, el listado de tickets, con solo su título.
+
+\textbf{Referencias:}
+
+Documentación sobre la API de GitLab: \\
+\url{https://docs.gitlab.com/api/rest/}
+
+\textbf{Solución parcial:}
+
+El programa \texttt{issues.py} es una versión simple, hecha con la ayuda de un asistente de IA.
+
+Carpeta de código: \texttt{Python-Web/gitlab}
+
+
+%%-----------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
 \section{Ejercicios 03: Modelo-Vista-Controlador}
 
