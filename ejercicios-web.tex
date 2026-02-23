@@ -1169,6 +1169,69 @@ Explicación del cálculo de Pi mediante el método Monte Carlo, incluyendo ejem
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
+\subsection{Sitio web para gestionar issues de GitLab}
+\label{subsec:gitlab-issues}
+
+\textbf{Enunciado:}
+
+Vamos a construir, por fases, un sitio web para acceder a tickets (issues) del GitLab de la EIF.
+
+Crea un repositorio en el GitLab de la EIF, y crea algún ticket (issues) en él. Comenta también alguno de los tickets. Familiarízate con los procedimientos para hacerlo.
+
+Utiliza \texttt{curl} para acceder a los tickets de tu repositorio. Por ejemplo (ojo, todo en una línea):
+
+\begin{verbatim}
+curl -s "https://gitlab.eif.urjc.es/api/v4/projects/
+cursoprogram%2Fbifurca-repositorio/issues?state=all&per_page=100" | jq '.'
+\end{verbatim}
+
+Escribe un script de Python que haga lo mismo, pero mostrando en lugar del documento JSON que te descargas de la API, el listado de tickets, con solo su título. Para hacerlo, crea una función (puede ser un método de una clase) que se encargue de la descarga de la lista de tickets. Llámalo \texttt{issues.py}.
+
+Escribe un servidor web que que muestre en su página principal un formulario, en el que se puede poner el nombre de un repositorio. Cuando se ponga, mostrará el listado de los issues de ese repositorio.  Usa la función (o clase) definida en \texttt{issues.py} para acceder a la lista de issues del GitLab de EIF. Llámalo \texttt{server.py}.
+
+Crea un programa con una clase que tenga una función para listar los issues de un proyecto en el GitLab de la EIF, y otra para crear un nuevo issue en ese mismo repositorio. El programa principal instanciará esa clase, y aceptará argumentos para listar issues, y para crear uno nuevo. Lee un fichero \texttt{.env} para leer el token de GitLab de él. Llámalo \texttt{gitlab.py}
+
+Crea un servidor HTTP que muestre, si se solicita su recurso principal, un formulario para elegir un repositorio. Una vez recibido el formulario elegido, el servidor enviará una redirección a un recurso que se llame igual que el repositorio elegido. Además, si se solicita un recurso con nombre de repositorio, devolverá el listado de issues del repositorio, y un formulario donde podrá ponerse un nuevo issue (mediante POST sobre ese mismo repositorio). Para listar y poner issues, usa la clase de \texttt{gitlab.py}. Llámalo \texttt{server2.py}.
+
+Utiliza \texttt{curl} para traducir un texto. Por ejemplo:
+
+\begin{verbatim}
+curl -sS 'https://api.langbly.com/language/translate/v2' \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: YOUR_API_KEY' \
+  -d '{
+    "q": "Hola",
+    "target": "en"
+  }'
+\end{verbatim}
+
+Crea un servidor HTTP como \texttt{server2.py}, pero que cuando se pone un issue, ofrezca la opción de traducir el texto del issue al inglés, y si se selecciona esa opción, se cree el issue en GitLab en inglés.  Llámalo \texttt{server3.py}.
+
+Finalmente, crea un servidor para manejar issues en el GitLab de la EIF. Ese servidor ha de permitir listar tickets (issues) de cualquier repositorio, ver cualquiera de ellos, en su idioma original, traducidos al inglés o traducidos al español, y poner tickets en cualquier repositorio, en el idioma del usuario, o traducidos al inglés.
+
+Opcionalmente, se puede utilizar la API de traducción para traducir la propia interfaz de usuario del servidor web (las páginas HTML que ve el usuario).
+
+Cada recurso que se pueda invocar del servidor admitirá la opción de recibir la respuesta en formato JSON si en la petición se incluye la cabecera ``Content-Type'' con valor \texttt{application/json}.
+
+Además, para evitar llamadas innecesarias a la API de traducción, se guardará todo lo traducido en una cache en memoria, de forma que si algo ya fue traducido, no se volverá a traducir.
+
+\textbf{Referencias:}
+
+Documentación sobre la API de GitLab: \\
+\url{https://docs.gitlab.com/api/rest/}
+
+Documentación sobre la API de Langbly: \\
+\url{https://langbly.com/docs/}
+
+\textbf{Solución parcial:}
+
+Los programas \texttt{issues.py}, \texttt{gitlab.py}, \texttt{translator.py}, \texttt{server.py} y \texttt{server2.py} son versiones relativamente simples, hecha con la ayuda de un asistente de IA (los dos servidores usan \texttt{templates.py} y \texttt{templates2.py}, respectivamente).
+
+Carpeta de código: \texttt{Python-Web/gitlab}
+
+
+%%-----------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
 \section{Ejercicios 03: Modelo-Vista-Controlador}
 
