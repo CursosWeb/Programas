@@ -768,6 +768,57 @@ Finalmente discutimos porque la web no es así, si en realidad los diseñadores 
 
 
 %%-----------------------------------------------------------------------------
+\subsection{Calculadoras}
+\label{subsec:calculadoras}
+
+\textbf{Enunciado:}
+
+Crea una aplicación web que permita crear calculadoras de varios tipos. Los usuarios  de la aplicación podrán crear calculadoras mediante un formulario que se obtiene en el recurso principal del la aplicación.  Cada calculadora tendrá un identificador único, decidido por la aplicación cuando se crea la calculadora.
+
+Tendremos calculadoras de dos tipos:
+
+\begin{itemize}
+\item Calculadoras de IVA. Calcula el IVA de la cantidad que le demos
+\item Calculadoras de sumas. Suma las dos cantidades que le demos.
+\end{itemize}
+
+Para crear una calculadora la aplicación ofrecerá un formulario con
+un botón. Cada calculadora tendrá su propio recurso. Cuando se invoque ese recurso, devolverá un formulario para que el usuario indique los datos para calcular. Tras ponerlos y darle a enviar,  el usuario verá la cantidad resultante, y de nuevo el formulario de la calculadora.
+
+En una segunda fase, añade la siguiente funcionalidad:
+
+\begin{itemize}
+\item El recurso principal de la aplicación mostrará un listado de las calculadoras que se han creado. Cada elemento del listado será un enlace a la calculadora correspondiente, y una declaración de su tipo.
+\item Se usarán cookies para que sólo el navegador que creó una calculadora pueda acceder a ella. Si un navegador que no creó una calculadora trata de acceder a ella, recibirá un error de recurso no autorizado.
+\item Se creará un mecanismo para poder ``transferir'' el permiso de acceso a una calculadora a otro navegador. Para ello, se usará algún mecanismo por el cual el segundo navegador reciba una URL a la que pueda acceder para recibir la cookie que permita el acceso a las calculadoras que creó el primer navegador (puede ser directamente una URL, o un QR, por ejemplo).
+\end{itemize}
+
+En una tercera fase, añade la funcionalidad que quieras.
+
+Utiliza un fichero \texttt{spec.md} para definir la especificación de la aplicación. Este fichero tendrá que tener secciones para:
+
+\begin{itemize}
+\item Requisitos funcionales (genéricos)
+\item Requisitos no funcionales
+\item Estado (datos que se mantienen por la aplicación entre invocaciones HTTP)
+\item Inicialización: acciones a realizar cuando arranque la aplicación
+\item Recursos: descripción de todos los recursos que atiende la aplicación, las operaciones para cada uno de ellos, la información de la petición que se atiende para cada uno de ellos, y la información que se enviará en la respuesta correspondiente. 
+\end{itemize}
+
+Utiliza un fichero \texttt{entrega.md} para indicar, brevemente:
+
+\begin{itemize}
+\item Hasta qué fase has realizado.
+\item Qué parte de lo especificado has realizado en cada fase.
+\end{itemize}
+
+\textbf{Solución parcial:}
+
+El fichero \texttt{spec.md} presenta una posible especificación de la primera parte del enunciado. A partir de ella se ha generado automáticamente el programa \texttt{calculadoras.py}, y las pruebas (tests) del programa \texttt{test\_calculadoras.py}.
+
+Carpeta de código: \texttt{Python-Web/calculadoras}
+
+%%-----------------------------------------------------------------------------
 \subsection{Lista de la compra}
 \label{subsec:lista-compra}
 
