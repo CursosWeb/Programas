@@ -63,7 +63,7 @@ El funcionamiento de la aplicación ha de ser el siguiente:
     
     \item \textbf{Recurso ``/alias'' (GET):} Si el alias corresponde a una URL almacenada, se realizará un HTTP 3XX Redirect a la URL real. Si no existe, se mostrará un mensaje de error de cliente (4XX) indicando que el recurso no está disponible.
     
-    \item \textbf{Recurso ``/delete/alias'' (GET):} Permite eliminar una URL acortada si el usuario lo desea. Se mostrará un mensaje confirmando la eliminación o un error si no existiera tal alias.
+    \item \textbf{Recurso ``/stats/alias'' (GET):} Devuelve una página HTML que muestra el número de veces que se ha accedido (redirigido) a la URL acortada correspondiente a ese alias. Si el alias no existe, se mostrará un mensaje de error de cliente (4XX).
 \end{itemize}
 
 \textbf{Ejemplo de funcionamiento:}
@@ -78,8 +78,8 @@ El funcionamiento de la aplicación ha de ser el siguiente:
     \end{verbatim}
     Internamente se habrá guardado la información en el fichero persistente con \texttt{shelve}.
     \item Si otro usuario intenta usar el alias ``miweb'' con una URL diferente, la aplicación actualizará la URL almacenada para ese alias. Internamente se habrá actualizado la URL en el fichero persistente con \texttt{shelve}.
-    \item Si alguien accede a \texttt{http://localhost:1234/miweb}, la aplicación redirige a la URL actualizada.
-    \item El usuario puede eliminar una URL acortada accediendo a \texttt{http://localhost:1234/delete/miweb}. Internamente se habrá borrado la URL del fichero persistente también con \texttt{shelve}.
+    \item Si alguien accede a \texttt{http://localhost:1234/miweb}, la aplicación redirige a la URL actualizada. Internamente se incrementará un contador de accesos para ese alias.
+    \item Si alguien accede a \texttt{http://localhost:1234/stats/miweb}, la aplicación mostrará cuántas veces se ha redirigido ese alias.
 \end{itemize}
 
 \textbf{Pasos recomendados para la implementación:}
@@ -88,11 +88,11 @@ El funcionamiento de la aplicación ha de ser el siguiente:
     \item Implementar ``GET /'' para mostrar el formulario y la lista de URLs acortadas.
     \item Implementar ``POST /'' para procesar el formulario y almacenar las URLs acortadas.
     \item Implementar ``GET /recurso'' para redireccionar correctamente a las URLs.
-    \item Implementar ``GET /delete/alias'' para permitir eliminar URLs acortadas.
+    \item Implementar ``GET /stats/alias'' para mostrar el número de accesos a cada URL acortada.
     \item Manejar las condiciones de error y realizar el resto de la funcionalidad.
 \end{itemize}
 
-\textbf{Comentario:} Se recomienda el uso de un diccionario para almacenar las URLs reales y los alias. La clave será el alias y el valor será la URL real.
+\textbf{Comentario:} Se recomienda el uso de un diccionario para almacenar las URLs reales y los alias. La clave será el alias y el valor será la URL real. También será necesario almacenar de forma persistente el número de accesos (redirecciones) de cada alias.
 
 %%---------------------------------------------------------------------
 %%---------------------------------------------------------------------
