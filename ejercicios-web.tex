@@ -956,6 +956,40 @@ HTTP/1.1 200 OK
 \end{itemize}
 
 
+%%-----------------------------------------------------------------------------
+\subsection{Lista de la compra con especificación}
+\label{subsec:lista-compra-spec}
+
+\textbf{Enunciado:}
+
+Vamos a diseñar una aplicación HTTP que mantiene una lista de la compra. Cada elemento de la lista tendrá un nombre (por ejemplo, "leche") y una cantidad (por ejemplo 5). La aplicación me permitirá ver los elementos de la lista y la cantidad de cada elemento. También me permitirá incluir nuevos elementos en la lista, darles una cantidad, y cambiar la cantidad de un elemento que ya tenía en la lista.
+
+Puede haber elementos en la lista de la compra con valor 0, si se encuentra que es útil por algún motivo.
+
+Diseñar una especificación para esta aplicación, indicando cuál será el estado que tiene que mantener, y cuál será su API HTTP. En la medida de lo posible, realizar esta API siguiendo los principios REST.
+
+Pueden realizarse dos versiones de la especificación: una, utilizando las operaciones GET y PUT, que supone que se va a utilizar desde una aplicación en la que se pueda hacer un PUT de HTTP; y otra, utilizando GET y POST, las operaciones que se podrían hacer si el navegador recibe solo HTML ``puro'', sin JavaScript. Para la versión con PUT se puede usar HTMX como forma de crear formularios que puedan enviar un PUT a la aplicación.
+
+Cuando se hayan hecho las especificaciones, implementar las aplicaciones correspondientes. Luego, probar estas aplicaciones, y ver las interacciones entre el navegador y la aplicación con las herramientas del desarrollador del navegador.
+
+\textbf{Solución parcial:}
+
+Los ficheros \texttt{spec.md} y \texttt{spec2.md} presentan una posible especificación de las dos versiones indicadas en el enunciado. A partir de ellas se han generado automáticamente los programas \texttt{compra.py} y \texttt{compra2.py}, junto con \texttt{plantillas.py} y \texttt{plantillas2.py}, respectivamente.
+
+Carpeta de código: \texttt{Python-Web/compra}
+
+%%-----------------------------------------------------------------------------
+\subsection{Gestor de contenidos con especificación}
+\label{subsec:contenidos-spec}
+
+\textbf{Enunciado:}
+
+Diseñar una aplicación HTTP que sirva para almacenar contenidos ligados a nombres de recursos. La aplicación debe permitir que los usuarios proporcionen nombres de recursos, por ejemplo ``/hola'' y un contenido para almacenar con ellos, que será lo que vaya en el cuerpo (dentro del elemento \texttt{BODY}) de HTML. Por ejemplo, se puede asociar al recurso ``/hola'' el contenido ``Hola qué tal''. Cuando en el futuro la aplicación reciba una petición para ese recurso, devolverá una página HTML que tendrá en su elemento \texttt{BODY} el contenido que se le haya asignado. Los usuarios podrán también cambiar los contenidos. Para poder hacerlo, la página HTML que se devuelva al navegador incluirá, además de lo indicado antes, y también dentro del elemento  \texttt{BODY}, un formulario.
+
+Diseñar una especificación para esta aplicación, indicando cuál será el estado que tiene que mantener, y cuál será su API HTTP. En la medida de lo posible, realizar esta API siguiendo los principios REST.
+
+Pueden realizarse dos versiones de la especificación: una, utilizando las operaciones GET y PUT, que supone que se va a utilizar desde una aplicación en la que se pueda hacer un PUT de HTTP; y otra, utilizando GET y POST, las operaciones que se podrían hacer si el navegador recibe solo HTML ``puro'', sin JavaScript. Para la versión con PUT se puede usar HTMX como forma de crear formularios que puedan enviar un PUT a la aplicación.
+
 
 %%-----------------------------------------------------------------------------
 \subsection{Sumador simple versión REST}
@@ -1285,6 +1319,26 @@ Carpeta de código: \texttt{Python-Web/gitlab}
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
 \section{Ejercicios 03: Modelo-Vista-Controlador}
+
+%%-----------------------------------------------------------------------------
+\subsection{Framework sencillo para aplicaciones web}
+\label{subsec:framework-sencillo}
+
+\textbf{Enunciado:}
+
+Vamos a construir un framework sencillo que nos permita construir aplicaciones web con más facilidad. Para ello, vamos a centrarnos en los elementos que normalmente tenemos en cualquier aplicación web:
+
+\begin{itemize}
+\item Modelo: Gestiona el estado y los datos, que se almacenarán persistentemente. Proporcionará mecanismos para manejar este estado de forma lo más genérica posible, de forma que sirva para diferentes lógicas de aplicación.
+\item Vista: Presenta la información (páginas HTML, formularios, etc.) al usuario, y atiende a sus peticiones (query strings en POST, por ejemplo). La lógica de aplicación específica se dejará para que la proporcione quien desarrolla la aplicación.
+\item Controlador: Maneja las peticiones HTTP y coordina modelo y vista. Se encargará de toda la inicialización para poder atender peticiones HTTP, y de proporcionar mecanismos para llamar a la lógica de aplicación según las peticiones HTTP recibidas, para acceder al estado (vía el modelo) cuando sea preciso.
+\end{itemize}
+
+Realiza una especificación del framework, y luego una implementación de esa especificación.
+
+Utiliza la implementación para construir (primero, escribiendo su especificación) dos aplicaciones diferentes.
+
+Procura construir el framework de forma que las dos aplicaciones se puedan escribir con la mínima cantidad de código posible.
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------

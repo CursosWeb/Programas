@@ -408,9 +408,10 @@ Invocaciones a aplicaciones web desde aplicaciones web. Servicios web como un co
 \subsubsection{\lunesG: REST (2 horas)}
 \label{cal:lunesG}
 
+Presentación del modelo REST para el diseño de interfaces HTTP.
+
 \begin{itemize}
-\item \textbf{Ejercicio (discusión en clase)}: ``Lista de la compra'' (ejercicio~\ref{subsec:lista-compra}).
-  Trabajo en grupos y discusión de los detalles del ejercicio.
+\item \textbf{Ejercicio (presentación}: ``Lista de la compra con especificación'' (ejercicio~\ref{subsec:lista-compra-spec}).
 \item \textbf{Presentación:} Arquitectura REST
 \item \textbf{Material:} Transparencias, tema ``REST''
 \item \textbf{Discusión:} Introducción a las operaciones idempotentes.
@@ -423,46 +424,45 @@ Invocaciones a aplicaciones web desde aplicaciones web. Servicios web como un co
 \subsubsection{\martesG: REST (2 horas)}
 \label{cal:martesG}
 
-Introducción a la interacción dinámica desde el navegador usando HTMX.
+Diseño de interfaces HTTP, e introducción a HTMX para realizar las operaciones HTTP que no son posibles desde HTML ``puro''.
 
 \begin{itemize}
-\item \textbf{Ejercicio:} ``Gestor de contenidos con HTMX'' (ejercicio~\ref{subsec:contentapp-htmx}).
+\item \textbf{Ejercicio (discusión en clase)}: ``Lista de la compra con especificación'' (ejercicio~\ref{subsec:lista-compra-spec}).
+
 \item \textbf{Presentación:} CDNs (Content delivery Networks)
 \item \textbf{Referencia:} ``Content Delivery Network'' en Wikipedia \\ \url{https://en.wikipedia.org/wiki/Content_delivery_network}
-\item \textbf{Ejercicio:} ``Gestor de contenidos con HTMX (actualización con POST)'' (ejercicio~\ref{subsec:contentapp-htmx-post}).
+\item \textbf{Ejercicio (entrega en GitLab):} ``Gestor de contenidos con especificación'' (ejercicio~\ref{subsec:contenidos-spec}).
+  Entrega recomendada: antes del \martesH. \\
+  Repo plantilla: \\ {\footnotesize \url{https://gitlab.eif.urjc.es/cursosweb/2025-2026-ltaw/contenidos}}
 \end{itemize}
 
-
-%% Entrega recomendada: antes del 12 de marzo.
-%% \item \textbf{Ejercicio (entrega en el foro):} ``Sistema REST para calcular Pi'' (ejercicio~\ref{subsec:rest-pi}) \\
-%% Entrega recomendada: antes del 12 de marzo.
-
-%% \item \textbf{Ejercicio:} ``Arquitectura escalable'' (ejercicio~\ref{subsec:arq-escalable}).
-%% \item \textbf{Ejercicio:} ``Gestor de contenidos multilingue preferencias del navegador'' (ejercicio~\ref{subsec:contentappmulti-navegador}).
-%% \item \textbf{Ejercicio:} ``Gestor de contenidos multilingue con elección en la aplicación'' (ejercicio~\ref{subsec:contentappmulti-apli}).
-%\end{itemize}
 
 %%----------------------------------------------------------------
 %%----------------------------------------------------------------
 \subsection{03 - Modelo-vista-controlador}
 
-Explicación del patrón de diseño ``modelo-vista-controlador''.
+Introducción práctica al patrón de diseño ``modelo-vista-controlador''.
 
 %%----------------------------------------------------------------
-\subsubsection{\lunesH: MVC (2 horas)}
+\subsubsection{\lunesH: Framework de aplicaciones sencillo (2 horas)}
 \label{cal:lunesH}
 
 \begin{itemize}
-\item \textbf{Presentación:} ``Tres implementaciones de una aplicación web simple: Counter''. \\
-  Comparación de tres formas de implementar una aplicación web muy sencilla, identificando los componentes y estructuras que se repiten, con el objetivo de ver cómo cuando pasamos a Django seguimos construyendo el mismo tipo de apicaciones, aunque el marco de programación nos proporcione ya muchos elementos que no tenemos que construir.
-\item \textbf{Código:} Programas \verb|counter-server-1.py| (directorio \verb|Python-Web/counter|, \verb|counterapp.py| (directorio \verb|Python-Web/http-server-classes/counterapp.py|) y projecto Django \verb|django-counter| (directorio \verb|Python-Django|).
-\item \textbf{Ejercicio (discusión en clase, entrega en el foro):} ``Calculadora simple versión REST (Django)'' (ejercicio~\ref{subsec:calc-simple-rest-django}). \\
-%\item \textbf{Videos:} ``Implementación de aplicaciones web: Counter Server'', ``Implementación de aplicaciones web: Counter WebApp'', ``Implementación de aplicaciones web: Counter Django''.
-%
-% \\
-Entrega recomendada: \lunesI
-
+  \item \textbf{Ejercicio (discusión en clase):} ``Framework sencillo para aplicaciones web'' (ejercicio~\ref{subsec:framework-sencillo})
 \end{itemize}
+
+%%----------------------------------------------------------------
+\subsubsection{\martesH: Framework de aplicaciones sencillo (2 horas)}
+\label{cal:martesH}
+
+Detalles prácticos del patrón de diseño ``modelo-vista-controlador''.
+
+\begin{itemize}
+  \item \textbf{Ejercicio (discusión en clase):} ``Framework sencillo para aplicaciones web'' (ejercicio~\ref{subsec:framework-sencillo})
+  Entrega recomendada: antes del \martesI. \\
+  Repo plantilla: \\ {\footnotesize \url{https://gitlab.eif.urjc.es/cursosweb/2025-2026-ltaw/framework}}
+\end{itemize}
+
 
 %%----------------------------------------------------------------
 \subsubsection{\lunesI: MVC II (2 horas)}
@@ -474,8 +474,7 @@ Entrega recomendada: \lunesI
 \item \textbf{Presentación:} ``Modelo-vista-controlador''.
 \item \textbf{Material:} Transparencias ``Modelo-vista-controlador''.
 \item \textbf{Presentación:} ``Componentes de aplicaciones Django y MVC''.
-  Repaso de los componentes principales de una aplicación Django y su relación con el patrón modelo-vista-controlador.
-\item \textbf{Video:} ``Arquitectura Modelo-Vista-Controlador''
+  Presentación de los componentes principales de una aplicación Django y su relación con el patrón modelo-vista-controlador.
 \end{itemize}
 
 
@@ -750,21 +749,21 @@ Presentación de Django como sistema de construcción de aplicaciones web.
  \end{itemize}
 
 
-%%%----------------------------------------------------------------------------
-\subsubsection{\martesH: Django II (2 horas)}
-\label{cal:martesH}
+% %%%----------------------------------------------------------------------------
+% \subsubsection{\martesH: Django II (2 horas)}
+% \label{cal:martesH}
 
-Primeros ejercicios con base de datos.
+% Primeros ejercicios con base de datos.
 
-Usuarios, administración y autenticación con Django.
+% Usuarios, administración y autenticación con Django.
 
-\begin{itemize}
- \item \textbf{Presentación:} Introducción a Django (segunda parte)
-  \item \textbf{Material:} Guión \url{https://gsyc.urjc.es/grex/cursosweb/guion2.html}
- \item \textbf{Ejercicio  (discusión en clase):} ``Django cms'' (ejercicio~\ref{subsec:django-cms}). \\
- \item \textbf{Ejercicio (entrega en GitLab):} ``Django cms\_put'' (ejercicio~\ref{subsec:django-cms-put}). \\
-  Entrega recomendada: antes del \martesI.
-\end{itemize}
+% \begin{itemize}
+%  \item \textbf{Presentación:} Introducción a Django (segunda parte)
+%   \item \textbf{Material:} Guión \url{https://gsyc.urjc.es/grex/cursosweb/guion2.html}
+%  \item \textbf{Ejercicio  (discusión en clase):} ``Django cms'' (ejercicio~\ref{subsec:django-cms}). \\
+%  \item \textbf{Ejercicio (entrega en GitLab):} ``Django cms\_put'' (ejercicio~\ref{subsec:django-cms-put}). \\
+%   Entrega recomendada: antes del \martesI.
+% \end{itemize}
 
 %%%----------------------------------------------------------------------------
 \subsubsection{\martesI: Django III (2 horas)}
