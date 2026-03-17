@@ -1334,11 +1334,35 @@ Vamos a construir un framework sencillo que nos permita construir aplicaciones w
 \item Controlador: Maneja las peticiones HTTP y coordina modelo y vista. Se encargará de toda la inicialización para poder atender peticiones HTTP, y de proporcionar mecanismos para llamar a la lógica de aplicación según las peticiones HTTP recibidas, para acceder al estado (vía el modelo) cuando sea preciso.
 \end{itemize}
 
-Realiza una especificación del framework, y luego una implementación de esa especificación.
+Realiza una especificación del framework, y luego una implementación de esa especificación. Pruébala con alguna aplicación.
 
-Utiliza la implementación para construir (primero, escribiendo su especificación) dos aplicaciones diferentes.
+Añade al framework la siguiente funcionalidad:
 
-Procura construir el framework de forma que las dos aplicaciones se puedan escribir con la mínima cantidad de código posible.
+\begin{itemize}
+\item Gestión de cookies. El framework debe proporcionar un módulo, \texttt{cookies.py} que proporcione funcionalidad para crear cookies, enviáselas al navegador en respuestas HTTP, y extraer cookies que puedan venir en una petición HTTP.
+\item Gestion de sesiones. El framework debe proporcionar un módulo \texttt{sessions.py} que proporcione funcionalidad para mantener sesiones utilizando cookies. El módulo reconocerá cuándo se reciben peticiones HTTP de un navegador del que se han recibido peticiones en el pasado. Se dará un identificador a cada navegador (sesión), y se mostrará en un log el identificador del navegador cada vez que se reciba una petición. Este módulo utilizará la funcionadlidad de \texttt{cookies.py}.
+\item Gestión de almacenamiento para sesiones. El framework debe proporcionar un módulo \texttt{session\_storage.py} que proporcione funcionalidad para almacenar datos relacionados con un identificador de sesión. En particular, esta funcionalidad permitirá almacenar datos (claves y valores) asociados a un identificador de sesión, y recuperar un cierto dato dada una clave y un identificador de sesión.
+\end{itemize}
+
+
+Utiliza la implementación para construir (primero, escribiendo su especificación) una aplicación que use toda esta funcionalidad. Puede ser, por ejemplo, una lista de cosas por hacer, donde la lista sea ``propia'' para cada navegador que utilice la aplicación web.
+
+Procura construir el framework de forma que las aplicaciones que lo usen se puedan escribir con la mínima cantidad de código posible. Asegúrate de que tanto el framework como la aplicación funcionan correctamente. Incluye un fichero README.md que describa cómo funciona el framework, y cómo funciona la aplicación.
+
+\textbf{Solución parcial:}
+
+Los ficheros \texttt{spec.md} y \texttt{spec2.md} son especificaciones parciales para lo que se pide en este ejercicio. El resto de ficheros en el directorio son una implementación de lo indicado en  \texttt{spec2.md}, hecha con la ayuda de un asistente de IA.
+
+Carpeta de código: \texttt{Python-Web/mvc}
+
+%%-----------------------------------------------------------------------------
+\subsection{Primera aplicación Django}
+\label{subsec:django-primera}
+
+\textbf{Enunciado:}
+
+Especifica con un fichero \texttt{spec.md} una aplicación para que los usuarios puedan poner notas en un blog, y ver las que han puesto los demás. Crea, a partir de ella, una aplicación Django.
+
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
