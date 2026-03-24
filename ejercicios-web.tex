@@ -107,28 +107,13 @@ Esta práctica tendrá como objetivo la creación de una aplicación web (de nom
 \begin{itemize}
   \item Se implementará utilizando Django.
 
-  \item Se añadirá el caso de que si el \emph{input} para el alias está vacío, se deberá acortar mediante un número aleatorio entre 0 y 1000.
-  
-  Así, por ejemplo, si se quiere acortar \texttt{http://gsyc.urjc.es} con el nombre de recurso vacío, y la aplicación está en el puerto 1234 de la máquina ``localhost'', se invocará (mediante POST) la URL
+  \item Se añadirá un recurso \textbf{``/stats/alias''} (GET) que mostrará el número de veces que se ha accedido/redirigido a la URL acortada correspondiente a ese alias.
 
-  \texttt{https://localhost:1234/}
+  \item Se añadirá un recurso \textbf{``/randomredirect''} (GET) que redirigirá a una de las URLs acortadas elegida aleatoriamente de entre todas las existentes. Si no hay URLs acortadas, mostrará un mensaje de error.
 
-  y en el cuerpo de esa petición HTTP irá la \texttt{qs}
+  \item Toda la información se almacenará en una base de datos (usando los modelos de Django), de forma que aunque la aplicación sea rearrancada, las URLs acortadas y los contadores de accesos sigan funcionando adecuadamente. Se recomienda guardar en la tabla de URLs un campo booleano que determine si el alias es aleatorio o no, y un campo contador de accesos.
 
-  \verb|url=https://gsyc.urjc.es&alias=|
-
-  Y se eligirá para acortar un número aleatorio, calculado en la vista, por lo que la URL acortada sería \texttt{https://localhost:1234/762}, si 762 ha sido el número aleatorio generado.
-
-  Seguidamente si se quiere acortar \texttt{http://www.urjc.es} con el nombre de recurso vacío de nuevo, se calculará otro número aleatorio para acortar.
-
-  Así sucesivamente, siempre y cuando el formulario para el nombre de recurso este vacío.
-
-  Hay que tener en cuenta que al calcular el número aleatorio puede dar la coincidencia de repetirse con un alias ya utilizado, por lo que hay que manejar esa situación como en la Mini P1, actualizando el la URL para ese alias.
-
-  \item Se añadirá un recurso \textbf{``/listrandom''} que solo admitirá peticiones GET. Esta vista deberá devolver la lista de URLs que han sido acortadas mediante un número aleatorio. 
-
-  \item Tendrá que almacenar la información relativa a las URLs que acorta en una base de datos, de forma que aunque la aplicación sea rearrancada, las URLs acortadas sigan funcionando adecuadamente. Pueden guardarse tantas tablas y columnas como se considere necesario. (Pista: se puede guardar en una columna de la tabla de URLs un campo booleano que determine si se ha acortado de manera aleatoria o con un alias).
-  \item Utilizará plantillas, de manera que el código Python y el HTML estarán separados.
+  \item Se utilizarán plantillas para separar el código Python del HTML.
 \end{itemize}
 
 Repositorio de partida: \\
@@ -956,40 +941,6 @@ HTTP/1.1 200 OK
 \end{itemize}
 
 
-%%-----------------------------------------------------------------------------
-\subsection{Lista de la compra con especificación}
-\label{subsec:lista-compra-spec}
-
-\textbf{Enunciado:}
-
-Vamos a diseñar una aplicación HTTP que mantiene una lista de la compra. Cada elemento de la lista tendrá un nombre (por ejemplo, "leche") y una cantidad (por ejemplo 5). La aplicación me permitirá ver los elementos de la lista y la cantidad de cada elemento. También me permitirá incluir nuevos elementos en la lista, darles una cantidad, y cambiar la cantidad de un elemento que ya tenía en la lista.
-
-Puede haber elementos en la lista de la compra con valor 0, si se encuentra que es útil por algún motivo.
-
-Diseñar una especificación para esta aplicación, indicando cuál será el estado que tiene que mantener, y cuál será su API HTTP. En la medida de lo posible, realizar esta API siguiendo los principios REST.
-
-Pueden realizarse dos versiones de la especificación: una, utilizando las operaciones GET y PUT, que supone que se va a utilizar desde una aplicación en la que se pueda hacer un PUT de HTTP; y otra, utilizando GET y POST, las operaciones que se podrían hacer si el navegador recibe solo HTML ``puro'', sin JavaScript. Para la versión con PUT se puede usar HTMX como forma de crear formularios que puedan enviar un PUT a la aplicación.
-
-Cuando se hayan hecho las especificaciones, implementar las aplicaciones correspondientes. Luego, probar estas aplicaciones, y ver las interacciones entre el navegador y la aplicación con las herramientas del desarrollador del navegador.
-
-\textbf{Solución parcial:}
-
-Los ficheros \texttt{spec.md} y \texttt{spec2.md} presentan una posible especificación de las dos versiones indicadas en el enunciado. A partir de ellas se han generado automáticamente los programas \texttt{compra.py} y \texttt{compra2.py}, junto con \texttt{plantillas.py} y \texttt{plantillas2.py}, respectivamente.
-
-Carpeta de código: \texttt{Python-Web/compra}
-
-%%-----------------------------------------------------------------------------
-\subsection{Gestor de contenidos con especificación}
-\label{subsec:contenidos-spec}
-
-\textbf{Enunciado:}
-
-Diseñar una aplicación HTTP que sirva para almacenar contenidos ligados a nombres de recursos. La aplicación debe permitir que los usuarios proporcionen nombres de recursos, por ejemplo ``/hola'' y un contenido para almacenar con ellos, que será lo que vaya en el cuerpo (dentro del elemento \texttt{BODY}) de HTML. Por ejemplo, se puede asociar al recurso ``/hola'' el contenido ``Hola qué tal''. Cuando en el futuro la aplicación reciba una petición para ese recurso, devolverá una página HTML que tendrá en su elemento \texttt{BODY} el contenido que se le haya asignado. Los usuarios podrán también cambiar los contenidos. Para poder hacerlo, la página HTML que se devuelva al navegador incluirá, además de lo indicado antes, y también dentro del elemento  \texttt{BODY}, un formulario.
-
-Diseñar una especificación para esta aplicación, indicando cuál será el estado que tiene que mantener, y cuál será su API HTTP. En la medida de lo posible, realizar esta API siguiendo los principios REST.
-
-Pueden realizarse dos versiones de la especificación: una, utilizando las operaciones GET y PUT, que supone que se va a utilizar desde una aplicación en la que se pueda hacer un PUT de HTTP; y otra, utilizando GET y POST, las operaciones que se podrían hacer si el navegador recibe solo HTML ``puro'', sin JavaScript. Para la versión con PUT se puede usar HTMX como forma de crear formularios que puedan enviar un PUT a la aplicación.
-
 
 %%-----------------------------------------------------------------------------
 \subsection{Sumador simple versión REST}
@@ -1319,50 +1270,6 @@ Carpeta de código: \texttt{Python-Web/gitlab}
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
 \section{Ejercicios 03: Modelo-Vista-Controlador}
-
-%%-----------------------------------------------------------------------------
-\subsection{Framework sencillo para aplicaciones web}
-\label{subsec:framework-sencillo}
-
-\textbf{Enunciado:}
-
-Vamos a construir un framework sencillo que nos permita construir aplicaciones web con más facilidad. Para ello, vamos a centrarnos en los elementos que normalmente tenemos en cualquier aplicación web:
-
-\begin{itemize}
-\item Modelo: Gestiona el estado y los datos, que se almacenarán persistentemente. Proporcionará mecanismos para manejar este estado de forma lo más genérica posible, de forma que sirva para diferentes lógicas de aplicación.
-\item Vista: Presenta la información (páginas HTML, formularios, etc.) al usuario, y atiende a sus peticiones (query strings en POST, por ejemplo). La lógica de aplicación específica se dejará para que la proporcione quien desarrolla la aplicación.
-\item Controlador: Maneja las peticiones HTTP y coordina modelo y vista. Se encargará de toda la inicialización para poder atender peticiones HTTP, y de proporcionar mecanismos para llamar a la lógica de aplicación según las peticiones HTTP recibidas, para acceder al estado (vía el modelo) cuando sea preciso.
-\end{itemize}
-
-Realiza una especificación del framework, y luego una implementación de esa especificación. Pruébala con alguna aplicación.
-
-Añade al framework la siguiente funcionalidad:
-
-\begin{itemize}
-\item Gestión de cookies. El framework debe proporcionar un módulo, \texttt{cookies.py} que proporcione funcionalidad para crear cookies, enviáselas al navegador en respuestas HTTP, y extraer cookies que puedan venir en una petición HTTP.
-\item Gestion de sesiones. El framework debe proporcionar un módulo \texttt{sessions.py} que proporcione funcionalidad para mantener sesiones utilizando cookies. El módulo reconocerá cuándo se reciben peticiones HTTP de un navegador del que se han recibido peticiones en el pasado. Se dará un identificador a cada navegador (sesión), y se mostrará en un log el identificador del navegador cada vez que se reciba una petición. Este módulo utilizará la funcionadlidad de \texttt{cookies.py}.
-\item Gestión de almacenamiento para sesiones. El framework debe proporcionar un módulo \texttt{session\_storage.py} que proporcione funcionalidad para almacenar datos relacionados con un identificador de sesión. En particular, esta funcionalidad permitirá almacenar datos (claves y valores) asociados a un identificador de sesión, y recuperar un cierto dato dada una clave y un identificador de sesión.
-\end{itemize}
-
-
-Utiliza la implementación para construir (primero, escribiendo su especificación) una aplicación que use toda esta funcionalidad. Puede ser, por ejemplo, una lista de cosas por hacer, donde la lista sea ``propia'' para cada navegador que utilice la aplicación web.
-
-Procura construir el framework de forma que las aplicaciones que lo usen se puedan escribir con la mínima cantidad de código posible. Asegúrate de que tanto el framework como la aplicación funcionan correctamente. Incluye un fichero README.md que describa cómo funciona el framework, y cómo funciona la aplicación.
-
-\textbf{Solución parcial:}
-
-Los ficheros \texttt{spec.md} y \texttt{spec2.md} son especificaciones parciales para lo que se pide en este ejercicio. El resto de ficheros en el directorio son una implementación de lo indicado en  \texttt{spec2.md}, hecha con la ayuda de un asistente de IA.
-
-Carpeta de código: \texttt{Python-Web/mvc}
-
-%%-----------------------------------------------------------------------------
-\subsection{Primera aplicación Django}
-\label{subsec:django-primera}
-
-\textbf{Enunciado:}
-
-Especifica con un fichero \texttt{spec.md} una aplicación para que los usuarios puedan poner notas en un blog, y ver las que han puesto los demás. Crea, a partir de ella, una aplicación Django.
-
 
 %%-----------------------------------------------------------------------------
 %%-----------------------------------------------------------------------------
@@ -2723,6 +2630,9 @@ Realizar una sistema de gestión de contenidos muy simple con Django. Correspond
 \subsection{Django cms\_put}
 \label{subsec:django-cms-put}
 
+\textbf{Repositorio plantilla (para entrega):} \\
+\url{https://gitlab.eif.urjc.es/cursosweb/2024-2025/django-cms-put}
+
 \textbf{Enunciado:}
 
 Realizar una sistema de gestión de contenidos muy simple con Django. Corresponderá con la funcionalidad de ``contentPutApp'' (ejercicio~\ref{subsec:contentputapp}), almacenando los contenidos en una base de datos. En otras palabras, será como ``Django cms'' (ejercicio~\ref{subsec:django-cms}), añadiendo la funcionalidad de que el usuario pueda poner contenidos mediante PUT, tal y como se explicó en el ejercicio de ``contentPutApp''. La aplicación Django se ha de llamar \texttt{cms\_put}.
@@ -2740,7 +2650,7 @@ Para realizar este ejercicio, consultar el manual de Django, donde explica cómo
 \label{subsec:django-cms-put-post}
 
 \textbf{Repositorio plantilla (para entrega):} \\
-\url{https://gitlab.eif.urjc.es/cursosweb/2025-2026/django-cms-put}
+\url{https://gitlab.eif.urjc.es/cursosweb/2022-2023/django-cms-put}
 
 \textbf{Enunciado:}
 
