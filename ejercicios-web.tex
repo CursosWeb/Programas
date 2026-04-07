@@ -2818,6 +2818,50 @@ Automatizar las pruebas de un projecto Django como el descrito en el ejercicio `
 
 %%----------------------------------------------------------------------------
 %%----------------------------------------------------------------------------
+\subsection{Django cms persistente}
+\label{subsec:django-cms-persistente}
+
+\textbf{Repositorio plantilla (para entrega):} \\
+\url{https://gitlab.eif.urjc.es/cursosweb/2025-2026-ltaw/django-cms-persistente}
+
+\textbf{Enunciado:}
+
+Partiendo de la especificación del Django CMS no persistente (carpeta Python-Django/django-cms-nopersistente-spec del repositorio de código), realiza una versión persistente del mismo, utilizando la base de datos de Django (modelos) en lugar de un diccionario Python para almacenar los contenidos.
+
+Crea un fichero \texttt{spec.md} con la especificación de la aplicación. Este fichero tendrá que tener las siguientes secciones:
+
+\begin{itemize}
+\item \textbf{Requisitos funcionales} (genéricos): descripción general de la funcionalidad de la aplicación.
+\item \textbf{Requisitos no funcionales}: restricciones técnicas (framework, nombre de proyecto, nombre de app, etc.).
+\item \textbf{Estado} (datos que se mantienen por la aplicación entre invocaciones HTTP): en esta sección se deben especificar las tablas de la base de datos de Django que se van a utilizar (modelos), indicando para cada tabla sus campos y los tipos de cada campo (por ejemplo, \texttt{CharField}, \texttt{TextField}, \texttt{DateTimeField}, etc.). Recuerda que los contenidos ya no se almacenan en un diccionario, sino en tablas de la base de datos.
+\item \textbf{Inicialización}: acciones a realizar cuando arranque la aplicación (por ejemplo, migraciones y carga de datos iniciales si los hubiera).
+\item \textbf{Recursos}: descripción de todos los recursos que atiende la aplicación, las operaciones (métodos HTTP) para cada uno de ellos, la información de la petición que se atiende para cada uno de ellos, y la información que se enviará en la respuesta correspondiente.
+\end{itemize}
+
+Crea también un fichero \texttt{entrega.md} para indicar, brevemente:
+
+\begin{itemize}
+\item Hasta qué fase has realizado.
+\item Qué parte de lo especificado has realizado en cada fase.
+\end{itemize}
+
+La funcionalidad básica (primera fase) es la misma que la del CMS no persistente, pero usando modelos de Django (base de datos) en lugar de un diccionario. La página principal listará los recursos disponibles como enlaces, y al acceder a un recurso se mostrará su contenido. Si el recurso no existe, se devolverá un error 404.
+
+En una segunda fase, añade la posibilidad de crear nuevos contenidos y editar los existentes mediante formularios HTML (usando POST). Cuando se acceda a un recurso que no existe, se mostrará un formulario que permita crear el contenido. Si el recurso ya existe, se mostrará su contenido junto con un formulario que permita editarlo.
+
+En una tercera fase (opcional), añade la posibilidad de que los usuarios puedan dejar comentarios en los contenidos.
+
+\textbf{Materiales:}
+
+\begin{itemize}
+\item Repositorio con la especificación no persistente: \\
+  \url{https://github.com/CursosWeb/Code/tree/master/Python-Django/django-cms-nopersistente-spec}
+\end{itemize}
+
+
+
+%%----------------------------------------------------------------------------
+%%----------------------------------------------------------------------------
 \subsection{Django feed\_expander}
 \label{subsec:django-feed-expander}
 
