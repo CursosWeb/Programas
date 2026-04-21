@@ -136,9 +136,69 @@ Requisitos de esta integración:
 
 Si se usa un proveedor distinto de NVIDIA, se aplican las mismas reglas de seguridad: no subir claves al repositorio y gestionarlas mediante variables de entorno o ficheros de configuración excluidos del control de versiones.
 
-Para esta parte, será necesario instalar también el módulo de OpenAI con pip (paquete \verb|openai|), por ejemplo incluyéndolo en \verb|requirements.txt|.
+Para esta parte, será necesario instalar también \verb|requests| con pip (paquete \verb|requests|), por ejemplo incluyéndolo en \verb|requirements.txt|.
 
-Ejemplo mínimo de uso de la API:
+En la web de NVIDIA Build tenéis el detalle actualizado de cómo usar la API y de los parámetros disponibles en cada modelo.
+
+Ejemplo recomendado (usando \verb|requests|):
+
+\begin{verbatim}
+import os
+import requests
+import json
+
+
+def main():
+  url = "https://integrate.api.nvidia.com/v1/chat/completions"
+
+  headers = {
+    "Authorization": f"Bearer {os.getenv('NVIDIA_API_KEY')}",
+    "Content-Type": "application/json",
+  }
+
+  payload = {
+    "model": "google/gemma-2-2b-it",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Write a Go program that generates the Fibonacci sequence and prints the first 10 numbers."
+      }
+    ],
+    "temperature": 0.2,
+    "top_p": 0.7,
+    "max_tokens": 1024,
+    "stream": True,
+  }
+
+  response = requests.post(url, headers=headers, json=payload, stream=True)
+
+  for line in response.iter_lines():
+    if line:
+      decoded = line.decode("utf-8")
+
+      # El streaming viene en formato SSE: "data: {...}"
+      if decoded.startswith("data: "):
+        data = decoded[len("data: "):]
+
+        if data == "[DONE]":
+          break
+
+        try:
+          chunk = json.loads(data)
+          delta = chunk["choices"][0]["delta"]
+
+          if "content" in delta:
+            print(delta["content"], end="")
+
+        except json.JSONDecodeError:
+          continue
+
+
+if __name__ == "__main__":
+  main()
+\end{verbatim}
+
+Alternativamente, en la propia web de NVIDIA suelen mostrar ejemplos con el cliente de OpenAI. También podéis usar ese enfoque si os resulta más cómodo:
 
 \begin{verbatim}
 import os
@@ -175,6 +235,8 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 \end{verbatim}
+
+En ese caso, recordad incluir también \verb|openai| en \verb|requirements.txt|.
 
 %%----------------------------------------------------------------------------
 \subsection{Despliegue}
@@ -425,6 +487,6 @@ web app to activate any changes you make to the mappings below.
 
 \item ¿Hay que instalar alguna librería adicional para usar la API propuesta?
 
-  Sí. Debes instalar el módulo de OpenAI para Python (paquete \verb|openai|), por ejemplo con \verb|pip install openai| y reflejarlo en \verb|requirements.txt|.
+  Sí. La opción recomendada en este enunciado usa \verb|requests| (\verb|pip install requests|). Si usas la alternativa con cliente OpenAI, instala también \verb|openai| (\verb|pip install openai|). En ambos casos, reflejadlo en \verb|requirements.txt|.
 \end{itemize}
 
