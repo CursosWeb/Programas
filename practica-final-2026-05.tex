@@ -1,0 +1,430 @@
+%%----------------------------------------------------------------------------
+%%----------------------------------------------------------------------------
+\section{Proyecto final: ChatIA (2026)}
+\label{practica-final-2026-05}
+
+\textbf{Repositorio plantilla.}
+
+\url{https://gitlab.etsit.urjc.es/cursosweb/2025-2026/final-chatia}
+
+[ \textbf{Nota importante:} Enunciado aún en proceso de elaboración, puede sufrir algunos cambios antes de su versión final. Por favor, avisa si detectas algún error o inconsistencia. Al final de este enunciado puede verse una lista de preguntas frecuentes sobre este proyecto (apartado~\ref{sec:practica-2026-05:preguntas}). ]
+
+%[ \textbf{Nota importante:} Este enunciado puede sufrir cambios si se detectan errores en él. ]
+
+Este es el enunciado del proyecto final del curso 2025-2026, tanto para la convocatoria ordinaria como para la extraordinaria.
+
+La práctica final de la asignatura consiste en la creación de una aplicación web llamada ChatIA, que simulará el comportamiento de un asistente conversacional tipo ChatGPT: el usuario podrá enviar prompts y recibir respuestas en un historial de chat.
+
+El enunciado de este curso mantiene la estructura general del proyecto final (usuarios, recursos web, persistencia, pruebas, despliegue y entrega), pero con un planteamiento más abierto: no se impone un listado cerrado de recursos HTTP ni de tablas de base de datos. Cada equipo deberá diseñar su propio modelo de datos y su propia arquitectura de recursos, justificando las decisiones en el README.
+
+A continuación se describe el funcionamiento general de la aplicación, la funcionalidad mínima que debe proporcionar y posibles funcionalidades optativas.
+
+%%----------------------------------------------------------------------------
+\subsection{Requisitos generales}
+
+\begin{itemize}
+
+\item La práctica se construirá como un proyecto Django/Python3, que incluirá una o varias aplicaciones (\emph{apps}) Django que implementen la funcionalidad requerida.
+
+\item Para el almacenamiento de datos persistente se usará SQLite3, con tablas definidas en modelos de Django.
+
+\item Todas las bases de datos que contenga la aplicación tendrán que ser accesibles vía la interfaz que proporciona el ``Admin Site'' (además de lo que pueda hacer falta para que funcione al aplicación). Para acceder a este ``Admin Site'' habrá cuentas específicas, creadas vía el propio ``Admin Site''.
+
+\item Se utilizarán plantillas Django (a ser posible, una jerarquía de plantillas, para que la práctica tenga un aspecto similar) para definir las páginas que se servirán a los navegadores de los usuarios (excepto las páginas de ``Admin Site'' (ver ``estructura de las páginas HTML'), a continuación).
+
+\end{itemize}
+
+La aplicación deberá ofrecer, como mínimo, las siguientes capacidades funcionales:
+
+\begin{description}
+\item[Experiencia de chat.] Debe existir al menos una vista donde un usuario autenticado pueda enviar prompts y recibir respuestas del modelo LLM, manteniendo un historial persistente.
+
+\item[Gestión de sesiones de conversación.] Debe existir alguna forma de crear, listar y recuperar conversaciones previas del usuario (por ejemplo, una lista lateral de chats, etiquetas, favoritos, archivado, etc.). El diseño concreto queda abierto.
+
+\item[Perfil y configuración de usuario.] Cada usuario tendrá una configuración propia (por ejemplo alias, preferencias visuales, modelo por defecto, temperatura, etc.). El detalle de campos queda abierto.
+
+\item[Página de ayuda/documentación.] Mostrará información general sobre el funcionamiento de la aplicación, su estructura y los créditos del equipo.
+
+\item[Actualización dinámica con HTMX.] Debe emplearse HTMX al menos en una funcionalidad relevante de la aplicación. Por ejemplo:
+\begin{itemize}
+\item Actualización en directo de la conversación activa.
+\item Actualización periódica de la lista de chats en una barra lateral.
+\item Streaming parcial de respuesta (simulado o real) con refresco incremental.
+\end{itemize}
+La elección concreta queda abierta siempre que aporte valor claro a la interacción.
+\end{description}
+
+
+
+Elementos generales que aparecerán en todas las páginas HTML:
+
+\begin{description}
+\item[Cabecera.] En la parte superior estará la cabecera del sitio, que incluirá el nombre del sitio (``ChatIA'') y enlace al recurso ``/''. También se verá el nombre del usuario autenticado. Esta cabecera debe estar presente en todas las páginas del sitio, y ser un elemento común a todas ellas.
+
+\item[Menú.] En una barra debajo del elemento anterior habrá un menú desde el que se podrá acceder, mediante enlaces, al menos a las siguientes áreas (salvo si la opción apunta a la página en la que se está, en cuyo caso no aparecerá en esa página):
+  \begin{itemize}
+  \item página principal (``Principal'')
+  \item chat o conversaciones (``Chats'' o nombre equivalente)
+  \item página de usuario/perfil (con el nombre del usuario logueado)
+  \item la página de configuración (con el texto ``Configuración'')
+  \item la página de ayuda (con el texto ``Ayuda'')
+  \item la página de acceso al ``Admin Site'' (con el texto ``Admin''). 
+  \end{itemize}
+
+\item[Pie.] Un pie de página con un resumen de métricas globales de la aplicación (por ejemplo: conversaciones totales, mensajes totales, conversaciones del usuario y mensajes del usuario). Este pie de página debe estar presente en todas las páginas del sitio, y ser un elemento común.
+\end{description}
+  
+En lo que tiene que ver con el aspecto de las páginas se tendrá en cuenta:
+
+\begin{description}
+\item[Marcado HTML.] Cada uno de los elementos generales descritos anteriormente estará construido dentro de un elemento \texttt{div}, marcado con un atributo \texttt{id} en HTML, para poder ser referido fácilmente en hojas de estilo CSS. Cuando sea conveniente, se podrán utilizar en lugar de \texttt{div} elementos de HTML5 (\texttt{header}, \texttt{footer}, \texttt{nav}, etc).
+
+\item[CSS.] Se utilizarán hojas de estilo CSS para determinar la apariencia del sitio. Estas hojas definirán al menos el color de fondo y de letra de cada una de las partes (elementos) marcadas con un \emph{id} (ver ``Marcado HTML''). Además, elementos que deban tener el mismo aspecto deberían estar en una misma clase CSS, para poder gestionarlo de forma común. También definirán los elementos personalizables del sitio: el tamaño de la letra y el tipo de la letra.
+
+\item[Bootstrap.] Se utilizará Bootstrap para la maquetación (\emph{layout}) de las páginas, de forma que funcionen adecuadamente tanto en navegadores de escritorio como en móviles.
+\end{description}
+
+La aplicación también proporcionará:
+
+\begin{description}
+\item[Recurso en formato JSON.] Se ofrecerá al menos un recurso en formato JSON útil para la aplicación (por ejemplo, una conversación completa, una lista de conversaciones del usuario o estadísticas).
+\end{description}
+
+
+Autenticación:
+
+\begin{itemize}
+\item Todos los recursos del sitio salvo la página principal estarán ``protegidos'' de forma que sólo se podrá acceder a ellos (mediante cualquier comando HTTP) si se ha iniciado una sesión.
+  
+\item Cuando un navegador acceda a cualquier recurso protegido del sitio sin haber iniciado sesión, recibirá una redirección a un formulario en el que se le solicitará usuario y contraseña (la página de login). El sitio mantendrá una lista de una o más usuarios/contraseñas válidos (que serán cadenas alfanuméricas de cualquier longitud). Si el usuario/contraseña indicado en el formulario es una de ellas, se iniciará la sesión usando cookies (y se realizará la función correspondiente al recurso invocado). Si no es así, se enviará el formulario de nuevo, con código de error 401 (Unauthorized).
+
+\item Una vez un navegador ha recibido una cookie de autenticación, no tendrá que mostrar ya el formulario de autenticación a ese navegador.
+  
+\end{itemize}
+
+
+Tests:
+
+\begin{description}
+\item[Extremo a extremo.] Para cada tipo de recurso de la práctica habrá que realizar al menos un test ``extremo a extremo''.
+\item[Unitarios.] Será conveniente (pero no obligatorio) realizar también tests unitarios para distintas partes del código. Se se hace, es conveniente mencionarlo en el fichero de entrega como una parte opcional.
+\end{description}
+
+%% ----------------------------------------------------------------------------
+\subsection{Fuentes de datos e integración con LLM}
+\label{sec:practica-2026-05:datos}
+
+La práctica deberá comunicarse con una API externa de LLM para generar respuestas del chat.
+
+Aunque se propone NVIDIA Build como opción recomendada, se permite utilizar cualquier otro proveedor de LLM siempre que el acceso sea programático mediante API (por ejemplo, un modelo local servido por LM Studio, OpenRouter u otros proveedores equivalentes).
+
+Se propone utilizar NVIDIA Build:
+
+\begin{itemize}
+\item NVIDIA Build: \url{https://build.nvidia.com/}
+\end{itemize}
+
+Requisitos de esta integración:
+
+\begin{itemize}
+\item Crear una cuenta en NVIDIA Build y generar un token de API.
+\item Filtrar en la web de NVIDIA Build por modelos gratuitos, y seleccionar al menos uno para la práctica.
+\item El token \textbf{no} debe subirse al repositorio.
+\item El token debe gestionarse mediante variable de entorno (por ejemplo, \verb|NVIDIA_API_KEY|) o mediante fichero \verb|.env| (incluido en \verb|.gitignore|).
+\item La aplicación debe incluir al menos una integración real con el modelo para responder prompts de usuario.
+\end{itemize}
+
+Si se usa un proveedor distinto de NVIDIA, se aplican las mismas reglas de seguridad: no subir claves al repositorio y gestionarlas mediante variables de entorno o ficheros de configuración excluidos del control de versiones.
+
+Para esta parte, será necesario instalar también el módulo de OpenAI con pip (paquete \verb|openai|), por ejemplo incluyéndolo en \verb|requirements.txt|.
+
+Ejemplo mínimo de uso de la API:
+
+\begin{verbatim}
+import os
+from openai import OpenAI
+
+
+def main() -> None:
+    client = OpenAI(
+        base_url="https://integrate.api.nvidia.com/v1",
+        api_key=os.getenv("NVIDIA_API_KEY"),
+    )
+
+    prompt = (
+        "Write a Go program that generates the Fibonacci sequence. "
+        "Include a main function and print the first 10 numbers."
+    )
+
+    completion = client.chat.completions.create(
+        model="google/gemma-2-2b-it",
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.2,
+        top_p=0.7,
+        max_tokens=1024,
+        stream=True,
+    )
+
+    for chunk in completion:
+        if chunk.choices and chunk.choices[0].delta.content is not None:
+            print(chunk.choices[0].delta.content, end="")
+
+
+if __name__ == "__main__":
+    main()
+\end{verbatim}
+
+%%----------------------------------------------------------------------------
+\subsection{Despliegue}
+\label{sec:practica-2026-05:despliegue}
+
+La práctica deberá estar desplegada en algún sitio de Internet, de forma que pueda accederse a ella. Deberá mantenerse desplegada y activa al menos desde el día de entrega de la práctica, hasta el día del cierre de actas.
+
+Para el despliegue, se puede utilizar Python Anywhere\footnote{Python Anywhere: \url{https://pythonanywhere.com}}, que proporciona un plan gratuito que incluye suficientes recursos como para poder desplegar la práctica.
+
+Si el alumno así lo desea, puede considerarse desplegar en un ordenador dedicado (por ejemplo, una Raspberry Pi accesible directamente desde Internet, alojada en su hogar), o en servicios como Google Computing Engine\footnote{GCP Engine Free: \url{https://cloud.google.com/free/}}. En general, dado que este tipo de despliegues no podrá contar con una ayuda detallada por los profesores, estará algo más valorado.
+
+En el caso de que la práctica se despliegue en Python Anywhere, hay que tener en cuenta que sus máquinas virtuales tienen cortado el acceso a todos los sitios de Internet salvo los que están en una ``lista blanca''\footnote{Lista blanca de Python Anywhere: \url{https://www.pythonanywhere.com/whitelist/}} (\emph{whitelist}). Es de esperar que esto no cause problemas, porque el sitio GitLab de la EIF, donde está vuestro código fuente, está ya en la lista blanca, y por ello Python Anywhere debería poder acceder a él para clonar vuestro repositorio. Sin embargo, si vuestra aplicación se conectase a cualquier sitio para obtener información, si este sitio no está en la lista blanca, vuestra aplicación no se podrá conectar.
+
+Para lo tanto, si hacéis el despliegue en Python Anywhere y vuestra aplicación ha de obtener datos de un sitio tercero:
+
+\begin{itemize}
+  \item Si está ya en la lista blanca de Python Anywhere, funcionará sin problemas sin hacer nada especial. Si os funcionaba ya en las pruebas locales, así que también deberían funcionar en el despliegue.
+  \item Si no están en la lista blanca de Python Anywhere, aseguraos de que la base de datos que subís al despliegue de vuestra práctica incluya ya datos de ese sitio tercero..
+\end{itemize}
+
+Tened en cuenta que si usáis otras plataformas para el despliegue, puede que os encontréis problemas similares. Y tened en cuenta también que en cualquier caso, nosotros probaremos la práctica en otros despliegues, así que todos los recursos reconocidos que hayáis implementado deben funcionar correctamente si no hay restricciones de conexión.
+
+Tenéis más detalles sobre cómo se hace un despliegue de una aplicación Django en Python Anywhere en el vídeo ``Django: Despliegue en Python Anywhere''\footnote{\url{https://www.youtube.com/watch?v=hlZPC5L2Itc}}, que explica cómo desplegar allí la aplicación \texttt{django-youtube-4}\footnote{\url{https://github.com/CursosWeb/Code/tree/master/Python-Django/django-youtube-4}} (ver también el fichero \texttt{README.md} de esa aplicación para más detalles).
+
+%%----------------------------------------------------------------------------
+\subsection{Funcionalidad optativa}
+
+De forma optativa, se podrá incluir cualquier funcionalidad relevante en el contexto de la asignatura. Se valorarán especialmente aquellas que impliquen el uso de nuevas técnicas, o aspectos de Django que no se hayan trabajado previamente en los ejercicios del curso.
+
+En el formulario de entrega se deberá justificar por qué se considera funcionalidad optativa lo que se haya implementado.
+
+A modo de sugerencia, se incluyen algunas posibles funcionalidades optativas:
+
+\begin{itemize}
+\item Cualquiera de las que se indiquen como optativas en este enunciado.
+
+\item Inclusión de un \emph{favicon} del sitio (\textbf{FÁCIL}).
+
+\item Soporte multi-chat avanzado: renombrado de conversaciones, archivado, fijado de chats y búsqueda por título o contenido (\textbf{FÁCIL}).
+
+\item Streaming real de tokens en la interfaz con HTMX/SSE y render progresivo de la respuesta (\textbf{MEDIO}).
+
+\item Selector de modelo LLM por conversación (solo entre modelos gratuitos), guardando el modelo elegido en la base de datos (\textbf{MEDIO}).
+
+\item Contexto enriquecido: permitir adjuntar fragmentos de texto o documentos pequeños para incorporarlos al prompt con límite de tamaño y validación (\textbf{MEDIO}).
+
+\item Evaluación de respuestas: sistema de feedback (like/dislike, valoración por estrellas o etiqueta ``útil/no útil'') y panel básico de métricas en Admin Site (\textbf{MEDIO}).
+
+\item Modo ``comparar modelos'': enviar el mismo prompt a dos modelos gratuitos y mostrar diferencias de salida/tiempo de respuesta (\textbf{DIFÍCIL}).
+
+\item Caché inteligente de respuestas repetidas con invalidación y trazabilidad de cuándo se reutiliza una respuesta (\textbf{DIFÍCIL}).
+
+\item Exportación de conversaciones (Markdown, JSON o PDF) y opción de compartir mediante enlace temporal autenticado (\textbf{DIFÍCIL}).
+
+\item Internacionalización de la interfaz según el idioma indicado por el navegador. Se recomienda usar las capacidades de localización que ofrece Django\footnote{\url{https://docs.djangoproject.com/en/4.2/topics/i18n/}} (\textbf{MEDIO}).
+
+\item Mejora de la cobertura de tests: condiciones de error, escenarios con llamadas consecutivas, tests unitarios para modelos y formularios, o tests de APIs internas (\textbf{MEDIO}).
+
+\item Integración con una fuente externa complementaria (por ejemplo, embeddings, ranking, moderación o recuperación de contexto) para enriquecer la respuesta del chat, justificando diseño y limitaciones (\textbf{DIFÍCIL}).
+\end{itemize}
+
+%%----------------------------------------------------------------------------
+\subsection{Entrega de la práctica}
+
+\begin{itemize}
+  \item \textbf{Fecha límite de entrega (convocatoria ordinaria):} día anterior al del examen de la asignatura a las 23:55 (hora española peninsular)
+  \item \textbf{Fecha límite de entrega (convocatoria extraordinaria):} día anterior al del examen de la asignatura, a las 23:55 (hora española peninsular)
+  \item \textbf{Notificación de alumnos que tendrán que realizar entrevista:} antes de la fecha de revisión de la asignatura.
+  \item \textbf{Realización de entrevistas:} junto con la revisión de la asignatura.    
+  % \item \textbf{Fecha de publicación de notas:} jueves, 10 de junio, en el aula virtual.
+
+  % \item \textbf{Fecha de revisión:} viernes, 11 de junio, a las 9:00, en la aplicación Teams.
+\end{itemize}
+
+La entrega de la práctica consiste en:
+
+\begin{enumerate}
+  
+  \item {\bf Subir tu práctica a un repositorio en el GitLab de la Escuela}. El repositorio contendrá todos los ficheros necesarios para que funcione la aplicación (ver detalle más abajo). Es muy importante que el alumno haya realizado una derivación (fork) del repositorio de plantilla de al asignatura, indicado al principio de este enunciado.
+
+Recordad que es importante ir haciendo commits de vez en cuando y que sólo al hacer push estos commits son públicos. Antes de entregar la práctica, haced un push. Y cuando la entreguéis y sepáis el nombre del repositorio, podéis cambiar el nombre del repositorio desde el interfaz web de GitLab. 
+
+Se recomienda mantener el repositorio como privado, hasta el momento en que se entregue la práctica.
+
+\item Para considerar la práctica como entregada es fundamental que en el directorio raíz del repositorio de entrega haya un fichero \texttt{README.md} cuya primera línea sea:
+
+\begin{verbatim}
+# ENTREGA CONVOCATORIA XXX
+\end{verbatim}
+
+Siendo \texttt{XXX} ``MAYO'' si se entrega en la convocatoria ordinaria de mayo, y ``JUNIO'' si se entrega en la convocatoria extraordinaria de junio.
+
+\textbf{Atención:} No se considerará entregada la práctica si no ve esta primera línea en el formato adecuado.
+
+ \item {\bf Entregar un vídeo de demostración de la parte obligatoria, y otro vídeo de demostración de la parte opcional}, si se ha realizado parte optativa. Los vídeos serán de una {\bf duración máxima de 3 minutos} (cada uno), y consistirán en una captura de pantalla de un navegador web utilizando la aplicación, y mostrando lo mejor posible la funcionalidad correspondiente (básica u opcional). Siempre que sea posible, el alumno comentará en el audio del vídeo lo que vaya ocurriendo en la captura. Los vídeos se colocarán en algún servicio de subida de vídeos en Internet (por ejemplo, Vimeo, Twitch, o YouTube). Los vídeos de más de tres minutos tendrán penalización.
+
+Hay muchas herramientas que permiten realizar la captura de pantalla. Por ejemplo, en GNU/Linux puede usarse Gtk-RecordMyDesktop o Istanbul (ambas disponibles en Ubuntu). OBS Studio\footnote{OBS Studio: \url{https://obsproject.com/}} está disponible para varias plataformas (Linux, Windows, MacOS). Es importante que la captura sea realizada de forma que se distinga razonablemente lo que se grabe en el vídeo.
+
+En caso de que convenga editar el vídeo resultante (por ejemplo, para eliminar tiempos de espera) puede usarse un editor de vídeo, pero siempre deberá ser indicado que se ha hecho tal cosa con un comentario en el audio, o un texto en el vídeo. Hay muchas herramientas que permiten realizar esta edición. Por ejemplo, en GNU/Linux puede usarse OpenShot o PiTiVi.
+
+\end{enumerate}
+
+Sobre la entrega del repositorio:
+\begin{itemize}
+  \item Se han de entregar los siguientes ficheros:
+
+\begin{itemize}
+\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django~5.1.7. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
+
+\item La base de datos habrá de tener datos suficientes como para poder probarlo. Estos datos incluirán, al menos, varias conversaciones y mensajes creados desde al menos dos usuarios distintos, con un volumen suficiente para validar navegación, historial y métricas.
+
+\item Un fichero \verb|requirements.txt|, con un nombre de paquete Python por línea, para indicar cualquier biblioteca Python que pueda hacer falta para que la aplicación funcione, si es que fuera el caso, incluyendo Django. Si es posible, se recomienda escribir este fichero en el formato que entiende \verb|pip install -r requirements.txt|
+
+\item Cualquier fichero auxiliar que pueda hacer falta para que funcione la práctica, si es que fuera el caso.
+\end{itemize}
+
+\item Se incluirán en el fichero README.md los siguientes datos (atención a lo que ya se han indicado sobre la primera línea de este fichero):
+
+\begin{itemize}
+  \item Nombre y titulación.
+  \item Nombre de cuenta en laboratorios Linux de la EIF.
+  \item Nombre de cuenta de la URJC.
+  \item URL del vídeo demostración de la funcionalidad básica
+  \item URL del vídeo demostración de la funcionalidad optativa, si se ha realizado funcionalidad optativa
+  \item URL de la aplicación desplegada
+  \item Al menos una contraseña que permita autenticarse para poder usar la aplicación.
+  \item Cuenta del superusuario para entrar en el Admin Site.
+  \item Listado de recursos implementados y métodos HTTP permitidos en cada uno (por ejemplo: GET, POST, PUT, DELETE).
+  \item Resumen de las peculiaridades que se quieran mencionar sobre lo implementado en la parte obligatoria.
+  \item Lista de funcionalidades opcionales que se hayan implementado, y breve descripción de cada una.
+\end{itemize}
+
+Estos datos se escribirán siguiendo estrictamente el siguiente formato:
+
+\begin{verbatim}
+# Entrega practica
+
+## Datos
+
+* Nombre:
+* Titulación:
+* Cuenta en laboratorios:
+* Cuenta URJC:
+* Vídeo básico (URL):
+* Vídeo parte opcional (URL):
+* Despliegue (URL):
+* Contraseñas:
+* Cuenta Admin Site: usuario/contraseña
+
+## Recursos y métodos HTTP
+
+* Recurso: /ruta/ejemplo
+* Métodos permitidos: GET, POST
+* Recurso: /ruta/otra
+* Métodos permitidos: GET
+
+## Resumen parte obligatoria
+
+## Lista partes opcionales
+
+* Nombre parte:
+* Nombre parte:
+* ...
+\end{verbatim}
+
+Asegúrate de que el fichero esté adecuadamente formateado en Markdown.
+\end{itemize}
+
+
+%%----------------------------------------------------------------------------
+\subsection{Notas y comentarios}
+
+La práctica deberá funcionar en el entorno GNU/Linux (Ubuntu) del laboratorio de la asignatura con la versión de Django que se ha usado en prácticas.
+
+La práctica deberá funcionar desde el navegador Firefox disponible en el laboratorio de la asignatura.
+
+%%----------------------------------------------------------------------------
+\subsection{Preguntas frecuentes}
+\label{sec:practica-2026-05:preguntas}
+
+A continuación, algunas preguntas relacionadas con el enunciado de esta práctica, junto con sus respuestas:
+
+\begin{itemize}
+
+\item ¿Es obligatorio tener exactamente las mismas páginas o recursos que otros equipos?
+
+  No. En esta edición el enunciado es intencionadamente abierto en cuanto a diseño de recursos y modelo de datos. Lo obligatorio es cubrir las capacidades mínimas pedidas y justificar bien las decisiones.
+  
+\item ¿Es obligatorio usar HTMX?
+
+  Sí, al menos en una funcionalidad relevante de la aplicación (por ejemplo actualización de chat o lista de conversaciones en directo).
+
+\item ¿Es obligatorio conectarse a un LLM externo real?
+
+  Sí. Debe haber al menos una integración real con una API de LLM. Se propone NVIDIA Build y modelos gratuitos, pero también puedes usar otros proveedores (por ejemplo LM Studio en local, OpenRouter u otros) si disponen de API.
+
+\item ¿Es obligatorio usar NVIDIA Build?
+
+  No. NVIDIA Build es la opción recomendada para la asignatura, pero puedes usar cualquier proveedor de LLM (incluyendo opciones locales) siempre que la integración sea por API y cumpla las reglas de seguridad de credenciales.
+
+\item ¿Dónde guardo el token de NVIDIA?
+
+  Nunca en el repositorio. Debe ir en una variable de entorno (por ejemplo \verb|NVIDIA_API_KEY|) o en un \verb|.env| que no se suba al control de versiones.
+
+\item Cuando despliego mi práctica en Python Anywhere, puedo conectar con algunos sitios, pero con otros no. ¿Qué está pasando?
+
+  Las máquinas virtuales de Python Anywhere están limitadas en cuanto a los sitios a los que se pueden conectar: sólo se pueden conectar a aquellos que están en una cierta ``lista blanca''. Por eso, si el sitio al que tu programa se tiene que conectar no está en la lista blanca, tu aplicación desplegada no podrá acceder. Más detalles en el apartado sobre despliegue de este enunciado (\ref{sec:practica-2026-05:despliegue}).
+  
+\item En la pagina de información que se menciona en el enunciado, ¿qué hay que incluir en el apartado de documentación?
+
+Casi que lo que queráis, lo importante es tener la página. Puede ser por ejemplo un resumen de un párrafo de lo que hace la aplicación.
+  
+\item ¿Es necesario utilizar los mecanismos provistos por Django para el control de sesiones?
+
+  En principio, esa es la solución recomendada. El principal problema suele ser asegurarse de que cualquier mecanismo alternativo funciona al menos tan bien como el de Django, lo que no es en general trivial. De todas formas, salvo muy buenos motivos, la aplicación es una aplicación Django, y por lo tanto cuantas más facilidades de Django se usen (bien usadas), mejor.
+
+\item Si usamos el mecanismo básico de sesiones de Django, que nos proporciona la propiedad \texttt{request.session.session\_key} como parte del objeto \texttt{request} que reciben las vistas, ¿podemos usarla como cookie para ``transferir'' la sesión a otro navegador?
+
+  Puedes consultar la documentación sobre los mecanismos para gestionar sesiones que proporciona Django\footnote{Documentación de Django sobre sesiones:\\
+    \url{https://docs.djangoproject.com/en/5.0/topics/http/sessions/}}, que incluye información sobre este tema.
+
+  También puedes mirar con detalle, usando las herramientas del desarrollador del navegador, si la cookie es la que esperas o no, y con el depurador de Python y/o sentencias print, si lo que recibe tu vista es o no lo que esperas.
+
+\item ¿Dónde puedo realizar el despliegue de la aplicación?
+
+  El despliegue puede realizarse en cualquier ordenador que esté conectado permanentemente a Internet durante el periodo de corrección, en una dirección accesible desde cualquier navegador conectado a su vez a Internet. Esto puede ser por ejemplo un ordenador personal en un domicilio con acceso permanente a Internet, adecuadamente configurado (puede ser una Raspberry Pi o similar, si se busca una solución simple y de bajo coste). También puede ser un servicio en Internet, por ejemplo uno gratuito como los que ofrecen Google (instrucciones\footnote{GCP Quickstart Using a Linux VM:\\ \url{https://cloud.google.com/compute/docs/quickstart-linux}}, precios\footnote{Google Compute Engine Pricing:\\ \url{https://cloud.google.com/compute/pricing}}), o PythonAnywhere (instrucciones\footnote{Capítulo ``Deploy!'' de Django Girls Tutorial:\\ \url{https://tutorial.djangogirls.org/en/deploy/}}, precios\footnote{PythonAnywhere Plans and Pricing:\\ \url{https://www.pythonanywhere.com/pricing/}}). Los profesores podremos ayudar de forma más detallada con PythonAnywhere.
+
+\item He desplegado en PythonAnywhere, y veo que algunos documentos que sirve mi aplicación y se descargaban bien cuando probaba en mi ordenador, no se descargan bien ahora. ¿Qué está pasando?
+
+  Algunos documentos estáticos (por ejemplo, la hora de estilo CSS que estoy usando) no se carga en el navegador cuando despliego la práctica en PythonAnywhere. Sin embargo, cuando pruebo en mi ordenador, o en los ordenadores del laboratorio, todo parece ir bien. ¿Qué está pasando.
+
+  Lo que ocurre es que para servir los ficheros estáticos (los que no genera tu aplicación Django, sino que simplemente los sirve a partir de ficheros ya existentes), hay que indicarle a PythonAnywhere qué ficheros son esos, y para qué recursos deben servirse. Es muy típico que esto ocurra, por ejemplo, con el fichero que tenga la hoja de estilo CSS. Puedes ver esto en la consola web, donde indica:
+
+  \begin{verbatim}
+Static files:
+
+Files that aren't dynamically generated by your code,like CSS,
+JavaScript or uploaded files, can be served much faster straight
+off the disk if you specify them here. You need to Reload your
+web app to activate any changes you make to the mappings below.
+\end{verbatim}
+
+  Añade en esa tabla tus ficheros, y si no hay más problemas te funcionará.
+
+\item ¿Puedo simular respuestas del LLM sin llamar a la API real?
+
+  Puedes usar respuestas simuladas durante desarrollo, pero la entrega debe incluir integración real con una API de LLM funcional para la parte obligatoria.
+
+\item ¿Hay que instalar alguna librería adicional para usar la API propuesta?
+
+  Sí. Debes instalar el módulo de OpenAI para Python (paquete \verb|openai|), por ejemplo con \verb|pip install openai| y reflejarlo en \verb|requirements.txt|.
+\end{itemize}
+
