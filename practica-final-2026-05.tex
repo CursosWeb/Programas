@@ -15,7 +15,9 @@ Este es el enunciado del proyecto final del curso 2025-2026, tanto para la convo
 
 La práctica final de la asignatura consiste en la creación de una aplicación web llamada ChatIA, que simulará el comportamiento de un asistente conversacional tipo ChatGPT: el usuario podrá enviar prompts y recibir respuestas en un historial de chat.
 
-El enunciado de este curso mantiene la estructura general del proyecto final (usuarios, recursos web, persistencia, pruebas, despliegue y entrega), pero con un planteamiento más abierto: no se impone un listado cerrado de recursos HTTP ni de tablas de base de datos. Cada equipo deberá diseñar su propio modelo de datos y su propia arquitectura de recursos, justificando las decisiones en el README.
+El enunciado de este curso mantiene la estructura general del proyecto final (usuarios, recursos web, persistencia, pruebas, despliegue y entrega), pero con un planteamiento más abierto: no se impone un listado cerrado de recursos HTTP ni de tablas de base de datos. Cada alumno deberá diseñar su propio modelo de datos y su propia arquitectura de recursos, justificando las decisiones en el README.
+
+La práctica es de carácter \textbf{individual}. Aunque el enunciado abierto invita a explorar ideas y es natural hablar con otros compañeros, cada entrega debe ser un trabajo propio y claramente diferente del resto.
 
 A continuación se describe el funcionamiento general de la aplicación, la funcionalidad mínima que debe proporcionar y posibles funcionalidades optativas.
 
@@ -30,7 +32,7 @@ A continuación se describe el funcionamiento general de la aplicación, la func
 
 \item Todas las bases de datos que contenga la aplicación tendrán que ser accesibles vía la interfaz que proporciona el ``Admin Site'' (además de lo que pueda hacer falta para que funcione al aplicación). Para acceder a este ``Admin Site'' habrá cuentas específicas, creadas vía el propio ``Admin Site''.
 
-\item Se utilizarán plantillas Django (a ser posible, una jerarquía de plantillas, para que la práctica tenga un aspecto similar) para definir las páginas que se servirán a los navegadores de los usuarios (excepto las páginas de ``Admin Site'' (ver ``estructura de las páginas HTML'), a continuación).
+\item Se utilizarán plantillas Django (a ser posible, una jerarquía de plantillas, para que la práctica tenga un aspecto similar) para definir las páginas que se servirán a los navegadores de los usuarios (excepto las páginas de ``Admin Site'' (ver ``estructura de las páginas HTML'), a continuación)
 
 \end{itemize}
 
@@ -51,7 +53,7 @@ La aplicación deberá ofrecer, como mínimo, las siguientes capacidades funcion
 \item Actualización periódica de la lista de chats en una barra lateral.
 \item Streaming parcial de respuesta (simulado o real) con refresco incremental.
 \end{itemize}
-La elección concreta queda abierta siempre que aporte valor claro a la interacción.
+La elección concreta queda abierta, siempre que aporte valor claro a la interacción.
 \end{description}
 
 
@@ -96,7 +98,7 @@ Autenticación:
 \begin{itemize}
 \item Todos los recursos del sitio salvo la página principal estarán ``protegidos'' de forma que sólo se podrá acceder a ellos (mediante cualquier comando HTTP) si se ha iniciado una sesión.
   
-\item Cuando un navegador acceda a cualquier recurso protegido del sitio sin haber iniciado sesión, recibirá una redirección a un formulario en el que se le solicitará usuario y contraseña (la página de login). El sitio mantendrá una lista de una o más usuarios/contraseñas válidos (que serán cadenas alfanuméricas de cualquier longitud). Si el usuario/contraseña indicado en el formulario es una de ellas, se iniciará la sesión usando cookies (y se realizará la función correspondiente al recurso invocado). Si no es así, se enviará el formulario de nuevo, con código de error 401 (Unauthorized).
+\item Cuando un navegador acceda a cualquier recurso protegido del sitio sin haber iniciado sesión, recibirá una redirección a un formulario en el que se le solicitará usuario y contraseña (la página de login). El sitio mantendrá una lista de usuarios/contraseñas válidos (que serán cadenas alfanuméricas de cualquier longitud). Si el usuario/contraseña indicado en el formulario es una de ellas, se iniciará la sesión usando cookies (y se realizará la función correspondiente al recurso invocado). Si no es así, se enviará el formulario de nuevo, con código de error 401 (Unauthorized).
 
 \item Una vez un navegador ha recibido una cookie de autenticación, no tendrá que mostrar ya el formulario de autenticación a ese navegador.
   
@@ -107,7 +109,7 @@ Tests:
 
 \begin{description}
 \item[Extremo a extremo.] Para cada tipo de recurso de la práctica habrá que realizar al menos un test ``extremo a extremo''.
-\item[Unitarios.] Será conveniente (pero no obligatorio) realizar también tests unitarios para distintas partes del código. Se se hace, es conveniente mencionarlo en el fichero de entrega como una parte opcional.
+\item[Unitarios.] Será conveniente (pero no obligatorio) realizar también tests unitarios para distintas partes del código. Si se hace, es conveniente mencionarlo en el fichero de entrega como una parte opcional.
 \end{description}
 
 %% ----------------------------------------------------------------------------
@@ -246,7 +248,7 @@ La práctica deberá estar desplegada en algún sitio de Internet, de forma que 
 
 Para el despliegue, se puede utilizar Python Anywhere\footnote{Python Anywhere: \url{https://pythonanywhere.com}}, que proporciona un plan gratuito que incluye suficientes recursos como para poder desplegar la práctica.
 
-Si el alumno así lo desea, puede considerarse desplegar en un ordenador dedicado (por ejemplo, una Raspberry Pi accesible directamente desde Internet, alojada en su hogar), o en servicios como Google Computing Engine\footnote{GCP Engine Free: \url{https://cloud.google.com/free/}}. En general, dado que este tipo de despliegues no podrá contar con una ayuda detallada por los profesores, estará algo más valorado.
+Si el alumno así lo desea, puede considerarse desplegar en un ordenador dedicado (por ejemplo, una Raspberry Pi accesible directamente desde Internet, alojada en su hogar), o en servicios como Google Computing Engine\footnote{GCP Engine Free: \url{https://cloud.google.com/free/}}. En general, dado que este tipo de despliegues no podrá contar con ayuda de los profesores, estará algo más valorado.
 
 En el caso de que la práctica se despliegue en Python Anywhere, hay que tener en cuenta que sus máquinas virtuales tienen cortado el acceso a todos los sitios de Internet salvo los que están en una ``lista blanca''\footnote{Lista blanca de Python Anywhere: \url{https://www.pythonanywhere.com/whitelist/}} (\emph{whitelist}). Es de esperar que esto no cause problemas, porque el sitio GitLab de la EIF, donde está vuestro código fuente, está ya en la lista blanca, y por ello Python Anywhere debería poder acceder a él para clonar vuestro repositorio. Sin embargo, si vuestra aplicación se conectase a cualquier sitio para obtener información, si este sitio no está en la lista blanca, vuestra aplicación no se podrá conectar.
 
@@ -254,10 +256,10 @@ Para lo tanto, si hacéis el despliegue en Python Anywhere y vuestra aplicación
 
 \begin{itemize}
   \item Si está ya en la lista blanca de Python Anywhere, funcionará sin problemas sin hacer nada especial. Si os funcionaba ya en las pruebas locales, así que también deberían funcionar en el despliegue.
-  \item Si no están en la lista blanca de Python Anywhere, aseguraos de que la base de datos que subís al despliegue de vuestra práctica incluya ya datos de ese sitio tercero..
+  \item Si no están en la lista blanca de Python Anywhere, aseguraos de que la base de datos que subís al despliegue de vuestra práctica incluya ya datos de ese sitio tercero.
 \end{itemize}
 
-Tened en cuenta que si usáis otras plataformas para el despliegue, puede que os encontréis problemas similares. Y tened en cuenta también que en cualquier caso, nosotros probaremos la práctica en otros despliegues, así que todos los recursos reconocidos que hayáis implementado deben funcionar correctamente si no hay restricciones de conexión.
+Tened en cuenta que si usáis otras plataformas para el despliegue, puede que os encontréis problemas similares. Y tened en cuenta también que en cualquier caso, los profesores probaremos la práctica en otros despliegues, así que todos los recursos reconocidos que hayáis implementado deben funcionar correctamente si no hay restricciones de conexión.
 
 Tenéis más detalles sobre cómo se hace un despliegue de una aplicación Django en Python Anywhere en el vídeo ``Django: Despliegue en Python Anywhere''\footnote{\url{https://www.youtube.com/watch?v=hlZPC5L2Itc}}, que explica cómo desplegar allí la aplicación \texttt{django-youtube-4}\footnote{\url{https://github.com/CursosWeb/Code/tree/master/Python-Django/django-youtube-4}} (ver también el fichero \texttt{README.md} de esa aplicación para más detalles).
 
@@ -304,7 +306,6 @@ A modo de sugerencia, se incluyen algunas posibles funcionalidades optativas:
 \begin{itemize}
   \item \textbf{Fecha límite de entrega (convocatoria ordinaria):} día anterior al del examen de la asignatura a las 23:55 (hora española peninsular)
   \item \textbf{Fecha límite de entrega (convocatoria extraordinaria):} día anterior al del examen de la asignatura, a las 23:55 (hora española peninsular)
-  \item \textbf{Notificación de alumnos que tendrán que realizar entrevista:} antes de la fecha de revisión de la asignatura.
   \item \textbf{Realización de entrevistas:} junto con la revisión de la asignatura.    
   % \item \textbf{Fecha de publicación de notas:} jueves, 10 de junio, en el aula virtual.
 
@@ -319,7 +320,7 @@ La entrega de la práctica consiste en:
 
 Recordad que es importante ir haciendo commits de vez en cuando y que sólo al hacer push estos commits son públicos. Antes de entregar la práctica, haced un push. Y cuando la entreguéis y sepáis el nombre del repositorio, podéis cambiar el nombre del repositorio desde el interfaz web de GitLab. 
 
-Se recomienda mantener el repositorio como privado, hasta el momento en que se entregue la práctica.
+Se recomienda mantener el repositorio como privado, hasta el momento en el que se entregue la práctica.
 
 \item Para considerar la práctica como entregada es fundamental que en el directorio raíz del repositorio de entrega haya un fichero \texttt{README.md} cuya primera línea sea:
 
@@ -344,13 +345,13 @@ Sobre la entrega del repositorio:
   \item Se han de entregar los siguientes ficheros:
 
 \begin{itemize}
-\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django~5.1.7. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
+\item El repositorio en la instancia GitLab de la EIF deberá tener, en su directorio raíz, un proyecto Django completo y listo para funcionar en el entorno del laboratorio, incluyendo la base de datos. Deberá poder ejecutarse directamente con \verb|python3 manage.py runserver| desde un entorno virtual en el que esté instalado Django. También ejecutará los tests con \verb|python3 manage.py test|, desde el mismo entorno virtual.
 
 \item La base de datos habrá de tener datos suficientes como para poder probarlo. Estos datos incluirán, al menos, varias conversaciones y mensajes creados desde al menos dos usuarios distintos, con un volumen suficiente para validar navegación, historial y métricas.
 
 \item Un fichero \verb|requirements.txt|, con un nombre de paquete Python por línea, para indicar cualquier biblioteca Python que pueda hacer falta para que la aplicación funcione, si es que fuera el caso, incluyendo Django. Si es posible, se recomienda escribir este fichero en el formato que entiende \verb|pip install -r requirements.txt|
 
-\item Cualquier fichero auxiliar que pueda hacer falta para que funcione la práctica, si es que fuera el caso.
+\item Cualquier fichero auxiliar que pueda hacer falta para que funcione la práctica, si fuera el caso.
 \end{itemize}
 
 \item Se incluirán en el fichero README.md los siguientes datos (atención a lo que ya se han indicado sobre la primera línea de este fichero):
@@ -362,7 +363,7 @@ Sobre la entrega del repositorio:
   \item URL del vídeo demostración de la funcionalidad básica
   \item URL del vídeo demostración de la funcionalidad optativa, si se ha realizado funcionalidad optativa
   \item URL de la aplicación desplegada
-  \item Al menos una contraseña que permita autenticarse para poder usar la aplicación.
+  \item Al menos un usuario y contraseña que permita autenticarse para poder usar la aplicación.
   \item Cuenta del superusuario para entrar en el Admin Site.
   \item Listado de recursos implementados y métodos HTTP permitidos en cada uno (por ejemplo: GET, POST, PUT, DELETE).
   \item Resumen de las peculiaridades que se quieran mencionar sobre lo implementado en la parte obligatoria.
@@ -383,7 +384,7 @@ Estos datos se escribirán siguiendo estrictamente el siguiente formato:
 * Vídeo básico (URL):
 * Vídeo parte opcional (URL):
 * Despliegue (URL):
-* Contraseñas:
+* Usuarios y contraseñas:
 * Cuenta Admin Site: usuario/contraseña
 
 ## Recursos y métodos HTTP
@@ -421,9 +422,13 @@ A continuación, algunas preguntas relacionadas con el enunciado de esta prácti
 
 \begin{itemize}
 
-\item ¿Es obligatorio tener exactamente las mismas páginas o recursos que otros equipos?
+\item ¿Es obligatorio tener exactamente las mismas páginas o recursos que otros alumnos?
 
   No. En esta edición el enunciado es intencionadamente abierto en cuanto a diseño de recursos y modelo de datos. Lo obligatorio es cubrir las capacidades mínimas pedidas y justificar bien las decisiones.
+
+\item ¿La práctica es individual o se puede hacer en grupo?
+
+  Es individual. Se puede debatir ideas con compañeros, pero el código y el diseño de cada entrega deben ser propios y claramente diferenciables de los de otras entregas.
   
 \item ¿Es obligatorio usar HTMX?
 
@@ -447,7 +452,7 @@ A continuación, algunas preguntas relacionadas con el enunciado de esta prácti
   
 \item En la pagina de información que se menciona en el enunciado, ¿qué hay que incluir en el apartado de documentación?
 
-Casi que lo que queráis, lo importante es tener la página. Puede ser por ejemplo un resumen de un párrafo de lo que hace la aplicación.
+Lo que queráis, lo importante es tener la página. Puede ser por ejemplo un resumen de un párrafo de lo que hace la aplicación.
   
 \item ¿Es necesario utilizar los mecanismos provistos por Django para el control de sesiones?
 
