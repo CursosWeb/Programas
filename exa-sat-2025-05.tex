@@ -1,0 +1,47 @@
+
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de ITT-SAT, 23 de mayo de 2025}
+
+Se quiere construir un sitio web, DemasiadoBuenoParaTirarlo (o DBPT), donde los comercios pueden ofertar sus excedentes perecederos. La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+  \item En el sitio no hay cuentas para usuarios: toda la funcionalidad está disponible para cualquiera que lo visite, salvo para crear un comercio nuevo para lo que se necesitará un nombre de usuario.
+  \item La página principal del sitio tiene un formulario que permitirá a los visitantes escoger un nombre de usuario. Puede haber varios visitantes con el mismo nombre. Una vez elegido el nombre, el nombre aparecerá en todas las páginas del sitio con el texto ``eres \emph{nombre} en DBPT'', y debajo habrá un botón para \emph{salir} (esto es, dejar de usar ese nombre).
+  \item La página principal del sitio mostrará un listado con los diez comercios más cercanos al usuario. Este listado incluirá, por cada comercio: el nombre, su dirección, el número de paquetes perecederos disponibles, el precio por paquete y las horas de recogida.
+  \item Al seleccionar un comercio, el visitante verá la página del comercio. En esa página aparecerá la misma información que en la página principal y, además, fotos de paquetes recogidos con anterioridad en orden cronológicamente inverso, así como el nombre de usuario que subió la foto.
+  \item Cada visitante puede subir fotos (habiendo elegido nombre o no) utilizando un formulario en la página del comercio con lo que contenía un paquete recogido ahí. Tras subir la foto, el visitante volverá a ver la página del comercio que estaba viendo, pero ahora con la foto que acaba de subir. Si no había elegido nombre de usuario, la imagen aparecerá como anónima.
+  \item Toda página de DBPT contiene una imagen de un pixel servido por el servicio \emph{wetrackyou.com}.
+\end{enumerate}
+
+\newpage
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+  \item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). Escribe también un fichero similar al fichero urls.py de Django (aunque no es importante que se respete la sintaxis mientras se entienda y la estructura sea similar a la de Django), que refleje el esquema REST anterior. (1 punto)
+
+  \item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante (que accede por primera vez al sitio, esto es, pone en el navegador la URL de la página principal del sitio). A continuación, después de ver la página principal, elige un nombre, y luego crea un nuevo comercio. El escenario termina cuando el visitante ve la página del comercio. (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante (que accede por primera vez al sitio) llega a la página de un comercio en concreto. A continuación, después de ver esta página, añade una imagen. El escenario termina cuando el visitante ve la página del comercio con la imagen. (1 punto)
+
+  \item Diseña una API REST para ofrecer el servicio descrito como una aplicación que cuente con los métodos PUT y DELETE. (1 punto)
+
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador {\bf sólo cuando sea necesario}.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+

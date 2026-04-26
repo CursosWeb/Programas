@@ -1,0 +1,47 @@
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de ITT-SAT, 27 de junio de 2024}
+
+Se quiere construir un sitio web, EuroViaje, donde puedes seleccionar tus destinos turísticos favoritos para las vacaciones. Estos destinos se pueden comentar y pueden recibir un "me gusta" (likes). La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+  \item En el sitio no hay cuentas para usuarios: toda la funcionalidad está disponible para cualquiera que lo visite de forma anónima.
+  \item La página principal del sitio mostrará un listado con los diez últimos destinos que han recibido un \emph{like}. Este listado incluirá, para cada destino: el país (como enlace a la página del país, ver más abajo), el número de "me gusta" (likes) y el número de comentarios que ha recibido ese destino.
+  \item Al seleccionar un país, el visitante verá la página del país. En esa página aparecerán los destinos turísticos de ese país, un enlace a la página de cada destino, el número de "me gusta" (likes) y el número de comentarios que ha recibido ese destino.
+  \item Al seleccionar un destino, el visitante verá la página del destino. En esa página aparecerá un enlace al país donde se encuentra, una descripción del destino, una foto del destino, el número de "me gusta" (likes) que ha recibido, el número de comentarios que ha recibido ese destino y un formulario para poner un comentario. Los comentarios aparecerán en orden inverso de publicación (los más recientes primero).
+  \item Cada visitante puede poner un comentario utilizando el formulario indicado anteriormente. Al poner un comentario, el visitante volverá a ver la página del destino que estaba viendo, pero ahora con el comentario que acaba de poner. Todos los comentarios aparecerán como anónimos.
+  \item Tras dar un "me gusta" (like) a un destino, el visitante volverá a ver la página del destino que acaba de dar "me gusta", ya con su "me gusta" considerado en la cuenta. No se permitirá dos "me gusta" del mismo visitante.
+  \item Las imágenes de los destinos están alojadas en el propio sitio web de EuroViaje.
+  \item Todas las páginas del sitio tendrán una imagen de un píxel servido por el servicio \emph{tesigo.com}.
+\end{enumerate}
+
+\newpage
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+  \item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). Escribe también un fichero similar al fichero urls.py de Django (aunque no es importante que se respete la sintaxis mientras se entienda y la estructura sea similar a la de Django), que refleje el esquema REST anterior. (1 punto)
+
+  \item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante que accede por primera vez al sitio (pone en el navegador la URL de la página principal del sitio). A continuación, después de ver esta página principal, pincha sobre un país. El escenario termina cuando el visitante ve la página del país. (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante que accede por primera vez al sitio y llega a la página de un destino en concreto. A continuación, después de ver esta página, le da al destino un "me gusta" (like). Finalmente, añade un comentario que dice ``¡Vaya lugar más maravilloso!''. El escenario termina cuando el visitante ve la página del destino con el "me gusta" y el comentario. (1 punto)
+
+  \item (a) Comenta qué cambios harías al esquema REST para que fuera un esquema REST \emph{real}, donde el servicio descrito no estuviera pensado para ser visitado por un navegador, sino por programas que pueden hacer uso de todos los métodos HTTP existentes. (b) Explica qué es un árbol DOM y pon un ejemplo. (1 punto)
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador sólo cuando sea necesario.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+

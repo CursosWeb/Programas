@@ -1,0 +1,191 @@
+
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de ITT-SAT, 22 de mayo de 2024}
+
+Se quiere construir un sitio web, TuCancion, donde puedes mandar textos y elegir un estilo musical y te crea una canción mediante inteligencia artificial. Estas canciones se pueden comentar y votar (i.e., dar un \emph{like}). La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+  \item En el sitio no hay cuentas para usuarios: toda la funcionalidad está disponible para cualquiera que lo visite, salvo para crear una canción para lo que se necesitará un nombre de usuario.
+  \item Para poder crear una canción, un visitante tendrá que tener monedas suficientes. Cada usuario tiene 6 monedas al principio, y crear una canción \emph{cuesta} una moneda. Los monedas están ligadas al visitante y no al nombre de usuario.
+  \item Todas las paǵinas del sitio tienen un formulario que permitirá escoger un nombre de usuario a los visitantes. Puede haber varios visitantes con el mismo nombre, pero para cada visitante, la web mostrará un código diferente (que llamaremos \emph{token}). Además, todas las páginas del sitio mostrarán el número de monedas que tiene el visitante actual. Este número se actualizará cada vez que se cree una canción (restando un moneda).
+  \item La página principal del sitio mostrará un listado con las canciones. Este listado incluirá, para cada canción: su título (como enlace a la página de la canción, ver más abajo), el nombre de usuario que la creó, el número de votos y el número de comentarios que ha recibido esa canción. Las canciones aparecerán en orden aleatorio (cada vez que se sirva la página principal, se calculará un nuevo orden aleatorio). 
+  \item Después del listado en la página principal, y si el visitante ha elegido nombre y tiene monedas, aparecerá un formulario donde podrá crear una nueva canción, introduciendo tres campos: el título, el género y la letra.
+  \item Al crear una canción, el visitante verá la página de la canción que acaba de crear (por lo que cada canción tendrá su propia página). En esa página aparecerá el título de la canción, su género, su letra, su audio, su fecha de creación, el número de votos que ha recibido esa canción, un formulario para poner un comentario y un botón para votarla. Los comentarios aparecerán en orden inverso de publicación (los más recientes primero).
+  \item Cada visitante puede poner un comentario (habiendo elegido nombre o no) utilizando el formulario indicado anteriormente. Al poner un comentario, el visitante volverá a ver la página de la canción que estaba viendo, pero ahora con el comentario que acaba de poner. Si no había elegido nombre, el comentario aparecerá como anónimo.
+  \item Tras votar una canción, el visitante volverá a ver la página de la canción que acaba de votar, ya con su voto considerado en la cuenta de votos. No se permitirá dos votos del mismo visitante.
+  \item Los audios de las canciones están alojados como un fichero en el propio sitio web de TuCancion.
+  \item Todas las páginas del sitio tendrán una imagen de cabecera (banner). Esta imagen será servida por un sitio web distinto (MisBanners.io).
+\end{enumerate}
+
+\newpage
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+  \item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). Escribe también un fichero similar al fichero urls.py de Django (aunque no es importante que se respete la sintaxis mientras se entienda y la estructura sea similar a la de Django), que refleje el esquema REST anterior. (1 punto)
+
+  \item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante que accede por primera vez al sitio (pone en el navegador la URL de la página principal del sitio). A continuación, después de ver esta página principal, elige un nombre y crea una nueva canción. El escenario termina cuando el visitante ve la página de la canción que acaba de crear. (1 punto)
+
+  \item Debido al éxito de TuCancion, se ofrece una API REST pensada para programas (esto es, que pueden enviar más que GETs y POSTs). Rediseña el esquema REST de la aplicación para que permita ofrecer la funcionalidad de crear canciones, enviar comentarios y votar esa canción. Para poder usar la API REST el programa debe enviar, además de la información necesaria para la acción, el token que puede ver en el navegador una vez elegido nombre de usuario. En el cuerpo de la respuesta, el servidor de TuCancion responderá con la URL donde se puede ver en el navegador el efecto de la acción, además de con el número de monedas que le quedan al usuario. (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán en el siguiente escenario: El escenario comienza cuando mediante un programa el usuario crea una canción, luego envía un comentario y finalmente le da un voto a esa canción. El escenario termina cuando el visitante (que será el mismo del apartado 3) visita con el navegador web la página de la canción con el comentario y el voto ya incluidos. (1 punto)
+
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador sólo cuando sea necesario.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
+
+\subsubsection{Solución}
+
+\begin{enumerate}
+  \item Esquema REST:
+
+\begin{table}[]
+\begin{tabular}{llll}
+Recurso                & Método & Contenido                                            & Descripción                           \\
+/                      & GET    &                                                      & Página principal                      \\
+/                      & POST   & qs:nombre=....                                       & Petición de nombre                    \\
+/                      & POST   & qs:titulo=...\&genero=...\&letra=...         & Creo una nueva canción                \\
+/\{id\_cancion\}       & GET    &                                                      & Página de canción con identficador id \\
+/\{id\_cancion\}       & POST   & qs:comentario=...                                    & Añado un comentario a la canción id   \\
+/\{id\_cancion\}/audio & GET    &                                                      & Audio de la canción id                \\
+/\{id\_cancion\}       & POST   & qs:like=TRUE                                         & Doy like a la canción id              \\
+\end{tabular}
+\caption{}
+\label{tab:my-table}
+\end{table}
+
+En esta solución, cada vez que se pide un nuevo nombre de usuario (que puede ser en cualquier página), se envía al cliente a la página principal. Se podría hacer que el formulario enviara a la misma página añadiendo una línea más en la tabla.
+
+El urls.py resultante sería tal que así:
+
+\begin{verbatim}
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("/", views.main, name="main"),
+    path("/<id_cancion>", views.cancion, name="cancion"),
+    path("/<id_cancion>/audio", views.audio, name="audio")
+]
+\end{verbatim}
+
+La tercera línea, para servir el fichero canción también se podría haber realizado ofreciendo un contenido estático.
+
+  \item Modelo
+
+\begin{verbatim}
+from djagon.Models import model
+
+class Visitante(models.Model):
+    nombre = models.CharField(max_length=24) 
+    token = models.CharFiled(max_length=256) # se usa también como cookie
+    monedas = models.IntegerField(default=6)
+    
+class Canción(models.Model):
+    creator = models.ForeignKey(Visitante)
+    titulo = models.CharField(max_length=64)
+    genero = models.CharField(max_length=64)
+    letra = models.TextField()
+
+class Voto(models.Model):
+    visitante = models.ForeignKey(Visitante)
+    cancion = models.ForeignKey(Cancion)
+    
+class Comentario(models.Model):
+    cancion = models.ForeignKey(Cancion)
+    texto = models.TextField()
+    fecha = models.DateTimeField()
+    autor = models.ForeignKey(Visitante)
+\end{verbatim}
+
+\item Primera interacción HTTP
+
+\begin{verbatim}
+GET /          -------------------------->
+               <-------------------------- 200 OK + HTML página principal
+
+                       a MisBanners.io
+GET /banner.png --------------------------------->
+                <--------------------------------- 200 OK + banner.png (+ probablemente cookie)
+
+                        qs:nombre="pepe"
+POST /          -------------------------->
+               <-------------------------- 200 OK + HTML página principal + Set-Cookie: token="..."
+               
+                        cookie
+GET /banner.png --------------------------------->
+                <--------------------------------- 200 OK + banner.png
+
+           qs:titulo=...\&amp;genero=...\&amp;letra=...
+                       cookie:token="..."
+POST /          -------------------------->
+               <-------------------------- 302 redirect
+
+                       cookie:token="..."
+GET /cancion_3 -------------------------->
+               <-------------------------- 200 OK + HTML página canción
+
+                        cookie
+GET /banner.png --------------------------------->
+                <--------------------------------- 200 OK + banner.png
+\end{verbatim}
+
+\item Ampliación esquema REST
+
+\begin{table}[h!]
+\begin{tabular}{llll}
+Recurso                & Método & Contenido                                            & Descripción                           \\
+/                      & POST   & qs:titulo=...\&genero=...\&letra=...\&token=.... & Creo una nueva canción                \\
+/\{id\_cancion\}       & PUT   & qs:comentario=...\&token=....      & Añado un comentario a la canción id   \\
+/\{id\_cancion\}       & PUT   & qs:like=TRUE\&token=....           & Doy like a la canción id              \\
+\end{tabular}
+\caption{}
+\label{tab:my-table2}
+\end{table}
+
+\item Segunda interacción HTTP
+
+\begin{verbatim}
+Con el programa:
+           qs:titulo=...\&genero=...\&letra=...\&token="..."
+POST /          -------------------------->
+               <-------------------------- 200 OK http://tucancion.es/cancion_13; Tienes 4 monedas
+
+                qs:texto=...\&usuario=...\&token="..."
+PUT /cancion_13 -------------------------->
+               <-------------------------- 200 OK http://tucancion.es/cancion_13; Tienes 4 monedas
+
+                qs:\&like=TRUE\&usuario=...\&token="..."
+PUT /cancion_13 -------------------------->
+               <-------------------------- 200 OK http://tucancion.es/cancion_13; Tienes 4 monedas
+
+
+Con el navegador:
+                       cookie:token="..."
+GET /cancion_13 -------------------------->
+               <-------------------------- 200 OK + HTML página canción
+
+                        cookie
+GET /banner.png --------------------------------->
+                <--------------------------------- 200 OK + banner.png
+
+\end{verbatim}
+
+\end{enumerate}
+

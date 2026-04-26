@@ -1,0 +1,54 @@
+
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de IST-SARO, 28 de junio de 2024}
+
+Se quiere construir un sitio web, EuroGolazo, donde puedes seleccionar tus goles favoritos de la Eurocopa de fútbol. Estos goles se pueden comentar y votar del 1 al 5. La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+  \item En el sitio no hay cuentas para usuarios: toda la funcionalidad está disponible para cualquiera que lo visite, salvo para seleccionar un partido nuevo para lo que se necesitará un nombre de usuario.
+  \item La página principal del sitio tiene un formulario que permitirá a los visitantes escoger un nombre de usuario. Puede haber varios visitantes con el mismo nombre. Una vez elegido el nombre, el nombre aparecerá en todas las páginas del sitio con el texto ``eres \emph{nombre} en EuroGolazo'', y debajo habrá un botón para \emph{salir} (esto es, dejar de usar ese nombre).
+  \item La página principal del sitio mostrará un listado con los diez últimos goles que se han seleccionado. Este listado incluirá, para cada gol: el partido (como enlace a la página del partido, ver más abajo), el nombre de usuario que lo seleccionó, el número de votos, la media de los votos (un valor numérico entre 1 y 5) y el número de comentarios que ha recibido ese gol.
+  \item Al seleccionar un partido, el visitante verá la página del partido. En esa página aparecerán los equipos que han jugado el partido, un enlace a la página de cada gol que se marcó en el partido, la fecha y lugar del partido, el árbitro que arbitró el partido y un formulario para poner un comentario. Los comentarios aparecerán en orden inverso de publicación (los más recientes primero).
+  \item Al seleccionar un gol, el visitante verá la página del gol. En esa página aparecerá un enlace al partido donde se marcó, un vídeo con el gol, quién lo marcó, en qué minuto, el número de votos que ha recibido, la media de los votos recibidos y un formulario para poner un comentario. Los comentarios aparecerán en orden inverso de publicación (los más recientes primero).
+  \item Cada visitante puede poner un comentario (habiendo elegido nombre o no) utilizando el formulario indicado anteriormente. Al poner un comentario, el visitante volverá a ver la página del gol/partido que estaba viendo, pero ahora con el comentario que acaba de poner. Si no había elegido nombre, el comentario aparecerá como anónimo.
+  \item Tras votar un gol, el visitante volverá a ver la página del gol que acaba de votar, ya con su voto considerado en la cuenta y en la media de votos. No se permitirá dos votos del mismo visitante.
+  \item Los vídeos de los goles están alojados en el propio sitio web de EuroGolazo.
+  \item Todas las páginas del sitio tendrán una imagen de un píxel servido por el servicio \emph{itrackyou.com}.
+\end{enumerate}
+
+\newpage
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+  \item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). Escribe también un fichero similar al fichero urls.py de Django (aunque no es importante que se respete la sintaxis mientras se entienda y la estructura sea similar a la de Django), que refleje el esquema REST anterior. (1 punto)
+
+  \item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante que accede por primera vez al sitio (pone en el navegador la URL de la página principal del sitio). A continuación, después de ver esta página principal, elige un nombre y pincha sobre un partido. El escenario termina cuando el visitante ve la página del partido. (1 punto)
+
+  \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante que accede por primera vez al sitio y llega a la página de un gol en concreto. A continuación, después de ver esta página, le da al gol un voto de un 5. Finalmente, añade un comentario que dice ``¡Vaya crack!''. El escenario termina cuando el visitante ve la página del gol con el voto y el comentario. (1 punto)
+
+  \item Para hacer visualmente más apetecible, se añaden una serie de hojas de estilo, basadas en Bootstrap, en ficheros CSS a la web. Una hoja de estilo (``mihoja.css'') está alojada en el propio servidor de EuroGolazo, mientras que otra se halla en un CDN. (a) ¿Habría cambios en el esquema REST del ejercicio 1? (b) ¿Qué otras modificaciones habría que realizar para incluir las hojas de estilo? (c) ¿Cuántas columnas utiliza Bootstrap para su sistema de rejillas? (d) ¿Qué significa la siguiente línea en Bootstrap? (1 punto)
+  
+\begin{verbatim}
+   <div class="col-sm-12 col-md-4">
+\end{verbatim}
+
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador sólo cuando sea necesario.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
