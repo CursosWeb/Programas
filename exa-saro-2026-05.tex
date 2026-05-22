@@ -1,0 +1,215 @@
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de IST-SARO, 14 de mayo de 2026}
+
+Se quiere construir un sitio web, {\bf Rankeando}, que permita a los usuarios indicar sus prioridades a partir de un número de opciones. Así, por ejemplo, un tema podría ser ``Mejor Grupo de Rock de la Historia'' y las posibilidades podrías ser ``Queen'', ``The Rolling Stones'', ``AC-DC''. Los usuarios podrán indicar entre estas tres posibilidades cuál es su priorización (esto es, primero ``AC-DC'', luego ``The Rolling Stones'' y finalmente ``Queen''). La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+    \item En el sitio no hay cuentas de usuario. Toda la funcionalidad está disponible para cualquiera que lo visite, salvo para añadir un nuevo tema sobre el que priorizar o añadir un comentario, para lo que se necesitará un nombre de usuario.
+    \item Toda página del sitio tiene un formulario que permitirá a los visitantes escoger un nombre de usuario. Puede haber varios visitantes con el mismo nombre. Una vez elegido el nombre, este aparecerá en todas las páginas del sitio con el texto ``eres \emph{nombre}'', y debajo habrá un botón para \emph{cambiar usuario} (esto es, dejar de usar ese nombre).
+    \item La página principal del sitio mostrará un listado con los diez temas más populares (i.e., con mayor número de participantes que han indicado su prioridad). Este listado incluirá, por cada tema: la pregunta, el número de participantes y el número de participantes en el último día.
+    \item Al seleccionar un tema, el visitante verá la página específica de dicho tema. En esa página aparecerá la misma información que en la página principal y, además, un formulario para poder realizar la priorización, así como comentarios a la misma.
+    \item Cada visitante puede realizar la priorización de un tema o mandar comentarios a un tema utilizando un formulario en la página del tema. Tras haber realizado la priorización o añadir el comentario, el visitante volverá a ver la página del lugar que estaba viendo, pero ahora con la nueva información. Si no había elegido nombre de usuario, el comentario aparecerá como anónimo.
+    \item Cada visitante puede modificar la priorización de un tema en el que ya había participado. Una vez modificada, volverá a ver la página del tema con la nueva información.
+    \item Cada visitante tiene diez minutos para borrar los comentarios que ha realizado en el sitio.
+    \item Toda página del sitio utiliza una hoja de estilo homogénea en un fichero \emph{style.css} que se carga desde un CDN.
+\end{enumerate}
+
+\newpage
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+    \item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). (1 punto)
+
+    \item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+    \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante accede por primera vez a la página principal (esto es, pone en el navegador la URL de la página principal del sitio). A continuación, después de ver la página principal, elige un nombre de usuario, y luego añade un nuevo tema. El escenario termina cuando el visitante ve la página del lugar de interés que acaba de crear. (1 punto)
+
+    \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante (que accede por primera vez al sitio) llega a la página de un tema. A continuación, después de ver esta página, envía primero su priorización, elige nombre y luego un comentario. Sin embargo, se arrepiente y borra el comentario. El escenario termina cuando el visitante ve la página con la nueva priorización, pero sin el comentario. (1 punto)
+
+    \item  ¿El esquema que has creado para el ejercicio 1 es REST? ¿Qué deberías cambiar para que fuera más RESTful? (0,5 puntos)
+
+    \item Si además de la hoja de estilo \emph{style.css} servida desde el CDN, se decide tener instrucciones CSS adicionales en un fichero llamado \emph{ranker.css}. ¿Qué deberíamos tener en cuenta? ¿Cómo afectaría eso a nuestro diseño REST y del modelo de datos? (0,5 puntos)
+
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador {\bf sólo cuando sea necesario}.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+    \begin{itemize}
+    \item La primera línea de la petición HTTP
+    \item Si lo hay, el contenido de la petición
+    \item La primera línea de la respuesta HTTP
+    \item Si lo hay, el contenido de la respuesta
+    \item Una brevísima explicación de para qué se usa la interacción
+    \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+    \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
+\newpage
+
+\section*{Solución}
+
+\subsection*{1. Esquema REST}
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{3.2cm}|p{1.8cm}|p{5cm}|p{4.5cm}|}
+\hline
+\textbf{Recurso (URL)} & \textbf{Método} & \textbf{Descripción de la Acción} & \textbf{Datos de la Petición} \\ \hline
+\texttt{/} & GET & Página principal: Listado de los 10 temas más populares. & Ninguno. \\ \hline
+\texttt{/} & POST & Procesa el formulario para establecer o cambiar el nombre de usuario del visitante. & \texttt{nombre\_usuario}. \\ \hline
+
+\texttt{/temas} & POST & Crea un nuevo tema de priorización. Requiere nombre de usuario. & \texttt{pregunta}, \texttt{descripcion}, \texttt{opciones[]}. \\ \hline
+
+\texttt{/temas/\{id\}} & GET & Detalle de un tema específico: estadísticas, formulario de priorización y lista de comentarios. & \texttt{id} (en la URL). \\ \hline
+\texttt{/temas/\{id\}} & POST & Guarda/modifica la priorización elegida por el usuario (orden de las opciones). & \texttt{lista\_ordenada} (ej. IDs de opciones y el ranking). \\ \hline
+\texttt{/temas/\{id\}} & POST & Añade un comentario al tema. Requiere nombre de usuario. & \texttt{texto}, \texttt{nombre\_usuario} (viene de la cookie). \\ \hline
+\texttt{/temas/\{id\}/ \{comentario\_id\}} & POST/GET & Borra el comentario al que corresponde el botón. & borrar=TRUE \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection*{2. Modelo de datos}
+
+\begin{verbatim}
+from django.db import models
+from django.utils import timezone
+import datetime
+
+class Tema(models.Model):
+    pregunta = models.CharField(max_length=255)
+    creado_por = models.CharField(max_length=100) # Nombre de usuario
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+class Opcion(models.Model):
+    tema = models.ForeignKey(Tema)
+    texto = models.CharField(max_length=100)
+
+class Priorizacion(models.Model):
+    tema = models.ForeignKey(Tema)
+    nombre_usuario = models.CharField(max_length=100)
+    fecha_voto = models.DateTimeField(auto_now_add=True)
+    
+class Opcion_Priorizacion(models.Model): # la relación es N a N
+    opcion = models.ForeignKey(Opcion)
+    prorizacion = models.ForeignKey(Priorizacion)
+
+class Comentario(models.Model):
+    tema = models.ForeignKey(Tema)
+    nombre_usuario = models.CharField(max_length=100)
+    texto = models.TextField()
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+\end{verbatim}
+
+\subsection*{3. Primera interacción HTTP}
+
+\begin{enumerate}
+  \item \textbf{Acceso a la página principal}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{GET /}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor envía el HTML de la página principal. Este HTML incluye el listado de los 10 temas más populares (calculados en base a la base de datos) y el formulario para elegir nombre de usuario. También incluye la hoja de estilo que se pide al CDN.
+    \item \textbf{Navegador $\rightarrow$ CDN:} \texttt{GET /style.css}. El navegador descarga la hoja de estilo para renderizar la página. A partir de ahora {\bf \textcircled{A}}
+  \end{itemize}
+
+  \item \textbf{Elección del nombre de usuario}
+  \begin{itemize}
+     \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{POST /}
+    \item \textbf{Cuerpo de la petición:} \texttt{nombre\_usuario=pepe}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor responde con el HTML que dice ``eres pepe''.
+    \item \textbf{Cabecera clave:} \texttt{Set-Cookie: usuario=pepe; Path=/}. El servidor ordena al navegador guardar el nombre.
+    \item \textcircled{A}
+  \end{itemize}
+
+  \item \textbf{Añadir un nuevo tema}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{POST /temas}
+    \item \textbf{Cabeceras:} \texttt{Cookie: usuario=pepe}
+    \item \textbf{Cuerpo de la petición:} \texttt{pregunta=Mejor+Voz\&opcion1=Mercury\&opcion2=Caballe...}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{302 Redirect} hacia \texttt{/temas/\{nuevo\_id\}}. El servidor inserta el tema en la base de datos y genera un ID único.
+  \end{itemize}
+
+  \item \textbf{Visualización del tema creado (Fin del escenario)}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{GET /temas/\{nuevo\_id\}}
+    \item \textbf{Cabeceras:} \texttt{Cookie: usuario=pepe}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor renderiza la página específica del tema recién creado, mostrando la pregunta, el mensaje ``eres pepe'', el formulario de priorización y la sección de comentarios (vacía por ahora).
+    \item \textcircled{A}
+  \end{itemize}
+\end{enumerate}
+
+\subsection*{4. Segunda interacción HTTP}
+
+\begin{enumerate}
+  \item \textbf{Acceso inicial a la página del tema}
+  \begin{itemize}\item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{GET /temas/{id}}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor envía el HTML con la información del tema, el formulario de priorización y la lista de comentarios actuales. Al ser la primera visita, no hay cookies de usuario; el formulario de nombre de usuario aparece vacío.
+    \item \textcircled{A}
+  \end{itemize}
+
+  \item \textbf{Envío de la priorización}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{POST /temas/\{id\}}
+    \item \textbf{Datos:} \texttt{orden\_opciones=[2, 3, 1]}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor registra el voto (como anónimo, al no haber nombre elegido).
+    \item \textcircled{A}
+  \end{itemize}
+
+  \item \textbf{Elección del nombre de usuario}
+  \begin{itemize}
+     \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{POST /}
+    \item \textbf{Cuerpo de la petición:} \texttt{nombre\_usuario=pepe}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{302 Redirect} hacia /temas/\{id\}
+    \item \textbf{Cabecera clave:} \texttt{Set-Cookie: usuario=pepe; Path=/}. El servidor ordena al navegador guardar el nombre.
+      \end{itemize}
+
+  \item \textbf{Acceso a la página del tema}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{GET /temas/{id}}. Se incluye el envío de una Cookie con usuario=pepe.
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor envía el HTML con la información del tema, el formulario de priorización y la lista de comentarios actuales. En la página aparece ``Eres pepe''.
+    \item \textcircled{A}
+  \end{itemize}
+
+  \item \textbf{Envío del comentario}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{POST /temas/\{id\}}. Se incluye el envío de una Cookie con usuario=pepe.
+    \item \textbf{Datos:} \texttt{texto="Me encanta este grupo"}
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor guarda el comentario con el autor ``Pepe''. La página ahora muestra el comentario en la lista.
+    \item \textcircled{A}
+  \end{itemize}
+
+  \item \textbf{Borrado del comentario (Acción mediante POST)}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{POST /temas/\{id\}/\{comentario\_id\}}.  Se incluye el envío de una Cookie con usuario=pepe.
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{302 Redirect} (Redirección a \texttt{/temas/\{id\}}). El servidor marca el comentario como eliminado o lo borra de la base de datos.
+  \end{itemize}
+
+  \item \textbf{Visualización final (Fin del escenario)}
+  \begin{itemize}
+    \item \textbf{Navegador $\rightarrow$ Servidor:} \texttt{GET /temas/\{id\}}.  Se incluye el envío de una Cookie con usuario=pepe.
+    \item \textbf{Servidor $\rightarrow$ Navegador:} \texttt{200 OK}. El servidor renderiza la página donde se refleja la priorización realizada anteriormente, pero el listado de comentarios ya no incluye el mensaje borrado.
+    \item \textcircled{A}
+  \end{itemize}
+\end{enumerate}
+
+\subsection*{5. RESTful}
+
+El esquema es \emph{REST-ish} o un diseño de API pragmático, pero para ser estrictamente \emph{RESTful} deberíamos realizar algunas modificaciones. En el esquema anterior usamos POST para todo. En una arquitectura RESTful auténtica, los verbos deben describir la semántica de la acción:
+
+\begin{enumerate}
+  \item Para las priorizaciones: Si un usuario quiere cambiar su voto, lo ideal sería un PUT del estilo /temas/{id}/priorizacion/{id\_usuario}.
+  \item Si un usuario quisiera borrar su comentario, se debería habilitar el método DELETE /comentarios/{id\_comentario}.
+\end{enumerate}
+
+
+\subsection*{6. Fichero CSS Adicional}
+
+\begin{enumerate}
+  \item Debemos tener dónde alojar ese fichero. Si se hace en el propio servidor, la ruta típica podría ser /static/css/ranker.css y tendríamos que tenerlo en cuenta en nuestro diseño del REST. Si se espera mucho tráfico, podríamos subirlo a un servicio de CDN, lo que descarga el trabajo de servir archivos pesados de tu servidor principal.
+  \item No afecta al modelo de datos.
+  \item Al trabajar con múltiples hojas de estilo, el orden y la jerarquía son fundamentales. 
+En el HTML, el orden de las etiquetas $<link>$ determina qué reglas tienen prioridad si hay conflictos. Por ello, lo suyo sería colocar primero el \emph{style.css} del CDN y después \emph{ranker.css}.
+\end{enumerate}
+
