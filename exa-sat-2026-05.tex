@@ -1,0 +1,278 @@
+%%--------------------------------------------------------------------------
+%%--------------------------------------------------------------------------
+\subsection{Examen de ITT-SAT, 25 de mayo de 2026}
+
+Se quiere construir un sitio web, {\bf Confbooks}, que permita crear un libro con los participantes en eventos. De esta manera, existirán eventos y dentro de cada uno de los eventos, podrá haber participantes. La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+    \item En el sitio no hay cuentas de usuario. Toda la funcionalidad está disponible para cualquiera que lo visite, aunque será necesario tener nombre de usuario para cambiar la información sobre ese usuario.
+    \item La página principal del sitio tiene un formulario que permitirá a los visitantes escoger un nombre de usuario. Cuando elijan nombre, se les redirigirá a la paǵina del usuario (ver siguiente punto). Puede haber varios visitantes con el mismo nombre. Una vez elegido el nombre, este aparecerá en todas las páginas del sitio con el texto ``eres \emph{nombre}'' (que será un enlace a la paǵina del usuario, ver siguiente punto), y debajo habrá un botón para \emph{salir} (esto es, dejar de usar ese nombre).
+    \item Cada usuario tendrá una página propia, donde se podrá ver, introducir y modificar información sobre el usuario (constando de nombre, una foto de perfil, su nacionalidad e información de la entidad a la que pertenece).
+    \item La página principal del sitio mostrará también un listado con los diez últimos eventos registrados (mostrando nombre, lugar y fecha), y un formulario para registrar un nuevo evento (pudiendo incluir la siguiente información: nombre, breve descripción, lugar y fecha). Al registrar un nuevo evento, se redirigirá a la página específica de dicho evento (ver siguiente punto).
+    \item Cada evento tendrá una propia página que mostrará la información del evento, y se ofrecerá un listado de todos los participantes (con la siguiente información: nombre, foto de perfil, nacionalidad, entidad). En esa página existirá una manera para que un usuario pueda apuntarse como participante.
+    \item Para cada evento existirá la posibilidad de obtener (en formato PDF) la información del evento, así como de todos los participantes que se han apuntado.
+\end{enumerate}
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+    \item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). (1 punto)
+
+    \item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero models.py en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+    \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante accede por primera vez a la página principal (esto es, pone en el navegador la URL de la página principal del sitio). Después de ver la página principal, visita un evento existente y se descarga la información del evento en PDF. El escenario termina cuando el visitante ve el PDF del evento. (1 punto)
+
+    \item Describe las interacciones HTTP que ocurrirán entre el navegador y cualquier servidor web en el siguiente escenario: El escenario comienza cuando un visitante (que accede por primera vez al sitio) ya está en la página principal y elige nombre de usuario. A continuación, introduce sus datos más relevantes en la página de usuario. El escenario termina cuando el visitante ve la página del usuario actualizada. (1 punto)
+
+    \item  ¿El esquema que has creado para el ejercicio 1 es REST? ¿Qué deberías cambiar para que fuera más RESTful? (0,5 puntos)
+
+    \item ¿Qué habría que cambiar para que los datos de un usuario registrado sólo los pueda cambiar una única persona? (0,5 puntos)
+
+\end{enumerate}
+
+En todos los escenarios, ten en cuenta que tu respuesta debe considerar toda la funcionalidad que ofrece el servicio, y permitir que ésta pueda proporcionarse. Diseña la aplicación de forma que envíe cookies al navegador {\bf sólo cuando sea necesario}.
+
+En las respuestas donde describas interacciones HTTP indica para cada una de ellas claramente y en este orden:
+    \begin{itemize}
+    \item La primera línea de la petición HTTP
+    \item Si lo hay, el contenido de la petición
+    \item La primera línea de la respuesta HTTP
+    \item Si lo hay, el contenido de la respuesta
+    \item Una brevísima explicación de para qué se usa la interacción
+    \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+    \end{itemize}
+
+Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
+\section*{Solución}
+
+\subsection*{1. Esquema REST}
+
+\noindent
+\begin{tabularx}{\textwidth}{l|l|X|X}
+\toprule
+\textbf{Recurso (URL)} & \textbf{Método} & \textbf{Descripción de la acción en la aplicación} & \textbf{Datos de la petición} \\ \midrule
+\texttt{/} & GET & Devuelve la página principal con la lista de los 10 últimos eventos, el formulario de registro de eventos y el formulario de identidad. & Ninguno. \\ \midrule
+\texttt{/} & POST & Procesa el nombre elegido. Crea un registro de usuario en la BD y establece la cookie de sesión con su ID. Redirige a \texttt{/usuarios/<id>}. & Cuerpo (Form): \texttt{nombre}. \\ \midrule
+\texttt{/} & POST & Elimina el ID de usuario de la sesión actual (borra o expira la cookie) . & login=FALSE. \\ \midrule
+\texttt{/} & POST & Registra un nuevo evento en el sistema. Redirige a la página del evento creado (\texttt{/eventos/<id>}). & Cuerpo (Form): \texttt{nombre}, \texttt{descripción}, \texttt{lugar}, \texttt{fecha}. \\ \midrule
+\texttt{/usuarios/<id>} & GET & Devuelve la página de perfil del usuario especificado por su \texttt{id}. & \texttt{id} en la URL. \\ \midrule
+\texttt{/usuarios/<id>} & POST & Modifica y actualiza los datos del perfil del usuario (nombre, foto, nacionalidad, entidad). Redirige a \texttt{/usuarios/<id>}. & Cuerpo (Multipart): \texttt{nombre}, 
+\texttt{foto de perfil}, \texttt{nacionalidad}, \texttt{entidad}. \\ \midrule
+\texttt{/usuarios/<id>/foto} & GET & Devuelve la foto de perfil del usuario especificado por su \texttt{id}. & \texttt{id} en la URL. \\ \midrule
+\texttt{/eventos/<id>} & GET & Devuelve la página detallada del evento con su información y la lista de participantes apuntados. & \texttt{id} en la URL. \\ \midrule
+\texttt{/eventos/<id>} & POST & Añade al usuario de la sesión actual como participante de dicho evento. Redirige a \texttt{/eventos/<id>}. & Cookie de sesión (determina quién se apunta). \\ \midrule
+\texttt{/eventos/<id>/pdf} & GET & Genera y devuelve dinámicamente un archivo PDF con la información del evento y sus participantes. & \texttt{id} en la URL. \\
+\bottomrule
+\end{tabularx}
+
+\subsection*{2. Modelo de datos}
+
+\begin{verbatim}
+from django.db import models
+
+class Usuario(models.Model):
+    # El id se genera automáticamente como Clave Primaria (Autoincremental)
+    nombre = models.CharField(max_length=150)
+    foto = models.ImageField(upload_file="fotos/", null=True, blank=True)
+    nacionalidad = models.CharField(max_length=100, blank=True)
+    entidad = models.CharField(max_length=200, blank=True)
+
+class Evento(models.Model):
+    # El id se genera automáticamente como Clave Primaria (Autoincremental)
+    nombre = models.CharField(max_length=200)
+    descripcion = models.TextField()
+    lugar = models.CharField(max_length=200)
+    fecha = models.DateField()
+
+class Evento_Usuario(models.Model):  # Relación Muchos a Muchos (N:N)
+    participante = models.ForeignKey(Usuario)
+    evento = models.ForeignKey(Evento)
+\end{verbatim}
+
+\subsection*{3. Primera interacción HTTP}
+
+El visitante no tiene nombre elegido (no hay cookie de sesión inicial). Supongamos que visita el evento con \texttt{id=23}.
+
+\subsubsection*{Interacción 1: Acceso a la página principal}
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+GET / HTTP/1.1
+Host: confbooks.org
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Ninguno.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} código HTML de la página de inicio (con formulario de nombre, formulario de crear evento y la lista de los 10 últimos eventos).
+    \item \textbf{Explicación:} El usuario entra por primera vez al sitio. No se envía ninguna cookie en la respuesta porque el diseño exige enviarlas \emph{sólo cuando sea necesario} (aquí no ha elegido nombre ni iniciado sesión).
+\end{itemize}
+
+\subsubsection*{Interacción 2: Navegación al detalle del evento}
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+GET /eventos/23 HTTP/1.1
+Host: confbooks.org
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Ninguno.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} Código HTML con la información del evento 23 y su lista de participantes. Al no estar logueado, el botón de "Apuntarse" no se muestra o está deshabilitado.
+    \item \textbf{Explicación:} El usuario solicita ver la información específica de un evento. Sigue sin requerirse el uso de cookies.
+\end{itemize}
+
+\subsubsection*{Interacción 3: Obtención de foto(s) de perfil}
+
+Esta interacción se realizará con cada participante que se ha apuntado al evento. Como ejemplo lo haremos para el usuario \emph{pepe} cuyo identificador de usuario es el 10:
+
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+GET /usuarios/10/foto HTTP/1.1
+Host: confbooks.org
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Ninguno.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: image/jpg
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} Imagen (en ese caso en formato JPEG, pero podría ser cualqueir otro formato) con la la foto de perfil de un usuario que se ha apuntado a un evento.
+    \item \textbf{Explicación:} El usuario pepe se ha apuntado a este evento y por tanto se muestran sus datos (incluida su foto de perfil). Sigue sin requerirse el uso de cookies.
+\end{itemize}
+
+\subsubsection*{Interacción 4: Descarga del PDF del evento}
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+GET /eventos/23/pdf HTTP/1.1
+Host: confbooks.org
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Ninguno.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: application/pdf
+Content-Disposition: attachment; filename="evento_23.pdf"
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} Los bytes binarios que conforman el archivo PDF estructurado con los datos del evento y participantes.
+    \item \textbf{Explicación:} El navegador solicita el recurso binario PDF. El servidor procesa la consulta y lo sirve directamente para su visualización o descarga. No intervienen cookies.
+\end{itemize}
+
+\subsection*{4. Segunda interacción HTTP}
+
+El visitante entra por primera vez (sin cookie), introduce un nombre, es redirigido a su perfil asignado (donde se le asigna un \texttt{id=42} recién creado) y rellena sus datos.
+
+\subsubsection*{Interacción 1: Envío del formulario con el nombre elegido}
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+POST / HTTP/1.1
+Host: confbooks.org
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 13
+
+nombre=Carlos
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Cadena serializada del formulario: \texttt{nombre=Carlos}.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 303 See Other
+Location: /usuarios/42
+Set-Cookie: usuario_id=42; Path=/; HttpOnly
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} Ninguno (o un texto breve de redirección).
+    \item \textbf{Explicación:} El servidor recibe el nombre, registra un nuevo usuario en la base de datos (con ID 42) y devuelve una cabecera \texttt{Set-Cookie} para que el navegador guarde esa identidad. Redirige de inmediato a la página de dicho usuario.
+\end{itemize}
+
+\subsubsection*{Interacción 2: Carga de la página de usuario (redirección)}
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+GET /usuarios/42 HTTP/1.1
+Host: confbooks.org
+Cookie: usuario_id=42
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Ninguno.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} HTML de la página de edición del perfil del usuario 42. Al incluir la cabecera \texttt{Cookie}, el servidor sabe que ``eres Carlos'' y renderiza los enlaces y textos correspondientes.
+    \item \textbf{Explicación:} El navegador obedece la redirección y solicita la página del usuario, enviando la cookie de identidad que acaba de recibir.
+\end{itemize}
+
+\subsubsection*{Interacción 3: Envío de los datos del perfil (Actualización y Visualización)}
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+POST /usuarios/42 HTTP/1.1
+Host: confbooks.org
+Cookie: usuario_id=42
+Content-Type: multipart/form-data; ...
+Content-Length: [Longitud_Total]
+
+[Datos binarios del formulario: nombre, foto, nacionalidad y entidad]
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Cuerpo codificado en \texttt{multipart/form-data} que incluye los campos de texto e imagen cargados por el usuario.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} Código HTML que muestra el perfil finalizado de Carlos con su foto renderizada, nacionalidad y entidad.
+    \item \textbf{Explicación:} El navegador solicita la página final tras la redirección, mostrando al usuario sus datos guardados con éxito.
+\end{itemize}
+
+\subsubsection*{Interacción 4: Obtención de foto de perfil del usuario}
+
+\begin{itemize}
+    \item \textbf{Petición:}
+    \begin{verbatim}
+GET /usuarios/42/foto HTTP/1.1
+Host: confbooks.org
+Cookie: usuario_id=42
+    \end{verbatim}
+    \item \textbf{Contenido de la petición:} Ninguno.
+    \item \textbf{Respuesta:}
+    \begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: image/jpg
+    \end{verbatim}
+    \item \textbf{Contenido de la respuesta:} Imagen (en ese caso en formato JPEG, pero podría ser cualqueir otro formato) con la la foto de perfil del usuario.
+\end{itemize}
+
+\subsection*{5. RESTful}
+\textbf{¿El esquema del Ejercicio 1 es estrictamente REST?} \\
+\textbf{No} del todo. Aunque utiliza nombres de recursos limpios y lógicos, viola varias de las restricciones fundamentales de la arquitectura REST pura:
+
+\begin{enumerate}
+    \item \textbf{Sobrecarga del método POST:} Debido a la restricción del examen (no usar \texttt{PUT} ni \texttt{DELETE}), se utiliza \texttt{POST /usuarios/<id>} para modificar un recurso existente (lo semánticamente correcto sería \texttt{PUT}), y \texttt{POST /} para destruir un estado/sesión (lo ideal sería un \texttt{DELETE} sobre un recurso de sesión).
+    \item \textbf{Violación del principio de Sin Estado (Statelessness):} REST requiere que cada petición sea completamente independiente y contenga toda la información necesaria para ser procesada. El uso de cookies de sesión para alterar el comportamiento de la vista (por ejemplo, saber si mostrar o no el botón de ``Apuntarse'') acopla el estado de la sesión al servidor.
+\end{enumerate}
+
+\noindent
+\textbf{¿Qué se debería cambiar para que fuera más RESTful?}
+\begin{itemize}
+    \item \textbf{Habilitar métodos HTTP adicionales:} Utilizar \texttt{PUT} para la actualización del perfil en \texttt{/usuarios/<id>} y \texttt{DELETE} para darse de baja de un evento o destruir la sesión.
+%    \item \textbf{Autenticación sin estado (Stateless Token):} En lugar de cookies de sesión tradicionales vinculadas a una base de datos de sesiones del lado del servidor, se deberían enviar las credenciales de identidad en cada petición mediante cabeceras HTTP estándar independientes.
+\end{itemize}
+
+\subsection*{6. Modificación para control de acceso y edición única}
+
+Para asegurar que los datos de un usuario registrado \textbf{sólo puedan ser modificados por la persona que los creó}, se tendrían que realizar los siguientes cambios:
+
+\begin{enumerate}
+    \item \textbf{Implementar Autenticación Real:} El sistema actual es completamente inseguro porque cualquiera puede escribir en su navegador \texttt{/usuarios/42} y lanzar una petición \texttt{POST} para alterar esos datos, o simplemente suplantar la identidad modificando la cookie local por \texttt{usuario\_id=42}, ya que no hay contraseñas ni validación de secreto. Es obligatorio introducir un sistema de credenciales (contraseña, firma criptográfica o token secreto único generado por el servidor al elegir el nombre por primera vez).
+    \item \textbf{Control de Autorización en el Backend:} En la vista/controlador que procesa el método \texttt{POST /usuarios/<id>}, el servidor debe validar obligatoriamente que el usuario autenticado en la sesión/cookie activa coincida de forma idéntica con el \texttt{<id>} que se intenta modificar en la URL. 
+    
+    Si el ID extraído del token o cookie segura no es igual al ID del recurso solicitado, la aplicación debe rechazar la petición inmediatamente devolviendo un código de estado HTTP \textbf{403 Forbidden} (Prohibido).
+\end{enumerate}
