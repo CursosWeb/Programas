@@ -1,0 +1,240 @@
+
+\subsection{Examen de ISAM-LTAW, 19 de mayo de 2026}
+
+\subsubsection{Enunciado}
+
+Se quiere construir un sitio web, MiGPT, para poder conversar con asistentes de IA, usando APIs de terceros que proporcionan acceso a los asistentes. La funcionalidad básica del sitio es la siguiente:
+
+\begin{enumerate}
+\item Toda la funcionalidad del sitio está disponible para cualquier visitante: no hay cuentas, ni hace falta acreditarse para tener acceso a la funcionalidad que proporciona.
+
+\item La página principal del sitio mostrará:
+  \begin{itemize}
+  \item La conversación que el visitante ha tenido hasta el momento con el asistente: el texto que ha enviado al asistente (prompts) y las respuestas del asistente, ordenadas de forma que lo más reciente esté lo último.
+  \item Un formulario para que el visitante pueda escribir nuevos textos para enviar al asistente. Tras enviar el texto, el visitante volverá a ver la página principal.
+  \item Un formulario en el que el visitante puede elegir el asistente que quiere usar, entre una lista de los asistentes cuya API está disponible. Tras elegirlo, el visitante volverá a ver la página principal.
+  \item Un enlace a la página de estado.
+  \item Un enlace que, si se usa en otro navegador, permite ``transferir la conversación con el asistente'', continuando desde él como si no se hubiera cambiado de navegador (se verá la misma conversación pasada, y se seguirá con la misma elección de asistente, si se hubiera realizado).
+  \end{itemize}
+
+\item Habrá una página para mostrar el estado del sitio web, en el que se podrá ver:
+  \begin{itemize}
+  \item El número de visitantes activos durante la última hora.
+  \item La lista del último texto enviado por cada visitante durante la última hora.
+  \item Un botón junto a cada uno de esos textos para reiniciar a un visitante. Esto es, si se pulsa el botón, la próxima vez que ese visitante visite la página principal, recibirá la misma página, y el mismo tratamiento que habría recibido si no hubiera visitado el sitio nunca. Sin embargo, no se olvidará la historia anterior, solo se ligará a un visitante antiguo, que ya no existe. Si alguien intenta identificarse como ese visitante antiguo, se le tratará también como si no hubiera visitado el sitio nunca.
+  \end{itemize}
+
+\item Habrá un recurso en el que podrá descargar la misma información que en la página de estado, pero en formato JSON.
+  
+\item Una vez el visitante ha elegido un asistente, se seguirá usando en la conversación con ese visitante, hasta que vuelva a elegir otro. Si el visitante no ha  elegido ninguno, se usará un asistente que estará predefinido (el ``asistente por defecto'').
+
+\item Todas las páginas HTML del sitio usarán un único documento CSS, servido por el propio sitio, que definirá el estilo de todas ellas de forma uniforme.
+\end{enumerate}
+
+En esta descripción, considérese que un ``visitante'' corresponde con un cierto navegador, con su propio almacén de cookies. Esto es, una misma persona que use dos navegadores distintos, cada uno con su propio almacén de cookies, será considerada como dos visitantes, mientras que varias personas usando el mismo navegador, con un único almacén de cookies para todas ellas, serán consideradas como un único visitante.
+
+
+Teniendo en cuenta los requisitos anteriores, se pide:
+
+\begin{enumerate}
+\item Diseña un esquema REST para proporcionar el servicio descrito. Se habrán de especificar los nombres de recurso empleados, y cómo reaccionará la aplicación cuando reciba los métodos POST o GET sobre esas URLs (no se usarán los métodos PUT o DELETE). \textbf{Muy importante:} Coloca la información en una \textbf{tabla}, con los nombres de los recursos en una columna, los métodos en otra, la descripción de lo que realizará la aplicación al recibirlos en la tercera, y el contenido de los datos de la petición, si los hay en la cuarta (se consideran datos de la petición a los que vayan, normalmente como \emph{query string}, en el cuerpo de la petición HTTP o tras el nombre de recurso en la primera línea de la cabecera). (1 punto)
+
+\item Describe el modelo de datos que necesitará esta aplicación. Define las tablas necesarias y los campos necesarios para la funcionalidad descrita. Asegúrate de que incluyes en el modelo de datos los campos o tablas necesarios para garantizar que la funcionalidad es la descrita, y que el sitio nunca guarda más información que la estrictamente necesaria para cumplir su función. Hazlo de forma lo más similar posible a lo que tendrías que escribir en el fichero \texttt{models.py} en Django (aunque no es importante que se respete la sintaxis mientras se entienda el modelo de datos que propones). (1 punto)
+
+\item Explica cómo debería ser la cookie o cookies que envíe el sitio a cada navegador, de forma que permita asegurar la funcionalidad indicada, pero nada más: (a) Explica qué campos tendría o tendrían (los mínimos posibles), (b) cuándo habría que enviarla (o enviarlas), siendo siempre el envío lo más tarde posible en las interacciones entre cada navegador (visitante) y la aplicación, (c) para qué serviría(n), y (d) qué ocurriría con esa cookie o cookies cuando se pulse el botón para invalidar una sesión, desde la página de estado. (1 punto)
+  
+\item Describe las interacciones HTTP que ocurrirán entre el navegador y la aplicación en el siguiente escenario. El escenario comienza cuando un visitante que no ha accedido nunca al sitio pone su URL en el navegador para acceder por primera vez. El visitante ve la página principal, escribe un texto para enviar al asistente, y recibe la respuesta del agente. El escenario termina cuando el visitante ve en su navegador la página principal con la respuesta del asistente.
+
+  Para cada interacción HTTP indica claramente y en este orden:
+  \begin{itemize}
+  \item La primera línea de la petición HTTP
+  \item Si lo hay, el contenido de la petición
+  \item La primera línea de la respuesta HTTP
+  \item Si lo hay, el contenido de la respuesta
+  \item Una brevísima explicación de para qué se usa la interacción
+  \item Tanto en la petición como en la respuesta, las cabeceras con cookies, si es que fueran necesarias para la funcionalidad del escenario que se está describiendo (incluyendo el aspecto que han de tener esas cabeceras). Si la cabecera con cookie va o no dependiendo de algún factor ajeno a tu aplicación, explica cuando irá y cuándo no, y cuál es ese factor.
+  \item Si hubiera envío de datos de formulario, recuerda indicar de forma explícita dónde van esos datos, y si es posible, en qué formato.
+  \end{itemize}
+
+  Además, asegúrate de que describes las interacciones HTTP en el orden en que ocurrirían en el escenario.
+
+  En general, para todas las interacciones descritas, considérese que la cache del navegador no se está usando, y que el navegador acepta cualquier cookie que se le envíe, y nunca la borra salvo que la cookie expire. (1 punto)
+
+\item Explica cómo podría funcionar el enlace que aparece en la página principal para transferir la conversación a otro navegador. Explica cómo podría ser el propio enlace, y cómo funcionaría cuando se use en otro navegador. (1 punto)
+\end{enumerate}
+
+\newpage
+
+% ------------------------------------------------
+% ------------------------------------------------
+\subsubsection{Solución}
+
+% ------------------------------------------------
+\textbf{Ejercicio 1}
+
+Tabla de recursos:
+\vspace{.4cm}
+
+\begin{tabular}{|l|l|l|l|}
+  \hline
+  Recurso & Método & Semántica & Datos \\ \hline\hline
+  /       & GET    & Página principal & \\
+  /       & POST   & Nueva texto & \texttt{texto="...."} \\
+  /       & POST   & Nuevo asistente & \texttt{asistente=IdAsistente} \\
+  /status & GET & Estado del sitio & \\
+  /status & POST & Invalidar sesión & \texttt{invalidar=CookieSesion}\\
+  /status.json & GET & Estado, formato JSON & \\
+  /transfer/CookieSesion & GET & Transferencia & \\
+  /main.css & GET & Documento CSS &  \\
+  \hline
+\end{tabular}
+
+\texttt{CookieSesion} es la cookie de la sesión de un visitante: en el caso de \texttt{/status}, de la sesión a invalidar; en el caso de \texttt{/transfer}, la de la sesión que se está transfiriendo.
+
+Para que el POST sobre \texttt{/status} para invalidar una sesión funcione, todas las cookies han estar en la página HTML, con lo que alguien podría conocer cualquiera de las cookies. Esto, desde luego, en una aplicación real sería un problema de seguridad. Si se quiere evitar, se podría usar un identificador único para cada sesiòn (por ejemplo el id que tendrá cada visitante en la tabla \texttt{Visitante} (ver solución al apartado siguiente), lo que sería más realista.
+
+
+% ------------------------------------------------
+\textbf{Ejercicio 2}
+
+Hay varias soluciones, una podría ser:
+
+\begin{verbatim}
+from django.db import models
+
+class Visitante (models.Model):
+  cookie = models.CharField(max_lenght = 50)
+  asistente = models.CharField(max_lenght = 20, default="AsistenteDefecto")
+  activo = models.Boolean(default=True)
+
+class Texto (models.Model):
+  visitante: models.ForeignKey('Sesion')
+  texto: models.TextField()
+  respuesta: models.TextField()
+  fecha: models.DateTimeField()
+
+\end{verbatim}
+
+La tabla \texttt{Visitante} se usa para considerar los visitantes (navegadores distintos). Para cada uno de ellos guardará la cookie que se les envíe, y el asistente que ha elegido (o el asistente por defecto). También habrá un campo para indicar si la cookie sigue siendo válida, de forma que se sigan contando bien los visitantes activos en la última hora, aunque se haya reiniciado su visitante. Si ese campo es False, si se recibe una petición con esa cookie se le devolverá una cookie nueva, y se iniciará como nuevo visitante en la tabla \texttt{Visitante}.
+
+La tabla \texttt{Texto} almacena para cada interacción con el asistente, el texto que se envía, la respuesta que se recibe, la fecha en que se realizó, y una clave externa a la tabla de visitantes, para saber quién ha realizado la interacción.
+
+
+% ------------------------------------------------
+\textbf{Ejercicio 3}
+
+Basta con una cookie que se envíe a cada navegador cuando se envíe un texto a la aplicación, o se elija un asistente. Antes, no hace falta, porque no hay ningún dato relevante que almacenar ligado al visitante. La cookie ha de ser una cookie de sesión, por lo que puede ser una cadena de caracteres aleatorios. En esta solución utilizamos cadenas de 50 caracteres, como se vio en el campo \texttt{cookie} de la tabla \texttt{Visitante}. Suponiendo que se elija entre unos 60 caracteres diferentes para cada posición de la cadena (letras mayúsculas y minúsculas, y números, por ejemplo), tendríamos $60^{50}$ cadenas distintas, lo que es un número suficientemente grande como para poder manejar un número de navegadores incluso de varios miles de millones.
+
+Respondiendo concretamente a las preguntas:
+
+\begin{itemize}
+\item[(a)] Bastaría con un solo campo, el valor de la cookie:
+
+\begin{verbatim}
+cookie=...
+\end{verbatim}
+
+  Si se quiere que la cookie se almacene en almacenamiento estable (el enunciado no lo pide) basta con poner una fecha de expiración muy lejos en el futuro. Y para evitar que la cookie pueda ser espiada durante su tránsito por la red (el enunciado no lo pide, pero sería muy conveniente dado el enunciado), habría que incluir el campo \texttt{Secure}. Así, por ejemplo:
+
+\begin{verbatim}
+Set-Cookie: cookie=ae453...3rsv56; Expires=Mon, 22 May 2083 20:48:00 GMT; Secure
+\end{verbatim}
+
+\item[(b)] Se enviaría en respuesta a una interacción POST al recurso / que no venga ya con cabecera Cookie (bien para enviar un texto, bien para elegir un asistente).
+
+\item[(c)] Serviría para identificar al visitante, y poder asociar a él el asistente que haya elegido, y los textos y respuestas que intercambie.
+
+\item[(d)] Debería marcarse en la tabla \texttt{Visitante} como inválida.
+  
+\end{itemize}
+
+% ------------------------------------------------
+\textbf{Ejercicio 4}
+
+Todas las interacciones son entre el navegador y el sitio. Como el navegador no ha accedido nunca al sitio, no puede tener una cookie para él. El escenario comenzará con una petición GET del navegador al recurso principal, que obtendrá como respuesta la página HTML principal. A continuación, el usuario escribe un texto, y al pulsar el botón para enviarla, el navegador enviará un POST al recurso principal, que enviará el texto. Cuando la aplicación reciba ese POST, enviará el texto al asistente, y recibirá su respouesta, respondiendo a su vez al navegador con una nueva página principal completa (HTML) que tendrá ya tanto el texto como la respuesta. Esta respuesta llevará una cookie para identificar al visitante, pues ya hay algo que almacenar para él en la base de datos: el texto y la respuesta. Además, cada vez que se reciba una página HTML, se iniciará un GET para obtener el recurso con el documento CSS que ésta referencia (ver enunciado).
+\begin{itemize}
+
+\item Petición GET al recurso principal: 
+
+\begin{verbatim}
+  GET / HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta, con el documento HTML correspondiente a la página principal en el cuerpo.
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Página principal, HTML]
+\end{verbatim}
+
+\item Petición de la hoja de estilo CSS que incluye la página CSS (suponemos que no se usa la cache):
+
+\begin{verbatim}
+  GET /main.css HTTP/1.1
+  ...
+\end{verbatim}
+
+\item Respuesta, con el documento CSS en el cuerpo.
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Documento CSS]
+\end{verbatim}
+
+\item POST para enviar el texto:
+
+\begin{verbatim}
+  POST / HTTP/1.1
+  ...
+  texto=...
+\end{verbatim}
+
+\item Respuesta, con el envío de la cookie de visitante, y la página principal, como documento HTML, en el cuerpo..
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+  Set-Cookie: cookie=ae453...3rsv56; Expires=Mon, 22 May 2083 20:48:00 GMT; Secure
+  ...
+  [Página principal, HTML]
+\end{verbatim}
+  
+
+\item Petición del documento CSS \texttt{/main.css}, igual que antes, pero ahora el navegador envía la cookie, porque ya la tiene.
+
+\begin{verbatim}
+  GET /main.css HTTP/1.1
+  ...
+  Cookie: cookie=ae453...3rsv56
+  ...
+\end{verbatim}
+
+\item Respuesta, con el documento CSS en el cuerpo.
+
+\begin{verbatim}
+  HTTP/1.1 200 OK
+  ...
+
+  [Documento CSS]
+\end{verbatim}
+
+
+\end{itemize}
+
+
+% ------------------------------------------------
+\textbf{Ejercicio 5}
+
+El enlace debe apuntar a un recurso servido por la aplicación. Ese recurso ha de ser único para cada visitante, desconocido para todos los demás visitantes, y vendrá a signficar ``si alguien te pide ese recurso, es que es el visitante X, por lo tanto, trátale como tal y envíale la cookie del visitante X''. Puede usarse la propia cookie como parte del recurso. Por ejemplo, como se indicó en el ejercicio 1, el recurso puede ser \texttt{/transfer/CookieSesion}, siendo \texttt{CookieSesion} la cookie de sesión del visitante en cuestión.
+
+Cuando la aplicación reciba una petición a un recurso con esta forma, buscará la \texttt{CookieSesion} en la tabla \texttt{Visitante}, y si existe y está activa, devolverá una página HTML con cualquier mensaje (por ejemplo ``Transferencia correcta''), o simplemente una redirección a la página principal, y (lo importante) una cabecera \texttt{Set-Cookie} con esa cookie de sesión de visitante.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
